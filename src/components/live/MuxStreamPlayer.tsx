@@ -79,6 +79,37 @@ export default function MuxStreamPlayer({
     }
   }, [playbackId]);
 
+  const handleAdEnd = useCallback(() => {
+    setShowAd(false);
+    setCurrentAd(null);
+    setAdCountdown(0);
+
+    // Resume main video
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    }
+  }, []);
+
+  const triggerAd = useCallback(() => {
+    if (ads.length === 0 || showAd) return;
+
+    const ad = selectAd(ads);
+    if (!ad) return;
+
+    setCurrentAd(ad);
+    setShowAd(true);
+    setAdCountdown(Math.ceil(ad.durationSeconds || 15));
+    lastAdTime.current = Date.now();
+
+    // Pause main video
+    if (videoRef.current) {
+      videoRef.current.pause();
+    }
+
+    // Track impression
+    onAdImpression?.(ad.id, "view");
+  }, [ads, showAd, onAdImpression]);
+
   // Time-based ad trigger for HTML5 video
   useEffect(() => {
     if (!videoRef.current || !ads.length) return;
@@ -104,27 +135,7 @@ export default function MuxStreamPlayer({
 
     video.addEventListener("timeupdate", handleTimeUpdate);
     return () => video.removeEventListener("timeupdate", handleTimeUpdate);
-  }, [ads, adBreakAt, adIntervalMinutes]);
-
-  const triggerAd = useCallback(() => {
-    if (ads.length === 0 || showAd) return;
-
-    const ad = selectAd(ads);
-    if (!ad) return;
-
-    setCurrentAd(ad);
-    setShowAd(true);
-    setAdCountdown(Math.ceil(ad.durationSeconds || 15));
-    lastAdTime.current = Date.now();
-
-    // Pause main video
-    if (videoRef.current) {
-      videoRef.current.pause();
-    }
-
-    // Track impression
-    onAdImpression?.(ad.id, "view");
-  }, [ads, showAd, onAdImpression]);
+  }, [ads, adBreakAt, adIntervalMinutes, triggerAd]);
 
   // Countdown timer during ad
   useEffect(() => {
@@ -146,24 +157,26 @@ export default function MuxStreamPlayer({
   }, [showAd]);
 
   // Auto-play ad video when ad is shown
+  // Mobile browsers block unmuted autoplay — start muted, then unmute after playing
   useEffect(() => {
     if (showAd && adVideoRef.current) {
-      adVideoRef.current.currentTime = 0;
-      adVideoRef.current.muted = isMuted;
-      adVideoRef.current.play().catch(() => {});
+      const adVideo = adVideoRef.current;
+      adVideo.currentTime = 0;
+      // Always start muted to guarantee autoplay on mobile
+      adVideo.muted = true;
+      adVideo.play()
+        .then(() => {
+          // Playback started — unmute if user hasn't explicitly muted
+          if (!isMuted) {
+            adVideo.muted = false;
+          }
+        })
+        .catch(() => {
+          // If even muted autoplay fails, skip the ad
+          handleAdEnd();
+        });
     }
-  }, [showAd, isMuted]);
-
-  const handleAdEnd = useCallback(() => {
-    setShowAd(false);
-    setCurrentAd(null);
-    setAdCountdown(0);
-
-    // Resume main video
-    if (videoRef.current) {
-      videoRef.current.play().catch(() => {});
-    }
-  }, []);
+  }, [showAd, isMuted, handleAdEnd]);
 
   const handleAdClick = useCallback(() => {
     if (currentAd?.sponsorUrl) {
@@ -251,7 +264,7 @@ export default function MuxStreamPlayer({
               src={adVideoSrc || undefined}
               className="w-full h-full object-contain bg-black"
               autoPlay
-              muted={isMuted}
+              muted
               playsInline
               onEnded={handleAdEnd}
               onError={handleAdEnd}
