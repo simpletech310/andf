@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FileUpload } from "@/components/admin/file-upload";
+import { MultiFileUpload } from "@/components/admin/multi-file-upload";
 
 interface Program {
   id: string;
@@ -106,15 +108,6 @@ export default function NewEventPage() {
   };
 
   // Dynamic list helpers
-  const addGalleryUrl = () => setGalleryUrls([...galleryUrls, ""]);
-  const updateGalleryUrl = (index: number, value: string) => {
-    const updated = [...galleryUrls];
-    updated[index] = value;
-    setGalleryUrls(updated);
-  };
-  const removeGalleryUrl = (index: number) =>
-    setGalleryUrls(galleryUrls.filter((_, i) => i !== index));
-
   const addHighlight = () => setHighlights([...highlights, ""]);
   const updateHighlight = (index: number, value: string) => {
     const updated = [...highlights];
@@ -408,52 +401,26 @@ export default function NewEventPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Input
-              id="coverImage"
-              label="Cover Image URL"
-              placeholder="https://example.com/image.jpg"
-              value={coverImageUrl}
-              onChange={(e) => setCoverImageUrl(e.target.value)}
+            <FileUpload
+              label="Cover Image"
+              accept="image/jpeg,image/png,image/gif,image/webp"
+              folder="events/covers"
+              currentUrl={coverImageUrl}
+              onUpload={(url) => setCoverImageUrl(url)}
             />
-            <Input
-              id="videoUrl"
-              label="Video URL (optional)"
-              placeholder="https://youtube.com/watch?v=... or Mux playback URL"
-              value={videoUrl}
-              onChange={(e) => setVideoUrl(e.target.value)}
+            <FileUpload
+              label="Video (optional)"
+              accept="video/mp4,video/quicktime,video/webm"
+              folder="events/videos"
+              currentUrl={videoUrl}
+              onUpload={(url) => setVideoUrl(url)}
             />
-            <div className="space-y-3">
-              <label className="text-sm font-medium text-foreground-muted">
-                Gallery Image URLs
-              </label>
-              {galleryUrls.map((url, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <Input
-                    id={`gallery-${i}`}
-                    placeholder="https://example.com/gallery-image.jpg"
-                    value={url}
-                    onChange={(e) => updateGalleryUrl(i, e.target.value)}
-                    className="flex-1"
-                  />
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeGalleryUrl(i)}
-                    className="text-red-400 hover:text-red-300 shrink-0"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              ))}
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={addGalleryUrl}
-              >
-                <Plus className="h-4 w-4" />
-                Add Gallery Image
-              </Button>
-            </div>
+            <MultiFileUpload
+              label="Gallery Images"
+              folder="events/gallery"
+              urls={galleryUrls}
+              onUrlsChange={setGalleryUrls}
+            />
           </CardContent>
         </Card>
 
