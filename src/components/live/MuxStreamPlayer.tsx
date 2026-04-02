@@ -195,7 +195,7 @@ export default function MuxStreamPlayer({
   const useMux = playbackId && !videoUrl && muxLoaded && MuxPlayerRef.current;
 
   return (
-    <div className={`relative rounded-2xl overflow-hidden bg-neutral-900 aspect-video ${className}`}>
+    <div className={`relative overflow-hidden bg-neutral-900 ${className.includes("h-full") ? "" : "rounded-2xl aspect-video"} ${className}`}>
       {/* Main Video Player */}
       {useMux ? (
         (() => {

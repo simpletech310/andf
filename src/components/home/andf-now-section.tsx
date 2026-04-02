@@ -14,8 +14,8 @@ import { Badge } from "@/components/ui/badge";
 const MuxStreamPlayer = dynamic(() => import("@/components/live/MuxStreamPlayer"), {
   ssr: false,
   loading: () => (
-    <div className="aspect-video bg-neutral-100 rounded-2xl flex items-center justify-center">
-      <div className="h-8 w-8 border-3 border-primary-500/30 border-t-primary-500 rounded-full animate-spin" />
+    <div className="aspect-video bg-black rounded-2xl flex items-center justify-center">
+      <div className="h-8 w-8 border-3 border-white/30 border-t-white rounded-full animate-spin" />
     </div>
   ),
 });
@@ -60,6 +60,8 @@ export function ANDFNowSection() {
   const featured = videos[0];
   const secondary = videos.slice(1);
 
+  const activeVideoData = activeVideo ? videos.find((v) => v.id === activeVideo) : null;
+
   return (
     <SectionWrapper className="py-24 lg:py-32 px-6 bg-gradient-to-b from-primary-50 to-white">
       <div className="mx-auto max-w-7xl">
@@ -70,32 +72,6 @@ export function ANDFNowSection() {
         />
 
         <div ref={ref} className="mt-16">
-          {/* Inline Mux player */}
-          <AnimatePresence>
-            {activeVideo && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mb-8 overflow-hidden"
-              >
-                <div className="relative rounded-2xl overflow-hidden bg-neutral-900">
-                  <MuxStreamPlayer
-                    playbackId={MUX_VIDEO_ID}
-                    videoUrl="/videos/andf-content.mp4"
-                    title={videos.find((v) => v.id === activeVideo)?.title || "ANDF Video"}
-                  />
-                  <button
-                    onClick={() => setActiveVideo(null)}
-                    className="absolute top-4 right-4 h-10 w-10 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-colors z-30"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Featured video */}
             <motion.div
@@ -193,6 +169,46 @@ export function ANDFNowSection() {
           </div>
         </div>
       </div>
+
+      {/* Fullscreen video modal */}
+      <AnimatePresence>
+        {activeVideo && (
+          <motion.div
+            className="fixed inset-0 z-[100] bg-black flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setActiveVideo(null)}
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 h-12 w-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors z-50"
+              aria-label="Close video"
+            >
+              <X className="h-6 w-6" />
+            </button>
+
+            {/* Video title */}
+            {activeVideoData && (
+              <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-50">
+                <p className="text-white/90 text-sm sm:text-base font-semibold">{activeVideoData.title}</p>
+              </div>
+            )}
+
+            {/* Full-screen player */}
+            <div className="w-full h-full max-h-screen">
+              <MuxStreamPlayer
+                playbackId={MUX_VIDEO_ID}
+                videoUrl="/videos/andf-content.mp4"
+                title={activeVideoData?.title || "ANDF Video"}
+                autoPlay
+                className="w-full h-full"
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </SectionWrapper>
   );
 }
