@@ -121,12 +121,28 @@ export default function MuxStreamPlayer({
 
     const video = videoRef.current;
 
+    // If adBreakAt is 0, trigger ad immediately on play
+    if (adBreakAt === 0 && !adTriggeredRef.current) {
+      const handleFirstPlay = () => {
+        if (!adTriggeredRef.current) {
+          adTriggeredRef.current = true;
+          triggerAd();
+        }
+      };
+      video.addEventListener("play", handleFirstPlay, { once: true });
+      // Also trigger if already playing
+      if (!video.paused && !adTriggeredRef.current) {
+        adTriggeredRef.current = true;
+        triggerAd();
+      }
+    }
+
     const handleTimeUpdate = () => {
       const currentTime = video.currentTime;
       const now = Date.now();
 
-      // First ad break at specified time
-      if (!adTriggeredRef.current && currentTime >= adBreakAt) {
+      // First ad break at specified time (for adBreakAt > 0)
+      if (!adTriggeredRef.current && adBreakAt > 0 && currentTime >= adBreakAt) {
         adTriggeredRef.current = true;
         triggerAd();
         return;
@@ -202,7 +218,8 @@ export default function MuxStreamPlayer({
   }, []);
 
   // Get the ad video source — prefer local URL for reliable playback
-  const adVideoSrc = currentAd?.videoUrl || (currentAd?.muxPlaybackId ? `https://stream.mux.com/${currentAd.muxPlaybackId}.m3u8` : null);
+  // Use local file if available, otherwise stream from Mux (MP4 for broad compatibility)
+  const adVideoSrc = currentAd?.videoUrl || (currentAd?.muxPlaybackId ? `https://stream.mux.com/${currentAd.muxPlaybackId}/high.mp4` : null);
 
   // Use HTML5 video when videoUrl is provided (demo mode), otherwise Mux player
   const useMux = playbackId && !videoUrl && muxLoaded && MuxPlayerRef.current;

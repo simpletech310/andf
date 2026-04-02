@@ -82,19 +82,19 @@ interface ActiveAd {
   priority: number;
 }
 
-const MUX_AD_PLAYBACK_ID = "3w9WlvYAhCZSPnUgrfnwK1mlP0087Kgp802tmOQowAaDU";
+const TOPGOLF_AD_PLAYBACK_ID = "CV00L4KqMbBxeyXz9EfyrHiH017q76WVaNEhhQNr4FBNo";
 
-// Demo ad — served from Mux
-const DEMO_AD: ActiveAd = {
-  id: "demo_ad_1",
-  title: "ANDF Sponsor Demo",
-  muxPlaybackId: MUX_AD_PLAYBACK_ID,
-  videoUrl: "/videos/ad1.mp4", // local fallback
-  durationSeconds: 40,
-  sponsorName: "Your Brand Here",
-  sponsorUrl: "/sponsor",
-  sponsorLogo: "",
-  priority: 5,
+// TopGolf pre-roll ad — plays at the start of every video
+const TOPGOLF_AD: ActiveAd = {
+  id: "topgolf_ad_1",
+  title: "TopGolf",
+  muxPlaybackId: TOPGOLF_AD_PLAYBACK_ID,
+  videoUrl: "/videos/topgolf-ad.mp4",
+  durationSeconds: 15,
+  sponsorName: "TopGolf",
+  sponsorUrl: "https://topgolf.com/us/",
+  sponsorLogo: "/images/programs/topgolf-logo.jpg",
+  priority: 10,
 };
 
 // Local video fallback
@@ -200,7 +200,7 @@ export default function LivePage() {
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
   const selectedPlayerRef = useRef<HTMLDivElement>(null);
   const [fullscreenVideo, setFullscreenVideo] = useState<Video | null>(null);
-  const [activeAds, setActiveAds] = useState<ActiveAd[]>([DEMO_AD]);
+  const [activeAds, setActiveAds] = useState<ActiveAd[]>([TOPGOLF_AD]);
   const [muxData, setMuxData] = useState<{ duration?: string; views?: number; createdAt?: string } | null>(null);
 
   // Fetch real Mux video data (duration, views, date)
@@ -232,7 +232,7 @@ export default function LivePage() {
       .then((data) => {
         const serverAds = data.ads || [];
         // Keep demo ad as fallback, add any server-side ads
-        setActiveAds(serverAds.length > 0 ? serverAds : [DEMO_AD]);
+        setActiveAds(serverAds.length > 0 ? [...serverAds, TOPGOLF_AD] : [TOPGOLF_AD]);
       })
       .catch(() => {});
   }, []);
@@ -339,7 +339,7 @@ export default function LivePage() {
                   title="ANDF Now!"
                   channel={activeChannel}
                   ads={activeAds}
-                  adBreakAt={10}
+                  adBreakAt={0}
                   adIntervalMinutes={15}
                   onAdImpression={handleAdImpression}
                   onDonateClick={openDonateModal}
@@ -515,7 +515,7 @@ export default function LivePage() {
                         videoUrl={DEMO_CONTENT_URL}
                         title={selectedVideo.title}
                         ads={activeAds}
-                        adBreakAt={10}
+                        adBreakAt={0}
                         adIntervalMinutes={10}
                         onAdImpression={handleAdImpression}
                         onDonateClick={openDonateModal}
