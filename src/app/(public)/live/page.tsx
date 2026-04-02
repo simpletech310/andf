@@ -198,6 +198,7 @@ export default function LivePage() {
   const [donationSuccess, setDonationSuccess] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+  const selectedPlayerRef = useRef<HTMLDivElement>(null);
   const [fullscreenVideo, setFullscreenVideo] = useState<Video | null>(null);
   const [activeAds, setActiveAds] = useState<ActiveAd[]>([DEMO_AD]);
 
@@ -220,6 +221,13 @@ export default function LivePage() {
       body: JSON.stringify({ submissionId: adId, type, channel: activeChannel }),
     }).catch(() => {});
   }, [activeChannel]);
+
+  const handleSelectVideo = useCallback((video: Video) => {
+    setSelectedVideo(video);
+    setTimeout(() => {
+      selectedPlayerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 450);
+  }, []);
 
   const filteredVideos = activeCategory === "All" ? VIDEOS : VIDEOS.filter((v) => v.category === activeCategory);
   const featuredVideo = VIDEOS.find((v) => v.featured) || VIDEOS[0];
@@ -474,7 +482,7 @@ export default function LivePage() {
           {/* Selected video player */}
           <AnimatePresence mode="wait">
             {selectedVideo && (
-              <motion.div key={selectedVideo.id} initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.4, ease: "easeInOut" }} className="overflow-hidden mb-10">
+              <motion.div ref={selectedPlayerRef} key={selectedVideo.id} initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.4, ease: "easeInOut" }} className="overflow-hidden mb-10">
                 <div className="rounded-2xl bg-background-card border border-border overflow-hidden">
                   <div className="grid grid-cols-1 lg:grid-cols-3">
                     <div className="lg:col-span-2 relative">
@@ -486,6 +494,7 @@ export default function LivePage() {
                         adBreakAt={10}
                         adIntervalMinutes={10}
                         onAdImpression={handleAdImpression}
+                        autoPlay
                       />
                     </div>
 
@@ -519,7 +528,7 @@ export default function LivePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             <AnimatePresence mode="wait">
               {filteredVideos.map((video, i) => (
-                <motion.button key={video.id} onClick={() => setSelectedVideo(video)}
+                <motion.button key={video.id} onClick={() => handleSelectVideo(video)}
                   className={`group w-full text-left rounded-2xl overflow-hidden bg-background-card border transition-all duration-300 ${
                     selectedVideo?.id === video.id
                       ? "border-primary-500 shadow-[0_0_20px_rgba(47,49,146,0.15)]"
