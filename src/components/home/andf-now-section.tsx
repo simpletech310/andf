@@ -3,12 +3,24 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Play, ArrowRight, X } from "lucide-react";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+
+const MuxStreamPlayer = dynamic(() => import("@/components/live/MuxStreamPlayer"), {
+  ssr: false,
+  loading: () => (
+    <div className="aspect-video bg-neutral-100 rounded-2xl flex items-center justify-center">
+      <div className="h-8 w-8 border-3 border-primary-500/30 border-t-primary-500 rounded-full animate-spin" />
+    </div>
+  ),
+});
+
+const MUX_VIDEO_ID = "DvUNmWbAG0100yvsdMvVzTod00dPKsJrL00xu1lG5MmsKIA";
 
 const videos = [
   {
@@ -58,7 +70,7 @@ export function ANDFNowSection() {
         />
 
         <div ref={ref} className="mt-16">
-          {/* Inline player */}
+          {/* Inline Mux player */}
           <AnimatePresence>
             {activeVideo && (
               <motion.div
@@ -67,11 +79,15 @@ export function ANDFNowSection() {
                 exit={{ opacity: 0, height: 0 }}
                 className="mb-8 overflow-hidden"
               >
-                <div className="relative rounded-2xl bg-neutral-900 aspect-video flex items-center justify-center">
-                  <p className="text-white/60 text-lg">Video Player — Coming Soon with Mux</p>
+                <div className="relative rounded-2xl overflow-hidden bg-neutral-900">
+                  <MuxStreamPlayer
+                    playbackId={MUX_VIDEO_ID}
+                    videoUrl="/videos/andf-content.mp4"
+                    title={videos.find((v) => v.id === activeVideo)?.title || "ANDF Video"}
+                  />
                   <button
                     onClick={() => setActiveVideo(null)}
-                    className="absolute top-4 right-4 h-10 w-10 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+                    className="absolute top-4 right-4 h-10 w-10 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-colors z-30"
                   >
                     <X className="h-5 w-5" />
                   </button>
