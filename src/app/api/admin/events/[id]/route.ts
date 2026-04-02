@@ -42,9 +42,25 @@ export async function PATCH(
     const body = await req.json();
     const supabase = createAdminClient();
 
+    // Whitelist allowed fields to prevent errors from non-existent columns
+    const allowedFields = [
+      'title', 'description', 'short_description', 'event_type', 'status',
+      'program_id', 'start_date', 'end_date', 'location_name', 'location_address',
+      'location_lat', 'location_lng', 'cover_image_url', 'gallery_urls', 'video_url',
+      'max_capacity', 'ticket_price', 'stripe_price_id', 'registration_form_id',
+      'registration_deadline', 'is_featured', 'highlights', 'schedule',
+      'what_to_expect', 'checked_in_count',
+    ];
+    const updateData: Record<string, unknown> = {};
+    for (const key of allowedFields) {
+      if (key in body) {
+        updateData[key] = body[key];
+      }
+    }
+
     const { data: event, error } = await supabase
       .from("events")
-      .update(body)
+      .update(updateData)
       .eq("id", id)
       .select()
       .single();
