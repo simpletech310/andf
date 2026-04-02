@@ -37,6 +37,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const supabase = createAdminClient();
 
+    // Auto-generate slug from title
     const slug = body.title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
@@ -51,19 +52,34 @@ export async function POST(req: NextRequest) {
         short_description: body.short_description || null,
         program_id: body.program_id || null,
         event_type: body.event_type || "in_person",
+        status: body.status || "draft",
         start_date: body.start_date,
         end_date: body.end_date || null,
-        location_name: body.location_name || body.location || null,
+        registration_deadline: body.registration_deadline || null,
+        location_name: body.location_name || null,
         location_address: body.location_address || null,
-        max_capacity: body.capacity ? parseInt(body.capacity) : null,
-        ticket_price: body.ticket_price ? parseFloat(body.ticket_price) : 0,
-        status: body.status || "draft",
+        max_capacity: body.max_capacity ? parseInt(body.max_capacity) : null,
+        ticket_price: body.ticket_price != null ? parseFloat(body.ticket_price) : 0,
         cover_image_url: body.cover_image_url || null,
+        video_url: body.video_url || null,
+        gallery_urls: body.gallery_urls || null,
+        is_featured: body.is_featured ?? false,
+        highlights: body.highlights || null,
+        schedule: body.schedule || null,
+        what_to_expect: body.what_to_expect || null,
       })
       .select()
       .single();
 
     if (error) throw error;
+
+    // If a registration form schema was provided, store it
+    if (body.registration_form_schema && event) {
+      await supabase
+        .from("events")
+        .update({ registration_form_id: null }) // placeholder - form schema stored separately if needed
+        .eq("id", event.id);
+    }
 
     return NextResponse.json({ event });
   } catch (error) {

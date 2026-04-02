@@ -1,31 +1,90 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Sparkles, Loader2 } from "lucide-react";
+import {
+  ArrowLeft, Sparkles, Loader2, Plus, Trash2,
+  ImageIcon, Clock, MapPin, CalendarDays, DollarSign,
+  Users, Star, FileText, Video, ListChecks,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+interface Program {
+  id: string;
+  title: string;
+  slug: string;
+}
+
+interface ScheduleItem {
+  time: string;
+  title: string;
+  description: string;
+}
+
 export default function NewEventPage() {
   const router = useRouter();
-  const [formPrompt, setFormPrompt] = useState("");
-  const [generatingForm, setGeneratingForm] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [generatedFields, setGeneratedFields] = useState<Array<{ name: string; label: string; type: string; required: boolean }>>([]);
 
-  // Form state
+  // Programs dropdown
+  const [programs, setPrograms] = useState<Program[]>([]);
+  const [loadingPrograms, setLoadingPrograms] = useState(true);
+
+  // Section 1: Basic Info
   const [title, setTitle] = useState("");
+  const [shortDescription, setShortDescription] = useState("");
   const [description, setDescription] = useState("");
   const [programId, setProgramId] = useState("");
   const [eventType, setEventType] = useState("in_person");
+  const [isFeatured, setIsFeatured] = useState(false);
+
+  // Section 2: Date & Location
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [location, setLocation] = useState("");
-  const [capacity, setCapacity] = useState("");
-  const [price, setPrice] = useState("");
+  const [registrationDeadline, setRegistrationDeadline] = useState("");
+  const [locationName, setLocationName] = useState("");
+  const [locationAddress, setLocationAddress] = useState("");
+
+  // Section 3: Capacity & Pricing
+  const [maxCapacity, setMaxCapacity] = useState("");
+  const [ticketPrice, setTicketPrice] = useState("");
+
+  // Section 4: Media
+  const [coverImageUrl, setCoverImageUrl] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
+  const [galleryUrls, setGalleryUrls] = useState<string[]>([]);
+
+  // Section 5: What to Expect
+  const [whatToExpect, setWhatToExpect] = useState("");
+  const [highlights, setHighlights] = useState<string[]>([]);
+
+  // Section 6: Schedule
+  const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
+
+  // Section 7: AI Form Builder
+  const [formPrompt, setFormPrompt] = useState("");
+  const [generatingForm, setGeneratingForm] = useState(false);
+  const [generatedFields, setGeneratedFields] = useState<
+    Array<{ name: string; label: string; type: string; required: boolean }>
+  >([]);
+
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      try {
+        const res = await fetch("/api/admin/content/programs");
+        const data = await res.json();
+        setPrograms(data.programs || []);
+      } catch (err) {
+        console.error("Failed to fetch programs:", err);
+      } finally {
+        setLoadingPrograms(false);
+      }
+    };
+    fetchPrograms();
+  }, []);
 
   const handleGenerateForm = async () => {
     if (!formPrompt) return;
@@ -46,6 +105,39 @@ export default function NewEventPage() {
     setGeneratingForm(false);
   };
 
+  // Dynamic list helpers
+  const addGalleryUrl = () => setGalleryUrls([...galleryUrls, ""]);
+  const updateGalleryUrl = (index: number, value: string) => {
+    const updated = [...galleryUrls];
+    updated[index] = value;
+    setGalleryUrls(updated);
+  };
+  const removeGalleryUrl = (index: number) =>
+    setGalleryUrls(galleryUrls.filter((_, i) => i !== index));
+
+  const addHighlight = () => setHighlights([...highlights, ""]);
+  const updateHighlight = (index: number, value: string) => {
+    const updated = [...highlights];
+    updated[index] = value;
+    setHighlights(updated);
+  };
+  const removeHighlight = (index: number) =>
+    setHighlights(highlights.filter((_, i) => i !== index));
+
+  const addScheduleItem = () =>
+    setSchedule([...schedule, { time: "", title: "", description: "" }]);
+  const updateScheduleItem = (
+    index: number,
+    field: keyof ScheduleItem,
+    value: string
+  ) => {
+    const updated = [...schedule];
+    updated[index] = { ...updated[index], [field]: value };
+    setSchedule(updated);
+  };
+  const removeScheduleItem = (index: number) =>
+    setSchedule(schedule.filter((_, i) => i !== index));
+
   const handleSave = async (status: "draft" | "published") => {
     if (!title || !startDate) {
       alert("Title and Start Date are required.");
@@ -59,16 +151,38 @@ export default function NewEventPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title,
-          description,
+          short_description: shortDescription || null,
+          description: description || null,
           program_id: programId || null,
           event_type: eventType,
+          is_featured: isFeatured,
           start_date: new Date(startDate).toISOString(),
           end_date: endDate ? new Date(endDate).toISOString() : null,
-          location,
-          capacity: capacity || null,
-          price_cents: price ? parseFloat(price) : 0,
+          registration_deadline: registrationDeadline
+            ? new Date(registrationDeadline).toISOString()
+            : null,
+          location_name: locationName || null,
+          location_address: locationAddress || null,
+          max_capacity: maxCapacity ? parseInt(maxCapacity) : null,
+          ticket_price: ticketPrice ? parseFloat(ticketPrice) : 0,
+          cover_image_url: coverImageUrl || null,
+          video_url: videoUrl || null,
+          gallery_urls:
+            galleryUrls.filter((u) => u.trim()).length > 0
+              ? galleryUrls.filter((u) => u.trim())
+              : null,
+          what_to_expect: whatToExpect || null,
+          highlights:
+            highlights.filter((h) => h.trim()).length > 0
+              ? highlights.filter((h) => h.trim())
+              : null,
+          schedule:
+            schedule.filter((s) => s.time || s.title).length > 0
+              ? schedule.filter((s) => s.time || s.title)
+              : null,
           status,
-          registration_form_schema: generatedFields.length > 0 ? { fields: generatedFields } : null,
+          registration_form_schema:
+            generatedFields.length > 0 ? { fields: generatedFields } : null,
         }),
       });
 
@@ -83,41 +197,90 @@ export default function NewEventPage() {
     }
   };
 
+  const selectClasses =
+    "flex h-11 w-full rounded-lg bg-background-elevated border border-border px-4 text-foreground";
+
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
-        <Link href="/admin/events" className="inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-gold-500 transition-colors mb-4">
+        <Link
+          href="/admin/events"
+          className="inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-gold-500 transition-colors mb-4"
+        >
           <ArrowLeft className="h-4 w-4" /> Back to Events
         </Link>
-        <h1 className="text-3xl font-display font-bold text-foreground">Create New Event</h1>
+        <h1 className="text-3xl font-display font-bold text-foreground">
+          Create New Event
+        </h1>
       </div>
 
       <div className="space-y-6">
+        {/* Section 1: Basic Info */}
         <Card hover={false}>
-          <CardHeader><CardTitle>Event Details</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-gold-500" />
+              Basic Info
+            </CardTitle>
+          </CardHeader>
           <CardContent className="space-y-4">
-            <Input id="eventTitle" label="Event Title" placeholder="Summer Band Camp 2026" required value={title} onChange={(e) => setTitle(e.target.value)} />
-            <Textarea id="eventDesc" label="Description" placeholder="Describe your event..." value={description} onChange={(e) => setDescription(e.target.value)} />
+            <Input
+              id="eventTitle"
+              label="Event Title"
+              placeholder="Summer Band Camp 2026"
+              required
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-foreground-muted">
+                Short Description{" "}
+                <span className="text-foreground-subtle">
+                  ({shortDescription.length}/200)
+                </span>
+              </label>
+              <Textarea
+                id="shortDesc"
+                placeholder="Brief description for event listings..."
+                value={shortDescription}
+                onChange={(e) =>
+                  setShortDescription(e.target.value.slice(0, 200))
+                }
+              />
+            </div>
+            <Textarea
+              id="fullDesc"
+              label="Full Description"
+              placeholder="Detailed description for the event detail page..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground-muted">Program</label>
+                <label className="text-sm font-medium text-foreground-muted">
+                  Program
+                </label>
                 <select
-                  className="flex h-11 w-full rounded-lg bg-background-elevated border border-border px-4 text-foreground"
+                  className={selectClasses}
                   value={programId}
                   onChange={(e) => setProgramId(e.target.value)}
                 >
-                  <option value="">Select program</option>
-                  <option value="band-camp">Band Camp</option>
-                  <option value="drone-experience">Drone Experience</option>
-                  <option value="topgolf">TopGolf</option>
-                  <option value="mentorship">Mentorship</option>
-                  <option value="hbcu-heroes">HBCU Heroes</option>
+                  <option value="">
+                    {loadingPrograms ? "Loading..." : "Select program"}
+                  </option>
+                  {programs.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.title}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground-muted">Event Type</label>
+                <label className="text-sm font-medium text-foreground-muted">
+                  Event Type
+                </label>
                 <select
-                  className="flex h-11 w-full rounded-lg bg-background-elevated border border-border px-4 text-foreground"
+                  className={selectClasses}
                   value={eventType}
                   onChange={(e) => setEventType(e.target.value)}
                 >
@@ -127,19 +290,290 @@ export default function NewEventPage() {
                 </select>
               </div>
             </div>
+            <label className="flex items-center gap-3 cursor-pointer">
+              <div
+                className={`relative w-11 h-6 rounded-full transition-colors ${
+                  isFeatured ? "bg-gold-500" : "bg-background-elevated border border-border"
+                }`}
+                onClick={() => setIsFeatured(!isFeatured)}
+              >
+                <div
+                  className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform ${
+                    isFeatured ? "translate-x-5" : ""
+                  }`}
+                />
+              </div>
+              <span className="text-sm font-medium text-foreground-muted flex items-center gap-1.5">
+                <Star className="h-4 w-4" />
+                Featured Event
+              </span>
+            </label>
+          </CardContent>
+        </Card>
+
+        {/* Section 2: Date & Location */}
+        <Card hover={false}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CalendarDays className="h-5 w-5 text-gold-500" />
+              Date & Location
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Input id="startDate" label="Start Date" type="datetime-local" required value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-              <Input id="endDate" label="End Date" type="datetime-local" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+              <Input
+                id="startDate"
+                label="Start Date"
+                type="datetime-local"
+                required
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+              <Input
+                id="endDate"
+                label="End Date"
+                type="datetime-local"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
             </div>
-            <Input id="location" label="Location" placeholder="Event venue or 'Virtual'" value={location} onChange={(e) => setLocation(e.target.value)} />
+            <Input
+              id="regDeadline"
+              label="Registration Deadline"
+              type="datetime-local"
+              value={registrationDeadline}
+              onChange={(e) => setRegistrationDeadline(e.target.value)}
+            />
+            {eventType === "virtual" && (
+              <p className="text-sm text-foreground-subtle italic">
+                Location fields are optional for virtual events.
+              </p>
+            )}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Input id="capacity" label="Max Capacity" type="number" placeholder="100" value={capacity} onChange={(e) => setCapacity(e.target.value)} />
-              <Input id="price" label="Ticket Price ($)" type="number" step="0.01" placeholder="0.00 for free" value={price} onChange={(e) => setPrice(e.target.value)} />
+              <Input
+                id="locationName"
+                label="Location Name"
+                placeholder='e.g. "TopGolf Atlanta"'
+                value={locationName}
+                onChange={(e) => setLocationName(e.target.value)}
+              />
+              <Input
+                id="locationAddress"
+                label="Location Address"
+                placeholder='e.g. "1234 Main St, Atlanta, GA"'
+                value={locationAddress}
+                onChange={(e) => setLocationAddress(e.target.value)}
+              />
             </div>
           </CardContent>
         </Card>
 
-        {/* AI Form Builder */}
+        {/* Section 3: Capacity & Pricing */}
+        <Card hover={false}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <DollarSign className="h-5 w-5 text-gold-500" />
+              Capacity & Pricing
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                id="maxCapacity"
+                label="Max Capacity"
+                type="number"
+                placeholder="100"
+                value={maxCapacity}
+                onChange={(e) => setMaxCapacity(e.target.value)}
+              />
+              <Input
+                id="ticketPrice"
+                label="Ticket Price ($)"
+                type="number"
+                step="0.01"
+                placeholder="0.00 for free events"
+                value={ticketPrice}
+                onChange={(e) => setTicketPrice(e.target.value)}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Section 4: Event Media */}
+        <Card hover={false}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ImageIcon className="h-5 w-5 text-gold-500" />
+              Event Media
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Input
+              id="coverImage"
+              label="Cover Image URL"
+              placeholder="https://example.com/image.jpg"
+              value={coverImageUrl}
+              onChange={(e) => setCoverImageUrl(e.target.value)}
+            />
+            <Input
+              id="videoUrl"
+              label="Video URL (optional)"
+              placeholder="https://youtube.com/watch?v=... or Mux playback URL"
+              value={videoUrl}
+              onChange={(e) => setVideoUrl(e.target.value)}
+            />
+            <div className="space-y-3">
+              <label className="text-sm font-medium text-foreground-muted">
+                Gallery Image URLs
+              </label>
+              {galleryUrls.map((url, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <Input
+                    id={`gallery-${i}`}
+                    placeholder="https://example.com/gallery-image.jpg"
+                    value={url}
+                    onChange={(e) => updateGalleryUrl(i, e.target.value)}
+                    className="flex-1"
+                  />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => removeGalleryUrl(i)}
+                    className="text-red-400 hover:text-red-300 shrink-0"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={addGalleryUrl}
+              >
+                <Plus className="h-4 w-4" />
+                Add Gallery Image
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Section 5: What to Expect */}
+        <Card hover={false}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ListChecks className="h-5 w-5 text-gold-500" />
+              What to Expect
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Textarea
+              id="whatToExpect"
+              label="What to Expect"
+              placeholder="Describe what attendees should expect at this event..."
+              value={whatToExpect}
+              onChange={(e) => setWhatToExpect(e.target.value)}
+            />
+            <div className="space-y-3">
+              <label className="text-sm font-medium text-foreground-muted">
+                Highlights
+              </label>
+              {highlights.map((h, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <Input
+                    id={`highlight-${i}`}
+                    placeholder='e.g. "Professional instrument training"'
+                    value={h}
+                    onChange={(e) => updateHighlight(i, e.target.value)}
+                    className="flex-1"
+                  />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => removeHighlight(i)}
+                    className="text-red-400 hover:text-red-300 shrink-0"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={addHighlight}
+              >
+                <Plus className="h-4 w-4" />
+                Add Highlight
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Section 6: Event Schedule */}
+        <Card hover={false}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Clock className="h-5 w-5 text-gold-500" />
+              Event Schedule
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {schedule.map((item, i) => (
+              <div
+                key={i}
+                className="p-4 rounded-lg bg-background-elevated border border-border space-y-3"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-semibold text-foreground-muted">
+                    Item {i + 1}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => removeScheduleItem(i)}
+                    className="text-red-400 hover:text-red-300"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <Input
+                    id={`sched-time-${i}`}
+                    placeholder='e.g. "9:00 AM"'
+                    label="Time"
+                    value={item.time}
+                    onChange={(e) =>
+                      updateScheduleItem(i, "time", e.target.value)
+                    }
+                  />
+                  <Input
+                    id={`sched-title-${i}`}
+                    placeholder='e.g. "Registration & Welcome"'
+                    label="Title"
+                    value={item.title}
+                    onChange={(e) =>
+                      updateScheduleItem(i, "title", e.target.value)
+                    }
+                  />
+                  <Input
+                    id={`sched-desc-${i}`}
+                    placeholder='e.g. "Check in, get your name badge"'
+                    label="Description"
+                    value={item.description}
+                    onChange={(e) =>
+                      updateScheduleItem(i, "description", e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+            ))}
+            <Button variant="secondary" size="sm" onClick={addScheduleItem}>
+              <Plus className="h-4 w-4" />
+              Add Schedule Item
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Section 7: AI Form Builder */}
         <Card hover={false}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -149,7 +583,8 @@ export default function NewEventPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-foreground-muted">
-              Describe what information you need from registrants and AI will generate a custom form.
+              Describe what information you need from registrants and AI will
+              generate a custom form.
             </p>
             <Textarea
               id="formPrompt"
@@ -157,22 +592,47 @@ export default function NewEventPage() {
               value={formPrompt}
               onChange={(e) => setFormPrompt(e.target.value)}
             />
-            <Button variant="primary" onClick={handleGenerateForm} disabled={generatingForm || !formPrompt}>
-              {generatingForm ? <><Loader2 className="h-4 w-4 animate-spin" /> Generating...</> : <><Sparkles className="h-4 w-4" /> Generate Form</>}
+            <Button
+              variant="primary"
+              onClick={handleGenerateForm}
+              disabled={generatingForm || !formPrompt}
+            >
+              {generatingForm ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" /> Generating...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-4 w-4" /> Generate Form
+                </>
+              )}
             </Button>
 
             {generatedFields.length > 0 && (
               <div className="mt-6 space-y-3">
-                <h4 className="text-sm font-semibold text-foreground">Generated Fields:</h4>
+                <h4 className="text-sm font-semibold text-foreground">
+                  Generated Fields:
+                </h4>
                 <div className="space-y-2">
                   {generatedFields.map((field, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-background-elevated border border-border">
+                    <div
+                      key={i}
+                      className="flex items-center justify-between p-3 rounded-lg bg-background-elevated border border-border"
+                    >
                       <div>
-                        <span className="text-sm font-medium text-foreground">{field.label}</span>
-                        <span className="text-xs text-foreground-subtle ml-2">({field.type})</span>
+                        <span className="text-sm font-medium text-foreground">
+                          {field.label}
+                        </span>
+                        <span className="text-xs text-foreground-subtle ml-2">
+                          ({field.type})
+                        </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        {field.required && <span className="text-xs text-gold-500">Required</span>}
+                        {field.required && (
+                          <span className="text-xs text-gold-500">
+                            Required
+                          </span>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -182,12 +642,21 @@ export default function NewEventPage() {
           </CardContent>
         </Card>
 
+        {/* Save Buttons */}
         <div className="flex justify-end gap-4">
-          <Button variant="secondary" onClick={() => handleSave("draft")} disabled={saving}>
+          <Button
+            variant="secondary"
+            onClick={() => handleSave("draft")}
+            disabled={saving}
+          >
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
             Save as Draft
           </Button>
-          <Button variant="primary" onClick={() => handleSave("published")} disabled={saving}>
+          <Button
+            variant="primary"
+            onClick={() => handleSave("published")}
+            disabled={saving}
+          >
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
             Publish Event
           </Button>
