@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import {
-  Radio, Heart, MessageSquare, Users, Send, Play, Clock, Eye, X,
+  Heart, Users, Play, Clock, Eye, X,
   Calendar, ChevronRight, Tv, Sparkles, Film, Star, Zap, Bell,
   Share2, Megaphone, ArrowRight, Monitor,
 } from "lucide-react";
@@ -67,11 +67,6 @@ const VIDEOS: Video[] = [
   { id: "12", title: "Day in the Life: ANDF Staff", description: "Follow our passionate team through a typical day of changing lives — from program planning to community outreach.", category: "Behind the Scenes", duration: "15:30", date: "Mar 10, 2025", views: 678, image: "/images/gallery/siedah-garrett-dawnn.jpg" },
 ];
 
-const upcomingStreams = [
-  { title: "Band Camp Fall Showcase", date: "Oct 15, 2025", time: "6:00 PM PST" },
-  { title: "HBCU Heroes: College Fair", date: "Nov 2, 2025", time: "10:00 AM PST" },
-  { title: "Giving Tuesday Live", date: "Dec 3, 2025", time: "12:00 PM PST" },
-];
 
 interface ActiveAd {
   id: string;
@@ -198,7 +193,7 @@ function FadeIn({ children, className, delay = 0 }: { children: React.ReactNode;
 /* ───── page ───── */
 
 export default function LivePage() {
-  const [activeChannel, setActiveChannel] = useState<"channel_1" | "channel_2">("channel_1");
+  const activeChannel = "channel_1";
   const [isLive] = useState(false);
   const [donationAmount, setDonationAmount] = useState("");
   const [showDonationModal, setShowDonationModal] = useState(false);
@@ -278,7 +273,7 @@ export default function LivePage() {
             { icon: Film, num: "12+", label: "Videos" },
             { icon: Eye, num: "15K+", label: "Total Views" },
             { icon: Clock, num: "50+", label: "Hours of Content" },
-            { icon: Monitor, num: "2", label: "Live Channels" },
+            { icon: Monitor, num: "1", label: "Live Channel" },
           ].map((s) => (
             <div key={s.label} className="flex items-center gap-3 text-white">
               <s.icon className="h-5 w-5 text-secondary-300" />
@@ -305,26 +300,9 @@ export default function LivePage() {
                     {isLive ? "Live Now" : "Offline"}
                   </span>
                 </div>
-                <h2 className="font-display text-2xl font-bold text-foreground">Live Channels</h2>
+                <h2 className="font-display text-2xl font-bold text-foreground">Live Stream</h2>
               </div>
 
-              {/* Channel tabs */}
-              <div className="flex bg-neutral-100 rounded-xl p-1 gap-1">
-                {(["channel_1", "channel_2"] as const).map((ch) => (
-                  <button
-                    key={ch}
-                    onClick={() => setActiveChannel(ch)}
-                    className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                      activeChannel === ch
-                        ? "bg-white text-primary-600 shadow-sm"
-                        : "text-neutral-500 hover:text-neutral-700"
-                    }`}
-                  >
-                    <Radio className="h-3.5 w-3.5" />
-                    {ch === "channel_1" ? "Channel 1" : "Channel 2"}
-                  </button>
-                ))}
-              </div>
             </div>
           </FadeIn>
 
@@ -334,10 +312,10 @@ export default function LivePage() {
               <div className="relative rounded-2xl overflow-hidden border border-border bg-neutral-900">
                 {/* Mux player — demo content with ad insertion at 10s */}
                 <MuxStreamPlayer
-                  playbackId={isLive ? (activeChannel === "channel_1" ? "LIVE_PLAYBACK_ID_1" : "LIVE_PLAYBACK_ID_2") : DEMO_CONTENT_MUX}
+                  playbackId={isLive ? "LIVE_PLAYBACK_ID_1" : DEMO_CONTENT_MUX}
                   videoUrl={!isLive ? DEMO_CONTENT_URL : undefined}
                   isLive={isLive}
-                  title={`ANDF Now! ${activeChannel === "channel_1" ? "Channel 1" : "Channel 2"}`}
+                  title="ANDF Now!"
                   channel={activeChannel}
                   ads={activeAds}
                   adBreakAt={10}
@@ -362,7 +340,7 @@ export default function LivePage() {
               <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <h3 className="font-display text-xl font-bold text-foreground">
-                    A New Day Now! — {activeChannel === "channel_1" ? "Channel 1" : "Channel 2"}
+                    A New Day Now!
                   </h3>
                   <p className="text-sm text-foreground-muted mt-1">
                     Watch live events, programs, and special ANDF broadcasts
@@ -430,50 +408,6 @@ export default function LivePage() {
                 </span>
               </Link>
 
-              {/* Upcoming streams */}
-              <div className="rounded-2xl bg-background-card border border-border p-5 space-y-4">
-                <h3 className="font-semibold text-foreground flex items-center gap-2">
-                  <Calendar className="h-5 w-5 text-primary-500" /> Upcoming Streams
-                </h3>
-                <div className="space-y-3">
-                  {upcomingStreams.map((stream, i) => (
-                    <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-background-elevated border border-border hover:border-primary-300 transition-colors">
-                      <div className="h-10 w-10 rounded-lg bg-primary-500/10 flex items-center justify-center shrink-0">
-                        <Play className="h-4 w-4 text-primary-500" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium text-foreground truncate">{stream.title}</p>
-                        <p className="text-xs text-foreground-muted mt-0.5">{stream.date} · {stream.time}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Chat */}
-              <div className="rounded-2xl bg-background-card border border-border overflow-hidden flex flex-col h-[280px]">
-                <div className="p-4 border-b border-border flex items-center justify-between">
-                  <h3 className="font-semibold text-foreground flex items-center gap-2">
-                    <MessageSquare className="h-5 w-5 text-primary-500" /> Live Chat
-                  </h3>
-                  <span className={`text-xs uppercase tracking-wider ${isLive ? "text-green-500" : "text-foreground-subtle"}`}>
-                    {isLive ? "Active" : "Offline"}
-                  </span>
-                </div>
-                <div className="flex-1 p-4 overflow-y-auto flex items-center justify-center">
-                  <p className="text-sm text-foreground-subtle text-center">
-                    {isLive ? "No messages yet. Say hello!" : "Chat activates during live streams"}
-                  </p>
-                </div>
-                <div className="p-3 border-t border-border">
-                  <div className="flex gap-2">
-                    <Input placeholder="Type a message..." className="flex-1" disabled={!isLive} />
-                    <Button variant="primary" size="icon" disabled={!isLive}>
-                      <Send className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
             </FadeIn>
           </div>
         </div>
