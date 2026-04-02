@@ -65,6 +65,12 @@ interface Program {
   color: string | null;
 }
 
+interface ScheduleItem {
+  time: string;
+  title: string;
+  description?: string;
+}
+
 interface DBEvent {
   id: string;
   slug: string | null;
@@ -82,7 +88,12 @@ interface DBEvent {
   current_registrations: number;
   ticket_price: number | null;
   cover_image_url: string | null;
+  gallery_urls: string[] | null;
+  video_url: string | null;
   is_featured: boolean;
+  highlights: string[] | null;
+  schedule: ScheduleItem[] | null;
+  what_to_expect: string | null;
   programs: Program | null;
 }
 
@@ -323,10 +334,20 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
   const percentFull = capacity > 0 ? (registered / capacity) * 100 : 0;
   const isUpcoming = event.status !== "completed";
 
-  // Use cover image as gallery if we only have one image
-  const gallery = heroImage !== defaultImage
-    ? [{ src: heroImage, alt: event.title }]
-    : [];
+  // Build gallery from gallery_urls + cover image
+  const galleryImages: { src: string; alt: string }[] = [];
+  if (event.gallery_urls && event.gallery_urls.length > 0) {
+    event.gallery_urls.forEach((url, i) => {
+      if (url) galleryImages.push({ src: url, alt: `${event.title} - Photo ${i + 1}` });
+    });
+  }
+  if (galleryImages.length === 0 && heroImage !== defaultImage) {
+    galleryImages.push({ src: heroImage, alt: event.title });
+  }
+
+  const eventHighlights = event.highlights?.filter((h) => h.trim()) || [];
+  const eventSchedule = event.schedule?.filter((s) => s.time || s.title) || [];
+  const whatToExpect = event.what_to_expect || "";
 
   return (
     <div className="pb-0">
@@ -403,8 +424,8 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
         <div className="mx-auto max-w-5xl grid grid-cols-1 lg:grid-cols-3 gap-10">
           {/* Left -- main content */}
           <div className="lg:col-span-2 space-y-16">
-            {/* About the event */}
-            {fullDescription && (
+            {/* What to Expect */}
+            {(whatToExpect || fullDescription) && (
               <SectionWrapper>
                 <div className="space-y-5">
                   <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-500">
@@ -413,9 +434,78 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
                   <h2 className="text-3xl font-display font-bold text-foreground">
                     What to Expect
                   </h2>
-                  {fullDescription.split("\n\n").map((p, i) => (
+                  {(whatToExpect || fullDescription).split("\n\n").map((p, i) => (
                     <p key={i} className="text-foreground-muted leading-relaxed text-lg">{p}</p>
                   ))}
+                </div>
+              </SectionWrapper>
+            )}
+
+            {/* Highlights */}
+            {eventHighlights.length > 0 && (
+              <SectionWrapper>
+                <div className="space-y-5">
+                  <h2 className="text-2xl font-display font-bold text-foreground">
+                    Event Highlights
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {eventHighlights.map((highlight, i) => (
+                      <motion.div
+                        key={i}
+                        className="flex items-start gap-3 p-4 rounded-xl bg-secondary-50 border border-secondary-100"
+                        initial={{ opacity: 0, x: -10 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.06 }}
+                      >
+                        <CheckCircle2 className="h-5 w-5 text-secondary-500 shrink-0 mt-0.5" />
+                        <span className="text-foreground-muted">{highlight}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </SectionWrapper>
+            )}
+
+            {/* Schedule */}
+            {eventSchedule.length > 0 && (
+              <SectionWrapper>
+                <div className="space-y-5">
+                  <h2 className="text-2xl font-display font-bold text-foreground">
+                    Event Schedule
+                  </h2>
+                  <div className="relative space-y-0">
+                    {/* Timeline line */}
+                    <div className="absolute left-[23px] top-3 bottom-3 w-px bg-primary-200" />
+
+                    {eventSchedule.map((item, i) => (
+                      <motion.div
+                        key={i}
+                        className="relative flex gap-4 py-4"
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.08 }}
+                      >
+                        {/* Timeline dot */}
+                        <div className="relative z-10 h-[14px] w-[14px] mt-1.5 rounded-full bg-primary-500 border-[3px] border-primary-100 shrink-0 ml-[17px]" />
+
+                        <div className="flex-1 -mt-0.5">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+                            <span className="text-sm font-bold text-primary-600 bg-primary-50 px-2.5 py-0.5 rounded-full w-fit">
+                              {item.time}
+                            </span>
+                            <h4 className="font-semibold text-foreground">{item.title}</h4>
+                          </div>
+                          {item.description && (
+                            <p className="text-sm text-foreground-muted mt-1 ml-0 sm:ml-0">
+                              {item.description}
+                            </p>
+                          )}
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
               </SectionWrapper>
             )}
@@ -455,18 +545,19 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
             </SectionWrapper>
 
             {/* Gallery -- only if we have a cover image */}
-            {gallery.length > 0 && (
+            {galleryImages.length > 0 && (
               <SectionWrapper>
                 <div className="space-y-6">
                   <h2 className="text-2xl font-display font-bold text-foreground">
                     Event Gallery
                   </h2>
                   <div className="grid grid-cols-2 gap-3">
-                    {gallery.map((photo, i) => (
+                    {galleryImages.map((photo, i) => (
                       <motion.div
                         key={photo.src}
                         className={`relative overflow-hidden rounded-xl cursor-pointer group ${
-                          i === 0 ? "col-span-2 aspect-[2/1]" : "aspect-[4/3]"
+                          galleryImages.length === 1 ? "col-span-2 aspect-[2/1]" :
+                          i === 0 && galleryImages.length >= 3 ? "col-span-2 aspect-[2/1]" : "aspect-[4/3]"
                         }`}
                         initial={{ opacity: 0, y: 15 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -713,13 +804,13 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
 
       {/* Lightbox */}
       <AnimatePresence>
-        {lightboxIndex !== null && gallery.length > 0 && (
+        {lightboxIndex !== null && galleryImages.length > 0 && (
           <Lightbox
-            images={gallery}
+            images={galleryImages}
             currentIndex={lightboxIndex}
             onClose={() => setLightboxIndex(null)}
-            onPrev={() => setLightboxIndex((p) => (p !== null ? (p - 1 + gallery.length) % gallery.length : 0))}
-            onNext={() => setLightboxIndex((p) => (p !== null ? (p + 1) % gallery.length : 0))}
+            onPrev={() => setLightboxIndex((p) => (p !== null ? (p - 1 + galleryImages.length) % galleryImages.length : 0))}
+            onNext={() => setLightboxIndex((p) => (p !== null ? (p + 1) % galleryImages.length : 0))}
           />
         )}
       </AnimatePresence>
