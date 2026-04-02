@@ -198,6 +198,7 @@ export default function LivePage() {
   const [donationSuccess, setDonationSuccess] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+  const [fullscreenVideo, setFullscreenVideo] = useState<Video | null>(null);
   const [activeAds, setActiveAds] = useState<ActiveAd[]>([DEMO_AD]);
 
   // Fetch active ads on mount (merge with demo ad)
@@ -400,7 +401,7 @@ export default function LivePage() {
                   <Image src={featuredVideo.image} alt={featuredVideo.title} fill className="object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/20 hidden lg:block" />
                   <div className="absolute inset-0 bg-gradient-to-t from-white to-transparent lg:hidden" />
-                  <button onClick={() => setSelectedVideo(featuredVideo)} className="absolute inset-0 flex items-center justify-center group/play">
+                  <button onClick={() => setFullscreenVideo(featuredVideo)} className="absolute inset-0 flex items-center justify-center group/play">
                     <motion.div className="h-20 w-20 rounded-full bg-secondary-500/90 flex items-center justify-center shadow-2xl shadow-secondary-500/30 group-hover/play:bg-secondary-500 transition-colors" whileHover={{ scale: 1.1 }}>
                       <Play className="h-8 w-8 text-white ml-1" />
                     </motion.div>
@@ -423,7 +424,7 @@ export default function LivePage() {
                     <span className="flex items-center gap-1.5"><Eye className="h-4 w-4" />{featuredVideo.views.toLocaleString()} views</span>
                   </div>
                   <div className="flex items-center gap-3 pt-2">
-                    <button onClick={() => setSelectedVideo(featuredVideo)} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-primary-500 text-white font-semibold hover:bg-primary-600 transition-colors">
+                    <button onClick={() => setFullscreenVideo(featuredVideo)} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-primary-500 text-white font-semibold hover:bg-primary-600 transition-colors">
                       <Play className="h-4 w-4" /> Watch Now
                     </button>
                     {featuredVideo.program && (
@@ -665,6 +666,43 @@ export default function LivePage() {
           </FadeIn>
         </div>
       </section>
+
+      {/* ── Fullscreen Video Modal ── */}
+      <AnimatePresence>
+        {fullscreenVideo && (
+          <motion.div
+            className="fixed inset-0 z-[100] bg-black flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <button
+              onClick={() => setFullscreenVideo(null)}
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 h-12 w-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors z-50"
+              aria-label="Close video"
+            >
+              <X className="h-6 w-6" />
+            </button>
+
+            <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-50">
+              <p className="text-white/90 text-sm sm:text-base font-semibold">{fullscreenVideo.title}</p>
+              <p className="text-white/50 text-xs mt-0.5">{fullscreenVideo.category} · {fullscreenVideo.duration}</p>
+            </div>
+
+            <div className="w-full h-full flex items-center justify-center p-4 sm:p-8">
+              <div className="w-full max-w-7xl aspect-video rounded-2xl overflow-hidden">
+                <MuxStreamPlayer
+                  playbackId={fullscreenVideo.muxPlaybackId || MUX_VIDEO_ID}
+                  videoUrl="/videos/andf-content.mp4"
+                  title={fullscreenVideo.title}
+                  autoPlay
+                />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Donation Modal ── */}
       <AnimatePresence>
