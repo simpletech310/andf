@@ -1,166 +1,162 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar, MapPin, Clock, ArrowRight, Filter, Heart,
   Sparkles, Users, Music, Cpu, Target, MessageCircle, GraduationCap,
-  Ticket, ChevronRight
+  Ticket, ChevronRight, Loader2
 } from "lucide-react";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { StaggerChildren, StaggerItem } from "@/components/shared/section-wrapper";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase/client";
 
-/* ─── Data ─────────────────────────────────────────────────────────── */
+/* ─── Icon & Color Mappings (by program slug) ────────────────────── */
 
-const events = [
-  {
-    id: "1",
-    title: "Summer Band Camp 2026",
-    date: "June 15-20, 2026",
-    time: "9:00 AM - 5:00 PM",
-    location: "Los Angeles, CA",
-    type: "In Person",
-    program: "Band Camp",
-    status: "upcoming",
-    price: "Free",
-    description: "A week-long immersive music experience featuring professional musicians, ensemble workshops, and a closing night concert.",
-    image: "/images/programs/engaged-students.jpg",
-    icon: Music,
-    color: "from-violet-500 to-purple-600",
-    spots: 33,
-    featured: true,
-  },
-  {
-    id: "2",
-    title: "Drone Pilot Workshop",
-    date: "July 8, 2026",
-    time: "10:00 AM - 3:00 PM",
-    location: "Innovation Hub, LA",
-    type: "In Person",
-    program: "Drone Experience",
-    status: "upcoming",
-    price: "$25",
-    description: "Learn to fly drones, capture aerial photography, and explore career paths in aviation and technology.",
-    image: "/images/programs/drone-teach.jpg",
-    icon: Cpu,
-    color: "from-cyan-500 to-blue-600",
-    spots: 15,
-    featured: false,
-  },
-  {
-    id: "3",
-    title: "HBCU Heroes Virtual Summit",
-    date: "August 12, 2026",
-    time: "12:00 PM - 4:00 PM",
-    location: "Virtual Event",
-    type: "Virtual",
-    program: "HBCU Heroes",
-    status: "upcoming",
-    price: "Free",
-    description: "An inspiring virtual event celebrating HBCU excellence with keynote speakers, alumni panels, and networking opportunities.",
-    image: "/images/gallery/omega-psi-phi.jpg",
-    icon: GraduationCap,
-    color: "from-primary-500 to-primary-700",
-    spots: 200,
-    featured: false,
-  },
-  {
-    id: "4",
-    title: "TopGolf Networking Night",
-    date: "July 22, 2026",
-    time: "5:00 PM - 9:00 PM",
-    location: "TopGolf, Los Angeles",
-    type: "In Person",
-    program: "TopGolf",
-    status: "upcoming",
-    price: "$15",
-    description: "An evening of golf, networking, and mentorship with industry professionals in an exciting, relaxed setting.",
-    image: "/images/gallery/leadership-group.jpg",
-    icon: Target,
-    color: "from-emerald-500 to-green-600",
-    spots: 40,
-    featured: false,
-  },
-  {
-    id: "5",
-    title: "Mentor Matching Day",
-    date: "September 5, 2026",
-    time: "10:00 AM - 2:00 PM",
-    location: "ANDF Headquarters, LA",
-    type: "In Person",
-    program: "Mentorship",
-    status: "upcoming",
-    price: "Free",
-    description: "Meet your potential mentor, set goals, and begin your mentorship journey with experienced professionals.",
-    image: "/images/programs/mentorship-session.jpg",
-    icon: Users,
-    color: "from-amber-500 to-orange-600",
-    spots: 25,
-    featured: false,
-  },
-  {
-    id: "6",
-    title: "Spring Band Camp 2026",
-    date: "March 10-14, 2026",
-    time: "9:00 AM - 5:00 PM",
-    location: "Los Angeles, CA",
-    type: "In Person",
-    program: "Band Camp",
-    status: "past",
-    price: "Free",
-    description: "Our spring session of Band Camp featuring new instruments and guest performers.",
-    image: "/images/gallery/opening-panel.jpg",
-    icon: Music,
-    color: "from-violet-500 to-purple-600",
-    spots: 0,
-    featured: false,
-  },
-  {
-    id: "7",
-    title: "Sisters Hangout Kickoff",
-    date: "October 1, 2026",
-    time: "11:00 AM - 3:00 PM",
-    location: "Community Center, LA",
-    type: "In Person",
-    program: "Sisters Hangout",
-    status: "upcoming",
-    price: "Free",
-    description: "A day of bonding, workshops, and empowerment for young women — launching our new sisterhood season.",
-    image: "/images/gallery/dawnn-zeta-sorors.jpg",
-    icon: Heart,
-    color: "from-pink-500 to-rose-600",
-    spots: 50,
-    featured: false,
-  },
-  {
-    id: "8",
-    title: "MenTORS Real Talk Series",
-    date: "August 28, 2026",
-    time: "6:00 PM - 8:30 PM",
-    location: "ANDF Headquarters, LA",
-    type: "In Person",
-    program: "MenTORS",
-    status: "upcoming",
-    price: "Free",
-    description: "An honest, open conversation about career challenges, personal growth, and building meaningful connections.",
-    image: "/images/gallery/dawnn-steve-wesson.jpg",
-    icon: MessageCircle,
-    color: "from-red-500 to-rose-600",
-    spots: 30,
-    featured: false,
-  },
-];
+const programIconMap: Record<string, React.ElementType> = {
+  "band-camp": Music,
+  "drone-experience": Cpu,
+  "topgolf": Target,
+  "hbcu-heroes": GraduationCap,
+  "mentorship": Users,
+  "mentors": MessageCircle,
+  "sisters-hangout": Heart,
+};
 
-const filters = ["All", "Band Camp", "Drone Experience", "TopGolf", "Mentorship", "HBCU Heroes", "Sisters Hangout", "MenTORS"];
+const programColorMap: Record<string, string> = {
+  "band-camp": "from-violet-500 to-purple-600",
+  "drone-experience": "from-cyan-500 to-blue-600",
+  "topgolf": "from-emerald-500 to-green-600",
+  "hbcu-heroes": "from-primary-500 to-primary-700",
+  "mentorship": "from-amber-500 to-orange-600",
+  "mentors": "from-red-500 to-rose-600",
+  "sisters-hangout": "from-pink-500 to-rose-600",
+};
+
+const defaultIcon = Calendar;
+const defaultColor = "from-primary-500 to-primary-600";
+const defaultImage = "/images/gallery/fnf-group-lineup.jpg";
+
+/* ─── Types ───────────────────────────────────────────────────────── */
+
+interface Program {
+  title: string;
+  slug: string;
+  icon: string | null;
+  color: string | null;
+}
+
+interface DBEvent {
+  id: string;
+  title: string;
+  description: string | null;
+  short_description: string | null;
+  event_type: "in_person" | "virtual" | "hybrid";
+  status: "draft" | "published" | "cancelled" | "completed";
+  start_date: string;
+  end_date: string | null;
+  location_name: string | null;
+  max_capacity: number | null;
+  current_registrations: number;
+  ticket_price: number | null;
+  cover_image_url: string | null;
+  is_featured: boolean;
+  programs: Program | null;
+}
+
+interface MappedEvent {
+  id: string;
+  title: string;
+  date: string;
+  time: string;
+  location: string;
+  type: string;
+  program: string;
+  programSlug: string;
+  status: "upcoming" | "past";
+  price: string;
+  description: string;
+  image: string;
+  icon: React.ElementType;
+  color: string;
+  spots: number;
+  featured: boolean;
+}
+
+/* ─── Helpers ─────────────────────────────────────────────────────── */
+
+function formatEventDate(startDate: string, endDate: string | null): string {
+  const start = new Date(startDate);
+  const opts: Intl.DateTimeFormatOptions = { month: "long", day: "numeric", year: "numeric" };
+
+  if (endDate) {
+    const end = new Date(endDate);
+    // Same month & year → "June 15-20, 2026"
+    if (start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear()) {
+      return `${start.toLocaleDateString("en-US", { month: "long" })} ${start.getDate()}-${end.getDate()}, ${start.getFullYear()}`;
+    }
+    return `${start.toLocaleDateString("en-US", opts)} - ${end.toLocaleDateString("en-US", opts)}`;
+  }
+  return start.toLocaleDateString("en-US", opts);
+}
+
+function formatEventTime(startDate: string, endDate: string | null): string {
+  const timeOpts: Intl.DateTimeFormatOptions = { hour: "numeric", minute: "2-digit", hour12: true };
+  const start = new Date(startDate);
+  const startTime = start.toLocaleTimeString("en-US", timeOpts);
+
+  if (endDate) {
+    const end = new Date(endDate);
+    const endTime = end.toLocaleTimeString("en-US", timeOpts);
+    return `${startTime} - ${endTime}`;
+  }
+  return startTime;
+}
+
+function formatEventType(type: string): string {
+  switch (type) {
+    case "in_person": return "In Person";
+    case "virtual": return "Virtual";
+    case "hybrid": return "Hybrid";
+    default: return type;
+  }
+}
+
+function mapDBEvent(e: DBEvent): MappedEvent {
+  const programSlug = e.programs?.slug || "";
+  const spots = (e.max_capacity || 0) - (e.current_registrations || 0);
+
+  return {
+    id: e.id,
+    title: e.title,
+    date: formatEventDate(e.start_date, e.end_date),
+    time: formatEventTime(e.start_date, e.end_date),
+    location: e.location_name || (e.event_type === "virtual" ? "Virtual Event" : "TBD"),
+    type: formatEventType(e.event_type),
+    program: e.programs?.title || "General",
+    programSlug,
+    status: e.status === "completed" ? "past" : "upcoming",
+    price: e.ticket_price && e.ticket_price > 0 ? `$${e.ticket_price}` : "Free",
+    description: e.short_description || e.description || "",
+    image: e.cover_image_url || defaultImage,
+    icon: programIconMap[programSlug] || defaultIcon,
+    color: programColorMap[programSlug] || defaultColor,
+    spots: Math.max(0, spots),
+    featured: e.is_featured,
+  };
+}
 
 /* ─── Sub-Components ───────────────────────────────────────────────── */
 
-function FeaturedEventCard({ event }: { event: typeof events[0] }) {
+function FeaturedEventCard({ event }: { event: MappedEvent }) {
   const Icon = event.icon;
+  const startDay = event.date.match(/\d+/)?.[0] || "";
+  const startMonth = event.date.slice(0, 3);
+
   return (
     <Link href={`/events/${event.id}`} className="block group">
       <motion.div
@@ -185,8 +181,8 @@ function FeaturedEventCard({ event }: { event: typeof events[0] }) {
             {/* Date badge */}
             <div className="absolute top-5 left-5">
               <div className="bg-white rounded-xl px-4 py-2.5 shadow-lg text-center">
-                <div className="text-2xl font-extrabold text-primary-500 leading-none">15</div>
-                <div className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider">Jun</div>
+                <div className="text-2xl font-extrabold text-primary-500 leading-none">{startDay}</div>
+                <div className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider">{startMonth}</div>
               </div>
             </div>
 
@@ -259,7 +255,7 @@ function FeaturedEventCard({ event }: { event: typeof events[0] }) {
   );
 }
 
-function EventCard({ event, index }: { event: typeof events[0]; index: number }) {
+function EventCard({ event, index }: { event: MappedEvent; index: number }) {
   const Icon = event.icon;
   const isPast = event.status === "past";
 
@@ -307,7 +303,7 @@ function EventCard({ event, index }: { event: typeof events[0]; index: number })
               </span>
             </div>
 
-            {/* Bottom left — icon + program label */}
+            {/* Bottom left -- icon + program label */}
             <div className="absolute bottom-3 left-3 flex items-center gap-2">
               <div className={`h-8 w-8 rounded-lg bg-gradient-to-br ${event.color} flex items-center justify-center shadow-sm`}>
                 <Icon className="h-4 w-4 text-white" />
@@ -370,13 +366,57 @@ function EventCard({ event, index }: { event: typeof events[0]; index: number })
   );
 }
 
+/* ─── Loading Skeleton ─────────────────────────────────────────────── */
+
+function EventCardSkeleton() {
+  return (
+    <div className="h-full flex flex-col rounded-2xl overflow-hidden bg-white border border-neutral-200 animate-pulse">
+      <div className="h-48 bg-neutral-200" />
+      <div className="flex-1 p-5 space-y-3">
+        <div className="h-5 bg-neutral-200 rounded w-3/4" />
+        <div className="h-4 bg-neutral-100 rounded w-full" />
+        <div className="h-4 bg-neutral-100 rounded w-2/3" />
+        <div className="mt-4 space-y-2">
+          <div className="h-3 bg-neutral-100 rounded w-1/2" />
+          <div className="h-3 bg-neutral-100 rounded w-1/3" />
+          <div className="h-3 bg-neutral-100 rounded w-2/5" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Page ──────────────────────────────────────────────────────────── */
 
 export default function EventsPage() {
+  const [events, setEvents] = useState<MappedEvent[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState("All");
   const [showPast, setShowPast] = useState(false);
 
+  useEffect(() => {
+    async function fetchEvents() {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("events")
+        .select("*, programs(title, slug, icon, color)")
+        .in("status", ["published", "completed"])
+        .order("start_date", { ascending: true });
+
+      if (!error && data) {
+        setEvents(data.map((e: DBEvent) => mapDBEvent(e)));
+      }
+      setLoading(false);
+    }
+    fetchEvents();
+  }, []);
+
   const featuredEvent = events.find((e) => e.featured);
+
+  // Build dynamic filter list from events' programs
+  const programNames = Array.from(new Set(events.map((e) => e.program)));
+  const filters = ["All", ...programNames];
+
   const filtered = events.filter((e) => {
     if (e.featured) return false; // shown separately
     if (activeFilter !== "All" && e.program !== activeFilter) return false;
@@ -384,10 +424,14 @@ export default function EventsPage() {
     return true;
   });
 
+  const upcomingCount = events.filter((e) => e.status === "upcoming").length;
+  const freeCount = events.filter((e) => e.price === "Free").length;
+  const freePercent = events.length > 0 ? Math.round((freeCount / events.length) * 100) : 0;
+
   return (
     <div className="pb-0">
 
-      {/* ───── 1. HERO ───── */}
+      {/* ----- 1. HERO ----- */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
           <Image
@@ -449,12 +493,12 @@ export default function EventsPage() {
         </div>
       </section>
 
-      {/* ───── 2. QUICK STATS ───── */}
+      {/* ----- 2. QUICK STATS ----- */}
       <section className="bg-gradient-to-r from-primary-600 via-primary-500 to-primary-600 py-8 px-6">
         <div className="mx-auto max-w-4xl grid grid-cols-3 gap-6">
           {[
-            { value: "8+", label: "Upcoming Events" },
-            { value: "100%", label: "Free Programs" },
+            { value: loading ? "..." : `${upcomingCount}+`, label: "Upcoming Events" },
+            { value: loading ? "..." : `${freePercent}%`, label: "Free Programs" },
             { value: "2,000+", label: "Past Attendees" },
           ].map((stat, i) => (
             <motion.div
@@ -472,8 +516,8 @@ export default function EventsPage() {
         </div>
       </section>
 
-      {/* ───── 3. FEATURED EVENT ───── */}
-      {featuredEvent && (
+      {/* ----- 3. FEATURED EVENT ----- */}
+      {!loading && featuredEvent && (
         <section className="py-20 px-6">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
@@ -485,7 +529,7 @@ export default function EventsPage() {
         </section>
       )}
 
-      {/* ───── 4. ALL EVENTS WITH FILTERS ───── */}
+      {/* ----- 4. ALL EVENTS WITH FILTERS ----- */}
       <section id="events" className="py-16 px-6 bg-gradient-to-b from-neutral-50 to-white">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10">
@@ -508,40 +552,53 @@ export default function EventsPage() {
           </div>
 
           {/* Filter pills */}
-          <div className="flex flex-wrap items-center gap-2 mb-10">
-            <Filter className="h-4 w-4 text-foreground-muted mr-1" />
-            {filters.map((filter) => (
-              <button
-                key={filter}
-                onClick={() => setActiveFilter(filter)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  activeFilter === filter
-                    ? "bg-primary-500 text-white shadow-sm"
-                    : "bg-white border border-neutral-200 text-foreground-muted hover:border-primary-300 hover:text-primary-500"
-                }`}
-              >
-                {filter}
-              </button>
-            ))}
-          </div>
+          {!loading && (
+            <div className="flex flex-wrap items-center gap-2 mb-10">
+              <Filter className="h-4 w-4 text-foreground-muted mr-1" />
+              {filters.map((filter) => (
+                <button
+                  key={filter}
+                  onClick={() => setActiveFilter(filter)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                    activeFilter === filter
+                      ? "bg-primary-500 text-white shadow-sm"
+                      : "bg-white border border-neutral-200 text-foreground-muted hover:border-primary-300 hover:text-primary-500"
+                  }`}
+                >
+                  {filter}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Loading state */}
+          {loading && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <EventCardSkeleton key={i} />
+              ))}
+            </div>
+          )}
 
           {/* Events grid */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeFilter + String(showPast)}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-            >
-              {filtered.map((event, i) => (
-                <EventCard key={event.id} event={event} index={i} />
-              ))}
-            </motion.div>
-          </AnimatePresence>
+          {!loading && (
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeFilter + String(showPast)}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                {filtered.map((event, i) => (
+                  <EventCard key={event.id} event={event} index={i} />
+                ))}
+              </motion.div>
+            </AnimatePresence>
+          )}
 
-          {filtered.length === 0 && (
+          {!loading && filtered.length === 0 && (
             <motion.div
               className="mt-16 text-center py-16"
               initial={{ opacity: 0 }}
@@ -560,7 +617,7 @@ export default function EventsPage() {
         </div>
       </section>
 
-      {/* ───── 5. HOW IT WORKS ───── */}
+      {/* ----- 5. HOW IT WORKS ----- */}
       <section className="py-24 px-6">
         <div className="mx-auto max-w-5xl">
           <SectionHeading
@@ -601,7 +658,7 @@ export default function EventsPage() {
         </div>
       </section>
 
-      {/* ───── 6. CTA ───── */}
+      {/* ----- 6. CTA ----- */}
       <section className="relative py-20 px-6 text-center overflow-hidden">
         <div className="absolute inset-0">
           <Image

@@ -24,267 +24,107 @@ import {
   Target,
   GraduationCap,
   MessageCircle,
+  Loader2,
 } from "lucide-react";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { BrandDivider } from "@/components/shared/brand-divider";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { createClient } from "@/lib/supabase/client";
 
-/* ─────────────────────────────────────────────── */
-/*  Event data                                     */
-/* ─────────────────────────────────────────────── */
+/* ─── Icon & Color Mappings ──────────────────────────────────────── */
 
-interface EventData {
+const programIconMap: Record<string, React.ElementType> = {
+  "band-camp": Music,
+  "drone-experience": Cpu,
+  "topgolf": Target,
+  "hbcu-heroes": GraduationCap,
+  "mentorship": Users,
+  "mentors": MessageCircle,
+  "sisters-hangout": Heart,
+};
+
+const programColorMap: Record<string, string> = {
+  "band-camp": "from-violet-500 to-purple-600",
+  "drone-experience": "from-cyan-500 to-blue-600",
+  "topgolf": "from-emerald-500 to-green-600",
+  "hbcu-heroes": "from-primary-500 to-primary-700",
+  "mentorship": "from-amber-500 to-orange-600",
+  "mentors": "from-red-500 to-rose-600",
+  "sisters-hangout": "from-pink-500 to-rose-600",
+};
+
+const defaultImage = "/images/gallery/fnf-group-lineup.jpg";
+
+/* ─── Types ──────────────────────────────────────────────────────── */
+
+interface Program {
   title: string;
-  date: string;
-  /** ISO date for countdown (start date) */
-  isoDate: string;
-  time: string;
-  location: string;
-  type: string;
-  program: string;
-  programSlug: string;
-  status: string;
-  price: string;
-  capacity: string;
-  registered: number;
-  description: string;
-  details: string;
-  /** Event flyer / hero image */
-  heroImage: string;
-  /** Schedule items */
-  schedule: { time: string; title: string; description?: string }[];
-  /** Highlights / what to expect */
-  highlights: string[];
-  /** Gallery images */
-  gallery: { src: string; alt: string }[];
-  /** Related event IDs */
-  relatedEvents: string[];
+  slug: string;
+  icon: string | null;
+  color: string | null;
 }
 
-const eventsData: Record<string, EventData> = {
-  "1": {
-    title: "Summer Band Camp 2026",
-    date: "June 15-20, 2026",
-    isoDate: "2026-06-15T09:00:00",
-    time: "9:00 AM - 5:00 PM",
-    location: "Los Angeles, CA",
-    type: "In Person",
-    program: "Band Camp",
-    programSlug: "band-camp",
-    status: "upcoming",
-    price: "Free",
-    capacity: "100",
-    registered: 67,
-    description:
-      "A week-long immersive music experience featuring professional musicians, ensemble workshops, and a closing night concert.",
-    details:
-      "Join us for an unforgettable week of music, learning, and community. Our Summer Band Camp brings together young musicians of all skill levels for an intensive program that includes daily instrument instruction, ensemble rehearsals, music theory workshops, recording studio sessions, guest artist masterclasses, and a closing night concert for family and friends.\n\nAll instruments and materials are provided. Lunch is included each day. Participants will receive a certificate of completion and access to practice resources to continue their musical journey.",
-    heroImage: "/images/events/andf-event-1.png",
-    schedule: [
-      { time: "9:00 AM", title: "Check-In & Warm-Up", description: "Registration, instrument assignments, and group warm-up exercises" },
-      { time: "10:00 AM", title: "Instrument Instruction", description: "Break into sections for focused instruction with professional musicians" },
-      { time: "12:00 PM", title: "Lunch & Social Time", description: "Catered lunch with time for socializing and jamming" },
-      { time: "1:00 PM", title: "Music Theory Workshop", description: "Interactive sessions on reading music, rhythm, and composition" },
-      { time: "2:30 PM", title: "Ensemble Rehearsal", description: "Full band rehearsal preparing for the closing concert" },
-      { time: "4:00 PM", title: "Recording Studio Session", description: "Small group recording sessions in a professional studio" },
-    ],
-    highlights: [
-      "Professional instrument instruction for all skill levels",
-      "Access to 50+ instruments — no need to bring your own",
-      "Record in a professional studio",
-      "Closing night concert for family and friends",
-      "Certificate of completion",
-      "All meals and materials included",
-    ],
-    gallery: [
-      { src: "/images/programs/engaged-students.jpg", alt: "Students engaged in music session" },
-      { src: "/images/gallery/knowledj-teaches.jpg", alt: "Instructor teaching music" },
-      { src: "/images/gallery/noel-massie-teaches.jpg", alt: "Live music performance" },
-      { src: "/images/gallery/opening-panel.jpg", alt: "Opening panel at Band Camp" },
-    ],
-    relatedEvents: ["2", "4"],
-  },
-  "2": {
-    title: "Drone Pilot Workshop",
-    date: "July 8, 2026",
-    isoDate: "2026-07-08T10:00:00",
-    time: "10:00 AM - 3:00 PM",
-    location: "Innovation Hub, LA",
-    type: "In Person",
-    program: "Drone Experience",
-    programSlug: "drone-experience",
-    status: "upcoming",
-    price: "$25",
-    capacity: "30",
-    registered: 18,
-    description:
-      "Learn to fly drones, capture aerial photography, and explore career paths in aviation and technology.",
-    details:
-      "This hands-on workshop is designed for beginners and intermediate drone enthusiasts. You'll learn basic drone operation and safety, aerial photography techniques, video capture and editing basics, FAA regulations overview, and career paths in drone technology.\n\nAll equipment is provided. Light refreshments included.",
-    heroImage: "/images/programs/drone-teach.jpg",
-    schedule: [
-      { time: "10:00 AM", title: "Welcome & Safety Briefing", description: "Overview of drone safety, FAA rules, and equipment orientation" },
-      { time: "10:45 AM", title: "Flight Training", description: "Hands-on drone piloting with expert instructors" },
-      { time: "12:00 PM", title: "Lunch Break", description: "Light refreshments provided" },
-      { time: "12:30 PM", title: "Aerial Photography", description: "Learn to capture stunning photos and video from above" },
-      { time: "2:00 PM", title: "Career Pathways", description: "Explore careers in drone technology, aerospace, and filmmaking" },
-    ],
-    highlights: [
-      "Hands-on flight training with professional-grade drones",
-      "All equipment provided — no experience needed",
-      "FAA regulations overview",
-      "Aerial photography and videography techniques",
-      "Career pathway exploration in STEM fields",
-      "Light refreshments included",
-    ],
-    gallery: [
-      { src: "/images/programs/drone-teach.jpg", alt: "Drone instruction session" },
-      { src: "/images/programs/nasa-workshop.jpg", alt: "NASA workshop" },
-      { src: "/images/gallery/nasa-team-teaches.jpg", alt: "NASA team teaches drone tech" },
-      { src: "/images/gallery/nasa-workshop-2.jpg", alt: "Workshop participants" },
-    ],
-    relatedEvents: ["1", "3"],
-  },
-  "3": {
-    title: "HBCU Heroes Virtual Summit",
-    date: "August 12, 2026",
-    isoDate: "2026-08-12T12:00:00",
-    time: "12:00 PM - 4:00 PM",
-    location: "Virtual Event",
-    type: "Virtual",
-    program: "HBCU Heroes",
-    programSlug: "hbcu-heroes",
-    status: "upcoming",
-    price: "Free",
-    capacity: "500",
-    registered: 234,
-    description:
-      "An inspiring virtual event celebrating HBCU excellence with keynote speakers and networking.",
-    details:
-      "Connect with HBCU alumni, current students, and admissions representatives in this virtual celebration of excellence. Featuring a keynote address by renowned HBCU alumni, panel discussions on student life and success, virtual campus tours, scholarship information sessions, and networking breakout rooms.\n\nOpen to all high school and college-age students.",
-    heroImage: "/images/events/hbcu-classic.png",
-    schedule: [
-      { time: "12:00 PM", title: "Opening & Welcome", description: "Welcome address and overview of the day" },
-      { time: "12:30 PM", title: "Keynote Speaker", description: "Inspiring address by a renowned HBCU alumnus" },
-      { time: "1:15 PM", title: "Panel: Student Life", description: "Current students share their HBCU experiences" },
-      { time: "2:15 PM", title: "Virtual Campus Tours", description: "Live guided tours of featured HBCU campuses" },
-      { time: "3:15 PM", title: "Scholarship Workshop", description: "Financial aid tips and scholarship application guidance" },
-    ],
-    highlights: [
-      "Keynote address by renowned HBCU alumni",
-      "Live virtual campus tours",
-      "Scholarship guidance and financial aid info",
-      "Networking breakout rooms",
-      "Panel discussions with current students",
-      "Open to all high school and college-age students",
-    ],
-    gallery: [
-      { src: "/images/gallery/omega-psi-phi.jpg", alt: "Omega Psi Phi fraternity members" },
-      { src: "/images/gallery/zeta-phi-beta.jpg", alt: "Zeta Phi Beta gathering" },
-      { src: "/images/gallery/dawnn-zeta-sorors.jpg", alt: "Dawnn with Zeta sorors" },
-      { src: "/images/gallery/fnf-scholarship-2024.jpg", alt: "Scholarship recipients" },
-    ],
-    relatedEvents: ["5", "1"],
-  },
-  "4": {
-    title: "TopGolf Networking Night",
-    date: "July 22, 2026",
-    isoDate: "2026-07-22T17:00:00",
-    time: "5:00 PM - 9:00 PM",
-    location: "TopGolf, Los Angeles",
-    type: "In Person",
-    program: "TopGolf",
-    programSlug: "topgolf",
-    status: "upcoming",
-    price: "$15",
-    capacity: "60",
-    registered: 42,
-    description:
-      "An evening of golf, networking, and mentorship with industry professionals.",
-    details:
-      "Swing into success at our TopGolf Networking Night! Connect with mentors and industry leaders in a fun, relaxed environment. Enjoy golf instruction for all levels, meet professionals from entertainment, tech, and business, team competitions with prizes, dinner and refreshments, and mentorship matching opportunities.",
-    heroImage: "/images/events/topgolf-atlanta.png",
-    schedule: [
-      { time: "5:00 PM", title: "Check-In & Welcome", description: "Arrival, bay assignments, and welcome drinks" },
-      { time: "5:30 PM", title: "Golf Instruction", description: "Pro tips and basics for all skill levels" },
-      { time: "6:30 PM", title: "Networking Hour", description: "Connect with mentors and industry professionals" },
-      { time: "7:30 PM", title: "Team Competition", description: "Fun team golf challenges with prizes" },
-      { time: "8:30 PM", title: "Dinner & Awards", description: "Dinner, awards ceremony, and closing remarks" },
-    ],
-    highlights: [
-      "Golf instruction for all experience levels",
-      "Meet professionals from entertainment, tech, and business",
-      "Team competitions with prizes",
-      "Dinner and refreshments included",
-      "Mentorship matching opportunities",
-      "Fun, relaxed networking environment",
-    ],
-    gallery: [
-      { src: "/images/events/topgolf-atlanta.png", alt: "TopGolf event" },
-      { src: "/images/events/topgolf-atlanta-uncf.png", alt: "TopGolf UNCF event" },
-      { src: "/images/gallery/leadership-group.jpg", alt: "Leadership group photo" },
-      { src: "/images/gallery/raffle-winner.jpg", alt: "Raffle winner celebration" },
-    ],
-    relatedEvents: ["2", "5"],
-  },
-  "5": {
-    title: "Mentor Matching Day",
-    date: "September 5, 2026",
-    isoDate: "2026-09-05T10:00:00",
-    time: "10:00 AM - 2:00 PM",
-    location: "ANDF Headquarters, LA",
-    type: "In Person",
-    program: "Mentorship",
-    programSlug: "mentorship",
-    status: "upcoming",
-    price: "Free",
-    capacity: "40",
-    registered: 28,
-    description:
-      "Meet your potential mentor, set goals, and begin your mentorship journey.",
-    details:
-      "This is where your mentorship journey begins! Mentor Matching Day is a carefully curated event where mentees meet potential mentors. The day features ice-breaker activities, speed mentoring sessions, goal-setting workshops, a mentor-mentee matching ceremony, and a welcome packet with resources.\n\nLunch provided. Parents/guardians welcome to attend.",
-    heroImage: "/images/programs/mentorship-session.jpg",
-    schedule: [
-      { time: "10:00 AM", title: "Arrival & Ice Breakers", description: "Fun activities to get everyone comfortable" },
-      { time: "10:45 AM", title: "Speed Mentoring", description: "Brief one-on-one sessions with multiple mentors" },
-      { time: "12:00 PM", title: "Lunch", description: "Catered lunch and open conversation" },
-      { time: "12:45 PM", title: "Goal-Setting Workshop", description: "Define your goals and what you want from mentorship" },
-      { time: "1:30 PM", title: "Matching Ceremony", description: "Mentor-mentee pairs announced and celebrated" },
-    ],
-    highlights: [
-      "Meet experienced professionals across multiple industries",
-      "Speed mentoring to find your perfect match",
-      "Goal-setting and vision-boarding workshop",
-      "Welcome packet with resources and tools",
-      "Lunch provided for all attendees",
-      "Parents and guardians welcome",
-    ],
-    gallery: [
-      { src: "/images/programs/mentorship-session.jpg", alt: "Mentorship session" },
-      { src: "/images/gallery/dawnn-on-the-move.jpg", alt: "Mentorship in action" },
-      { src: "/images/gallery/volunteer-leader.jpg", alt: "Volunteer leader" },
-      { src: "/images/gallery/scholarship-recipient.jpg", alt: "Scholarship recipient" },
-    ],
-    relatedEvents: ["1", "3"],
-  },
-};
+interface DBEvent {
+  id: string;
+  slug: string | null;
+  title: string;
+  description: string | null;
+  short_description: string | null;
+  event_type: "in_person" | "virtual" | "hybrid";
+  status: "draft" | "published" | "cancelled" | "completed";
+  program_id: string | null;
+  start_date: string;
+  end_date: string | null;
+  location_name: string | null;
+  location_address: string | null;
+  max_capacity: number | null;
+  current_registrations: number;
+  ticket_price: number | null;
+  cover_image_url: string | null;
+  is_featured: boolean;
+  programs: Program | null;
+}
 
-/* Icon mapping for programs */
-const programIcons: Record<string, React.ElementType> = {
-  "Band Camp": Music,
-  "Drone Experience": Cpu,
-  TopGolf: Target,
-  "HBCU Heroes": GraduationCap,
-  Mentorship: Users,
-  MenTORS: MessageCircle,
-  "Sisters Hangout": Heart,
-};
+/* ─── Helpers ────────────────────────────────────────────────────── */
 
-/* ─────────────────────────────────────────────── */
-/*  Countdown Timer                                */
-/* ─────────────────────────────────────────────── */
+function formatEventDate(startDate: string, endDate: string | null): string {
+  const start = new Date(startDate);
+  const opts: Intl.DateTimeFormatOptions = { month: "long", day: "numeric", year: "numeric" };
+
+  if (endDate) {
+    const end = new Date(endDate);
+    if (start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear()) {
+      return `${start.toLocaleDateString("en-US", { month: "long" })} ${start.getDate()}-${end.getDate()}, ${start.getFullYear()}`;
+    }
+    return `${start.toLocaleDateString("en-US", opts)} - ${end.toLocaleDateString("en-US", opts)}`;
+  }
+  return start.toLocaleDateString("en-US", opts);
+}
+
+function formatEventTime(startDate: string, endDate: string | null): string {
+  const timeOpts: Intl.DateTimeFormatOptions = { hour: "numeric", minute: "2-digit", hour12: true };
+  const start = new Date(startDate);
+  const startTime = start.toLocaleTimeString("en-US", timeOpts);
+
+  if (endDate) {
+    const end = new Date(endDate);
+    const endTime = end.toLocaleTimeString("en-US", timeOpts);
+    return `${startTime} - ${endTime}`;
+  }
+  return startTime;
+}
+
+function formatEventType(type: string): string {
+  switch (type) {
+    case "in_person": return "In Person";
+    case "virtual": return "Virtual";
+    case "hybrid": return "Hybrid";
+    default: return type;
+  }
+}
+
+/* ─── Countdown Timer ────────────────────────────────────────────── */
 
 function CountdownTimer({ targetDate }: { targetDate: string }) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -333,9 +173,7 @@ function CountdownTimer({ targetDate }: { targetDate: string }) {
   );
 }
 
-/* ─────────────────────────────────────────────── */
-/*  Lightbox                                       */
-/* ─────────────────────────────────────────────── */
+/* ─── Lightbox ───────────────────────────────────────────────────── */
 
 function Lightbox({
   images,
@@ -381,35 +219,122 @@ function Lightbox({
   );
 }
 
-/* ─────────────────────────────────────────────── */
-/*  Main Page                                      */
-/* ─────────────────────────────────────────────── */
+/* ─── Loading Skeleton ───────────────────────────────────────────── */
+
+function DetailSkeleton() {
+  return (
+    <div className="pb-0 animate-pulse">
+      <div className="h-[400px] bg-neutral-200" />
+      <div className="px-6 py-16">
+        <div className="mx-auto max-w-5xl grid grid-cols-1 lg:grid-cols-3 gap-10">
+          <div className="lg:col-span-2 space-y-8">
+            <div className="h-6 bg-neutral-200 rounded w-1/3" />
+            <div className="h-8 bg-neutral-200 rounded w-2/3" />
+            <div className="space-y-3">
+              <div className="h-4 bg-neutral-100 rounded w-full" />
+              <div className="h-4 bg-neutral-100 rounded w-full" />
+              <div className="h-4 bg-neutral-100 rounded w-3/4" />
+            </div>
+          </div>
+          <div className="lg:col-span-1">
+            <div className="rounded-2xl bg-neutral-100 h-80" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Main Page ──────────────────────────────────────────────────── */
 
 export default function EventDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const event = eventsData[id];
+  const [event, setEvent] = useState<DBEvent | null>(null);
+  const [relatedEvents, setRelatedEvents] = useState<DBEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-  if (!event) {
+  useEffect(() => {
+    async function fetchEvent() {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("events")
+        .select("*, programs(title, slug, icon, color)")
+        .eq("id", id)
+        .single();
+
+      if (error || !data) {
+        setNotFound(true);
+        setLoading(false);
+        return;
+      }
+
+      setEvent(data as DBEvent);
+
+      // Fetch related events from same program
+      if (data.program_id) {
+        const { data: related } = await supabase
+          .from("events")
+          .select("*, programs(title, slug, icon, color)")
+          .eq("program_id", data.program_id)
+          .in("status", ["published", "completed"])
+          .neq("id", id)
+          .order("start_date", { ascending: true })
+          .limit(3);
+
+        if (related) {
+          setRelatedEvents(related as DBEvent[]);
+        }
+      }
+
+      setLoading(false);
+    }
+    fetchEvent();
+  }, [id]);
+
+  if (loading) return <DetailSkeleton />;
+
+  if (notFound || !event) {
     return (
       <div className="pt-32 pb-24 px-6 text-center">
         <h1 className="text-3xl font-display font-bold text-foreground">Event Not Found</h1>
-        <Link href="/events" className="text-primary-500 mt-4 inline-block">Back to Events</Link>
+        <p className="text-foreground-muted mt-2">The event you are looking for does not exist or has been removed.</p>
+        <Link href="/events" className="text-primary-500 mt-4 inline-block font-medium hover:underline">Back to Events</Link>
       </div>
     );
   }
 
-  const spotsLeft = parseInt(event.capacity) - event.registered;
-  const percentFull = (event.registered / parseInt(event.capacity)) * 100;
-  const ProgramIcon = programIcons[event.program] || Calendar;
+  // Derived display values
+  const programSlug = event.programs?.slug || "";
+  const ProgramIcon = programIconMap[programSlug] || Calendar;
+  const programName = event.programs?.title || "General";
+  const displayDate = formatEventDate(event.start_date, event.end_date);
+  const displayTime = formatEventTime(event.start_date, event.end_date);
+  const displayLocation = event.location_name || (event.event_type === "virtual" ? "Virtual Event" : "TBD");
+  const displayType = formatEventType(event.event_type);
+  const displayPrice = event.ticket_price && event.ticket_price > 0 ? `$${event.ticket_price}` : "Free";
+  const heroImage = event.cover_image_url || defaultImage;
+  const description = event.short_description || event.description || "";
+  const fullDescription = event.description || "";
+  const capacity = event.max_capacity || 0;
+  const registered = event.current_registrations || 0;
+  const spotsLeft = Math.max(0, capacity - registered);
+  const percentFull = capacity > 0 ? (registered / capacity) * 100 : 0;
+  const isUpcoming = event.status !== "completed";
+
+  // Use cover image as gallery if we only have one image
+  const gallery = heroImage !== defaultImage
+    ? [{ src: heroImage, alt: event.title }]
+    : [];
 
   return (
     <div className="pb-0">
-      {/* ── Hero with full-bleed event image ── */}
+      {/* -- Hero with full-bleed event image -- */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src={event.heroImage}
+            src={heroImage}
             alt={event.title}
             fill
             className="object-cover"
@@ -430,16 +355,16 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
             <div className="flex flex-wrap gap-2">
               <Badge variant="gold" className="bg-secondary-500/90 text-white border-none">
-                <ProgramIcon className="h-3 w-3" /> {event.program}
+                <ProgramIcon className="h-3 w-3" /> {programName}
               </Badge>
               <Badge variant="info" className="bg-white/20 text-white border-white/30">
-                {event.type}
+                {displayType}
               </Badge>
-              {event.price === "Free" ? (
+              {displayPrice === "Free" ? (
                 <Badge variant="success" className="bg-green-500/80 text-white border-none">Free</Badge>
               ) : (
                 <Badge variant="info" className="bg-white/20 text-white border-white/30">
-                  <Ticket className="h-3 w-3" /> {event.price}
+                  <Ticket className="h-3 w-3" /> {displayPrice}
                 </Badge>
               )}
             </div>
@@ -447,129 +372,97 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
             <h1 className="font-display text-4xl lg:text-6xl font-bold text-white">
               {event.title}
             </h1>
-            <p className="text-xl text-white/80 max-w-2xl">{event.description}</p>
+            <p className="text-xl text-white/80 max-w-2xl">{description}</p>
 
             {/* Quick info pills */}
             <div className="flex flex-wrap gap-4 text-white/90 text-sm">
               <span className="flex items-center gap-1.5">
-                <Calendar className="h-4 w-4 text-secondary-400" /> {event.date}
+                <Calendar className="h-4 w-4 text-secondary-400" /> {displayDate}
               </span>
               <span className="flex items-center gap-1.5">
-                <Clock className="h-4 w-4 text-secondary-400" /> {event.time}
+                <Clock className="h-4 w-4 text-secondary-400" /> {displayTime}
               </span>
               <span className="flex items-center gap-1.5">
-                <MapPin className="h-4 w-4 text-secondary-400" /> {event.location}
+                <MapPin className="h-4 w-4 text-secondary-400" /> {displayLocation}
               </span>
             </div>
 
             {/* Countdown */}
-            <div className="pt-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-white/60 mb-3">Event starts in</p>
-              <CountdownTimer targetDate={event.isoDate} />
-            </div>
+            {isUpcoming && (
+              <div className="pt-4">
+                <p className="text-xs uppercase tracking-[0.2em] text-white/60 mb-3">Event starts in</p>
+                <CountdownTimer targetDate={event.start_date} />
+              </div>
+            )}
           </motion.div>
         </div>
       </section>
 
-      {/* ── Main content + sidebar ── */}
+      {/* -- Main content + sidebar -- */}
       <div className="px-6 py-16">
         <div className="mx-auto max-w-5xl grid grid-cols-1 lg:grid-cols-3 gap-10">
-          {/* Left – main content */}
+          {/* Left -- main content */}
           <div className="lg:col-span-2 space-y-16">
             {/* About the event */}
-            <SectionWrapper>
-              <div className="space-y-5">
-                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-500">
-                  About the event
-                </span>
-                <h2 className="text-3xl font-display font-bold text-foreground">
-                  What to Expect
-                </h2>
-                {event.details.split("\n\n").map((p, i) => (
-                  <p key={i} className="text-foreground-muted leading-relaxed text-lg">{p}</p>
-                ))}
-              </div>
-            </SectionWrapper>
+            {fullDescription && (
+              <SectionWrapper>
+                <div className="space-y-5">
+                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-500">
+                    About the event
+                  </span>
+                  <h2 className="text-3xl font-display font-bold text-foreground">
+                    What to Expect
+                  </h2>
+                  {fullDescription.split("\n\n").map((p, i) => (
+                    <p key={i} className="text-foreground-muted leading-relaxed text-lg">{p}</p>
+                  ))}
+                </div>
+              </SectionWrapper>
+            )}
 
-            {/* Highlights */}
+            {/* Event details card */}
             <SectionWrapper>
               <div className="space-y-6">
                 <h2 className="text-2xl font-display font-bold text-foreground">
-                  Event Highlights
+                  Event Details
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {event.highlights.map((h, i) => (
+                  {[
+                    { icon: Calendar, label: "Date", value: displayDate },
+                    { icon: Clock, label: "Time", value: displayTime },
+                    { icon: MapPin, label: "Location", value: displayLocation },
+                    { icon: Users, label: "Capacity", value: capacity > 0 ? `${capacity} attendees` : "Unlimited" },
+                    { icon: DollarSign, label: "Price", value: displayPrice === "Free" ? "Free Admission" : displayPrice },
+                    { icon: Ticket, label: "Type", value: displayType },
+                  ].map((item, i) => (
                     <motion.div
-                      key={i}
+                      key={item.label}
                       className="flex items-start gap-3 p-4 rounded-xl bg-primary-50/50 border border-primary-100"
                       initial={{ opacity: 0, y: 10 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: i * 0.06 }}
                     >
-                      <CheckCircle2 className="h-5 w-5 text-accent-500 shrink-0 mt-0.5" />
-                      <span className="text-sm text-foreground-muted">{h}</span>
+                      <item.icon className="h-5 w-5 text-primary-500 shrink-0 mt-0.5" />
+                      <div>
+                        <div className="text-xs font-semibold text-primary-500 uppercase tracking-wider">{item.label}</div>
+                        <div className="text-sm text-foreground-muted mt-0.5">{item.value}</div>
+                      </div>
                     </motion.div>
                   ))}
                 </div>
               </div>
             </SectionWrapper>
 
-            {/* Schedule */}
-            <SectionWrapper>
-              <div className="space-y-6">
-                <div>
-                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-500">
-                    Plan your day
-                  </span>
-                  <h2 className="text-2xl font-display font-bold text-foreground mt-1">
-                    Event Schedule
-                  </h2>
-                </div>
-                <div className="relative">
-                  {/* Timeline line */}
-                  <div className="absolute left-[27px] top-3 bottom-3 w-px bg-primary-200" />
-
-                  <div className="space-y-0">
-                    {event.schedule.map((item, i) => (
-                      <motion.div
-                        key={i}
-                        className="relative flex gap-5 py-4"
-                        initial={{ opacity: 0, x: -10 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.08 }}
-                      >
-                        {/* Timeline dot */}
-                        <div className="relative z-10 h-[14px] w-[14px] rounded-full bg-primary-500 border-[3px] border-white shrink-0 mt-1.5 shadow-sm" />
-
-                        <div className="flex-1 pb-4 border-b border-border last:border-b-0">
-                          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 mb-1">
-                            <span className="text-sm font-semibold text-primary-600 whitespace-nowrap">
-                              {item.time}
-                            </span>
-                            <h3 className="font-semibold text-foreground">{item.title}</h3>
-                          </div>
-                          {item.description && (
-                            <p className="text-sm text-foreground-muted">{item.description}</p>
-                          )}
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </SectionWrapper>
-
-            {/* Gallery */}
-            {event.gallery.length > 0 && (
+            {/* Gallery -- only if we have a cover image */}
+            {gallery.length > 0 && (
               <SectionWrapper>
                 <div className="space-y-6">
                   <h2 className="text-2xl font-display font-bold text-foreground">
                     Event Gallery
                   </h2>
                   <div className="grid grid-cols-2 gap-3">
-                    {event.gallery.map((photo, i) => (
+                    {gallery.map((photo, i) => (
                       <motion.div
                         key={photo.src}
                         className={`relative overflow-hidden rounded-xl cursor-pointer group ${
@@ -597,7 +490,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
             )}
           </div>
 
-          {/* Right – sticky sidebar */}
+          {/* Right -- sticky sidebar */}
           <div className="lg:col-span-1">
             <div className="sticky top-28 space-y-6">
               {/* Event info card */}
@@ -615,8 +508,8 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
                       <Calendar className="h-5 w-5 text-primary-500" />
                     </div>
                     <div>
-                      <div className="text-sm font-medium text-foreground">{event.date}</div>
-                      <div className="text-xs text-foreground-subtle">{event.time}</div>
+                      <div className="text-sm font-medium text-foreground">{displayDate}</div>
+                      <div className="text-xs text-foreground-subtle">{displayTime}</div>
                     </div>
                   </div>
 
@@ -625,8 +518,8 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
                       <MapPin className="h-5 w-5 text-primary-500" />
                     </div>
                     <div>
-                      <div className="text-sm font-medium text-foreground">{event.location}</div>
-                      <div className="text-xs text-foreground-subtle">{event.type}</div>
+                      <div className="text-sm font-medium text-foreground">{displayLocation}</div>
+                      <div className="text-xs text-foreground-subtle">{displayType}</div>
                     </div>
                   </div>
 
@@ -636,7 +529,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
                     </div>
                     <div>
                       <div className="text-sm font-medium text-foreground">
-                        {event.price === "Free" ? "Free Admission" : event.price}
+                        {displayPrice === "Free" ? "Free Admission" : displayPrice}
                       </div>
                       <div className="text-xs text-foreground-subtle">All materials included</div>
                     </div>
@@ -646,39 +539,43 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
                 <BrandDivider className="!my-4" />
 
                 {/* Capacity bar */}
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-foreground">
-                      <Users className="h-4 w-4 inline mr-1 text-primary-500" />
-                      {spotsLeft} spots left
-                    </span>
-                    <span className="text-xs text-foreground-subtle">
-                      {event.registered}/{event.capacity}
-                    </span>
+                {capacity > 0 && (
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-foreground">
+                        <Users className="h-4 w-4 inline mr-1 text-primary-500" />
+                        {spotsLeft} spots left
+                      </span>
+                      <span className="text-xs text-foreground-subtle">
+                        {registered}/{capacity}
+                      </span>
+                    </div>
+                    <div className="h-3 rounded-full bg-background-elevated overflow-hidden">
+                      <motion.div
+                        className={`h-full rounded-full ${
+                          percentFull > 80 ? "bg-secondary-500" : "bg-primary-500"
+                        }`}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${percentFull}%` }}
+                        transition={{ duration: 1, delay: 0.5 }}
+                      />
+                    </div>
+                    {percentFull > 75 && (
+                      <p className="text-xs text-secondary-600 mt-1.5 font-medium">
+                        Filling up fast — register soon!
+                      </p>
+                    )}
                   </div>
-                  <div className="h-3 rounded-full bg-background-elevated overflow-hidden">
-                    <motion.div
-                      className={`h-full rounded-full ${
-                        percentFull > 80 ? "bg-secondary-500" : "bg-primary-500"
-                      }`}
-                      initial={{ width: 0 }}
-                      animate={{ width: `${percentFull}%` }}
-                      transition={{ duration: 1, delay: 0.5 }}
-                    />
-                  </div>
-                  {percentFull > 75 && (
-                    <p className="text-xs text-secondary-600 mt-1.5 font-medium">
-                      Filling up fast — register soon!
-                    </p>
-                  )}
-                </div>
+                )}
 
-                <Link href={`/events/${id}/register`} className="block">
-                  <Button variant="primary" className="w-full" size="lg">
-                    <Ticket className="h-4 w-4" />
-                    Register Now
-                  </Button>
-                </Link>
+                {isUpcoming && (
+                  <Link href={`/events/${id}/register`} className="block">
+                    <Button variant="primary" className="w-full" size="lg">
+                      <Ticket className="h-4 w-4" />
+                      Register Now
+                    </Button>
+                  </Link>
+                )}
 
                 <div className="flex gap-2">
                   <Button variant="secondary" className="flex-1" size="sm">
@@ -693,30 +590,32 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
               </motion.div>
 
               {/* Related program link */}
-              <Link href={`/programs/${event.programSlug}`}>
-                <div className="rounded-2xl bg-primary-50 border border-primary-100 p-5 hover:border-primary-200 transition-colors group">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-lg bg-primary-500 flex items-center justify-center shrink-0">
-                      <ProgramIcon className="h-5 w-5 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-primary-500 font-semibold uppercase tracking-wider">
-                        Part of
-                      </p>
-                      <p className="font-medium text-foreground group-hover:text-primary-600 transition-colors">
-                        {event.program} Program
-                      </p>
+              {programSlug && (
+                <Link href={`/programs/${programSlug}`}>
+                  <div className="rounded-2xl bg-primary-50 border border-primary-100 p-5 hover:border-primary-200 transition-colors group">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-lg bg-primary-500 flex items-center justify-center shrink-0">
+                        <ProgramIcon className="h-5 w-5 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-primary-500 font-semibold uppercase tracking-wider">
+                          Part of
+                        </p>
+                        <p className="font-medium text-foreground group-hover:text-primary-600 transition-colors">
+                          {programName} Program
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
+                </Link>
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── More Events ── */}
-      {event.relatedEvents.length > 0 && (
+      {/* -- More Events -- */}
+      {relatedEvents.length > 0 && (
         <section className="bg-primary-50/50 py-16 px-6">
           <div className="mx-auto max-w-5xl">
             <div className="text-center mb-10">
@@ -729,19 +628,24 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {event.relatedEvents.map((relId) => {
-                const rel = eventsData[relId];
-                if (!rel) return null;
-                const RelIcon = programIcons[rel.program] || Calendar;
+              {relatedEvents.map((rel) => {
+                const relSlug = rel.programs?.slug || "";
+                const RelIcon = programIconMap[relSlug] || Calendar;
+                const relImage = rel.cover_image_url || defaultImage;
+                const relDate = formatEventDate(rel.start_date, rel.end_date);
+                const relLocation = rel.location_name || (rel.event_type === "virtual" ? "Virtual Event" : "TBD");
+                const relPrice = rel.ticket_price && rel.ticket_price > 0 ? `$${rel.ticket_price}` : "Free";
+                const relProgram = rel.programs?.title || "General";
+
                 return (
-                  <Link key={relId} href={`/events/${relId}`}>
+                  <Link key={rel.id} href={`/events/${rel.id}`}>
                     <motion.div
                       className="group relative overflow-hidden rounded-2xl bg-white border border-border hover:border-primary-200 hover:shadow-lg transition-all"
                       whileHover={{ y: -4 }}
                     >
                       <div className="relative h-48 overflow-hidden">
                         <Image
-                          src={rel.heroImage}
+                          src={relImage}
                           alt={rel.title}
                           fill
                           className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -750,9 +654,9 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                         <div className="absolute bottom-3 left-3 flex gap-2">
                           <Badge variant="gold" className="bg-secondary-500/90 text-white border-none text-[10px]">
-                            <RelIcon className="h-3 w-3" /> {rel.program}
+                            <RelIcon className="h-3 w-3" /> {relProgram}
                           </Badge>
-                          {rel.price === "Free" && (
+                          {relPrice === "Free" && (
                             <Badge variant="success" className="bg-green-500/80 text-white border-none text-[10px]">
                               Free
                             </Badge>
@@ -765,10 +669,10 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
                         </h3>
                         <div className="flex items-center gap-4 text-sm text-foreground-muted">
                           <span className="flex items-center gap-1">
-                            <Calendar className="h-3.5 w-3.5 text-primary-500" /> {rel.date}
+                            <Calendar className="h-3.5 w-3.5 text-primary-500" /> {relDate}
                           </span>
                           <span className="flex items-center gap-1">
-                            <MapPin className="h-3.5 w-3.5 text-primary-500" /> {rel.location}
+                            <MapPin className="h-3.5 w-3.5 text-primary-500" /> {relLocation}
                           </span>
                         </div>
                       </div>
@@ -781,7 +685,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
         </section>
       )}
 
-      {/* ── CTA ── */}
+      {/* -- CTA -- */}
       <section className="bg-secondary-500 py-16 px-6 text-center">
         <div className="mx-auto max-w-2xl space-y-5">
           <h2 className="font-display text-3xl font-bold text-white">
@@ -791,11 +695,13 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
             Secure your spot at {event.title} and be part of something special.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-            <Link href={`/events/${id}/register`}>
-              <Button variant="primary" size="lg" className="bg-white text-secondary-600 hover:bg-white/90">
-                <Ticket className="h-4 w-4" /> Register Now
-              </Button>
-            </Link>
+            {isUpcoming && (
+              <Link href={`/events/${id}/register`}>
+                <Button variant="primary" size="lg" className="bg-white text-secondary-600 hover:bg-white/90">
+                  <Ticket className="h-4 w-4" /> Register Now
+                </Button>
+              </Link>
+            )}
             <Link href="/events">
               <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10">
                 View All Events
@@ -807,13 +713,13 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
 
       {/* Lightbox */}
       <AnimatePresence>
-        {lightboxIndex !== null && (
+        {lightboxIndex !== null && gallery.length > 0 && (
           <Lightbox
-            images={event.gallery}
+            images={gallery}
             currentIndex={lightboxIndex}
             onClose={() => setLightboxIndex(null)}
-            onPrev={() => setLightboxIndex((p) => (p !== null ? (p - 1 + event.gallery.length) % event.gallery.length : 0))}
-            onNext={() => setLightboxIndex((p) => (p !== null ? (p + 1) % event.gallery.length : 0))}
+            onPrev={() => setLightboxIndex((p) => (p !== null ? (p - 1 + gallery.length) % gallery.length : 0))}
+            onNext={() => setLightboxIndex((p) => (p !== null ? (p + 1) % gallery.length : 0))}
           />
         )}
       </AnimatePresence>
