@@ -142,44 +142,39 @@ export default function MuxStreamPlayer({
     return () => video.removeEventListener("timeupdate", handleTimeUpdate);
   }, [ads, adBreakAt, adIntervalMinutes, triggerAd]);
 
-  // Countdown timer during ad
+  // Sync countdown timer with actual ad video playback time
   useEffect(() => {
-    if (!showAd || adCountdown <= 0) return;
+    if (!showAd || !adVideoRef.current || !currentAd) return;
 
-    countdownRef.current = setInterval(() => {
-      setAdCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(countdownRef.current!);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    const adVideo = adVideoRef.current;
+    const totalDuration = currentAd.durationSeconds || 15;
 
-    return () => {
-      if (countdownRef.current) clearInterval(countdownRef.current);
+    const handleAdTimeUpdate = () => {
+      const remaining = Math.max(0, Math.ceil(totalDuration - adVideo.currentTime));
+      setAdCountdown(remaining);
     };
-  }, [showAd]);
+
+    adVideo.addEventListener("timeupdate", handleAdTimeUpdate);
+    return () => adVideo.removeEventListener("timeupdate", handleAdTimeUpdate);
+  }, [showAd, currentAd]);
 
   // Auto-play ad video when ad is shown
-  // Mobile browsers block unmuted autoplay — start muted, then unmute after playing
+  // Try unmuted first (user already interacted with main video), fall back to muted
   useEffect(() => {
     if (showAd && adVideoRef.current) {
       const adVideo = adVideoRef.current;
       adVideo.currentTime = 0;
-      // Always start muted to guarantee autoplay on mobile
-      adVideo.muted = true;
-      adVideo.play()
-        .then(() => {
-          // Playback started — unmute if user hasn't explicitly muted
-          if (!isMuted) {
-            adVideo.muted = false;
-          }
-        })
-        .catch(() => {
-          // If even muted autoplay fails, skip the ad
+
+      // Try playing with sound first — user already pressed play on main video
+      adVideo.muted = isMuted;
+      adVideo.play().catch(() => {
+        // Unmuted autoplay blocked — try muted
+        adVideo.muted = true;
+        adVideo.play().catch(() => {
+          // Even muted autoplay failed — skip the ad
           handleAdEnd();
         });
+      });
     }
   }, [showAd, isMuted, handleAdEnd]);
 
@@ -268,9 +263,8 @@ export default function MuxStreamPlayer({
               ref={adVideoRef}
               src={adVideoSrc || undefined}
               className="w-full h-full object-contain bg-black"
-              autoPlay
-              muted
               playsInline
+              preload="auto"
               onEnded={handleAdEnd}
               onError={handleAdEnd}
             />

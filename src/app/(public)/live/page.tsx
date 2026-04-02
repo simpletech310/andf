@@ -731,7 +731,7 @@ export default function LivePage() {
                   videoUrl="/videos/andf-content.mp4"
                   title={fullscreenVideo.title}
                   autoPlay
-                  onDonateClick={openDonateModal}
+                  showDonateButton={false}
                 />
               </div>
             </div>
