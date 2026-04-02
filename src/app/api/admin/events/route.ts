@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
 
     let query = supabase
       .from("events")
-      .select("*, event_registrations(count)")
+      .select("*, registrations(count)")
       .order("start_date", { ascending: false });
 
     if (status && status !== "all") {
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
 
     const formatted = (events || []).map((event: any) => ({
       ...event,
-      registration_count: event.event_registrations?.[0]?.count || 0,
+      registration_count: event.registrations?.[0]?.count || 0,
     }));
 
     return NextResponse.json({ events: formatted });
@@ -37,20 +37,28 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const supabase = createAdminClient();
 
+    const slug = body.title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "") + "-" + Date.now().toString(36);
+
     const { data: event, error } = await supabase
       .from("events")
       .insert({
         title: body.title,
+        slug,
         description: body.description || null,
+        short_description: body.short_description || null,
         program_id: body.program_id || null,
         event_type: body.event_type || "in_person",
         start_date: body.start_date,
         end_date: body.end_date || null,
-        location: body.location || null,
-        capacity: body.capacity ? parseInt(body.capacity) : null,
-        price_cents: body.price_cents ? Math.round(parseFloat(body.price_cents) * 100) : 0,
+        location_name: body.location_name || body.location || null,
+        location_address: body.location_address || null,
+        max_capacity: body.capacity ? parseInt(body.capacity) : null,
+        ticket_price: body.ticket_price ? parseFloat(body.ticket_price) : 0,
         status: body.status || "draft",
-        registration_form_schema: body.registration_form_schema || null,
+        cover_image_url: body.cover_image_url || null,
       })
       .select()
       .single();

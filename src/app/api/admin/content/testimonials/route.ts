@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     const { data: testimonial, error } = await supabase
       .from("testimonials")
       .insert({
-        author: body.author,
+        author_name: body.author_name || body.author,
         title: body.title || null,
         quote: body.quote,
         program_id: body.program_id || null,

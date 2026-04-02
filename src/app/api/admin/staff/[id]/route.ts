@@ -42,7 +42,7 @@ export async function DELETE(
     // Don't delete the profile; set role to viewer and deactivate
     const { error } = await supabase
       .from("profiles")
-      .update({ role: "viewer", is_active: false })
+      .update({ role: "viewer" })
       .eq("id", id);
 
     if (error) throw error;

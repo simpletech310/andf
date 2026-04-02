@@ -21,7 +21,7 @@ export async function GET(
 
     // Fetch registrations
     const { data: registrations } = await supabase
-      .from("event_registrations")
+      .from("registrations")
       .select("*")
       .eq("event_id", id)
       .order("created_at", { ascending: false });

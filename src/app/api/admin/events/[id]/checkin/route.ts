@@ -12,7 +12,7 @@ export async function GET(
     // Get event details
     const { data: event, error: eventError } = await supabase
       .from("events")
-      .select("id, title, capacity, checked_in_count")
+      .select("id, title, max_capacity, checked_in_count")
       .eq("id", eventId)
       .single();
 
@@ -22,7 +22,7 @@ export async function GET(
 
     // Get all registrations with check-in status
     const { data: registrations, error: regError } = await supabase
-      .from("event_registrations")
+      .from("registrations")
       .select(`
         id,
         registrant_name,
@@ -32,8 +32,7 @@ export async function GET(
         payment_status,
         amount_paid,
         checked_in,
-        checked_in_at,
-        ticket_type
+        checked_in_at
       `)
       .eq("event_id", eventId)
       .order("registrant_name", { ascending: true });
@@ -65,20 +64,9 @@ export async function POST(
     const supabase = createAdminClient();
     const now = new Date().toISOString();
 
-    // Insert into event_checkins
-    const { error: checkinError } = await supabase
-      .from("event_checkins")
-      .insert({
-        event_id: eventId,
-        registration_id: registrationId,
-        checked_in_at: now,
-      });
-
-    if (checkinError) throw checkinError;
-
     // Update registration
     const { error: regError } = await supabase
-      .from("event_registrations")
+      .from("registrations")
       .update({ checked_in: true, checked_in_at: now })
       .eq("id", registrationId);
 
@@ -117,18 +105,9 @@ export async function DELETE(
 
     const supabase = createAdminClient();
 
-    // Delete from event_checkins
-    const { error: deleteError } = await supabase
-      .from("event_checkins")
-      .delete()
-      .eq("registration_id", registrationId)
-      .eq("event_id", eventId);
-
-    if (deleteError) throw deleteError;
-
     // Update registration
     const { error: regError } = await supabase
-      .from("event_registrations")
+      .from("registrations")
       .update({ checked_in: false, checked_in_at: null })
       .eq("id", registrationId);
 

@@ -23,7 +23,7 @@ export async function GET() {
       .reduce((sum: number, s: any) => sum + (s.ad_packages?.price_cents || 0), 0) / 100;
     const activeAds = all.filter((s: any) => s.status === "active").length;
     const pendingReview = all.filter((s: any) => s.status === "pending_review").length;
-    const totalImpressions = all.reduce((sum: number, s: any) => sum + (s.impressions || 0), 0);
+    const totalImpressions = all.reduce((sum: number, s: any) => sum + (s.impression_count || 0), 0);
 
     const formatted = all.map((sub: any) => ({
       id: sub.id,
@@ -41,8 +41,8 @@ export async function GET() {
       startsAt: sub.starts_at || null,
       expiresAt: sub.expires_at || null,
       videoUrl: sub.original_video_url || "#",
-      impressions: sub.impressions || 0,
-      clicks: sub.clicks || 0,
+      impressions: sub.impression_count || 0,
+      clicks: sub.click_count || 0,
       rejectionReason: sub.rejection_reason || null,
     }));
 

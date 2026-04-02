@@ -27,11 +27,11 @@ export async function POST(req: NextRequest) {
     const { data: member, error } = await supabase
       .from("team_members")
       .insert({
-        name: body.name,
+        full_name: body.full_name || body.name,
         title: body.title || null,
-        type: body.type || "staff",
+        role_type: body.role_type || body.type || "staff",
         bio: body.bio || null,
-        photo_url: body.photo_url || null,
+        headshot_url: body.headshot_url || body.photo_url || null,
         is_active: body.is_active ?? true,
         display_order: body.display_order ?? 0,
       })

@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
       case "leads": {
         let query = supabase
           .from("leads")
-          .select("id, full_name, email, phone, source, status, interests, notes, created_at, updated_at")
+          .select("id, full_name, email, phone, source, status, interest_areas, notes, created_at, updated_at")
           .order("created_at", { ascending: false });
 
         if (status) query = query.eq("status", status);
@@ -53,35 +53,32 @@ export async function GET(req: NextRequest) {
         const { data, error } = await query;
         if (error) throw error;
         rows = (data || []) as Record<string, unknown>[];
-        columns = ["id", "full_name", "email", "phone", "source", "status", "interests", "notes", "created_at"];
+        columns = ["id", "full_name", "email", "phone", "source", "status", "interest_areas", "notes", "created_at"];
         break;
       }
 
       case "donations": {
         let query = supabase
           .from("donations")
-          .select("id, donor_name, donor_email, amount_cents, currency, status, payment_method, program, is_recurring, created_at")
+          .select("id, donor_name, donor_email, amount, currency, donation_type, frequency, status, is_anonymous, program_id, created_at")
           .order("created_at", { ascending: false });
 
         if (status) query = query.eq("status", status);
         if (dateFrom) query = query.gte("created_at", dateFrom);
         if (dateTo) query = query.lte("created_at", dateTo);
-        if (program) query = query.eq("program", program);
+        if (program) query = query.eq("program_id", program);
 
         const { data, error } = await query;
         if (error) throw error;
-        rows = ((data || []) as Record<string, unknown>[]).map((d) => ({
-          ...d,
-          amount: ((d.amount_cents as number) / 100).toFixed(2),
-        }));
-        columns = ["id", "donor_name", "donor_email", "amount", "currency", "status", "payment_method", "program", "is_recurring", "created_at"];
+        rows = (data || []) as Record<string, unknown>[];
+        columns = ["id", "donor_name", "donor_email", "amount", "currency", "donation_type", "frequency", "status", "is_anonymous", "program_id", "created_at"];
         break;
       }
 
       case "registrations": {
         let query = supabase
-          .from("event_registrations")
-          .select("id, registrant_name, registrant_email, registrant_phone, event_id, status, payment_status, amount_paid, checked_in, checked_in_at, ticket_type, created_at")
+          .from("registrations")
+          .select("id, registrant_name, registrant_email, registrant_phone, event_id, status, payment_status, amount_paid, checked_in, checked_in_at, created_at")
           .order("created_at", { ascending: false });
 
         if (status) query = query.eq("status", status);
@@ -92,7 +89,7 @@ export async function GET(req: NextRequest) {
         const { data, error } = await query;
         if (error) throw error;
         rows = (data || []) as Record<string, unknown>[];
-        columns = ["id", "registrant_name", "registrant_email", "registrant_phone", "event_id", "status", "payment_status", "amount_paid", "checked_in", "ticket_type", "created_at"];
+        columns = ["id", "registrant_name", "registrant_email", "registrant_phone", "event_id", "status", "payment_status", "amount_paid", "checked_in", "created_at"];
         break;
       }
 
