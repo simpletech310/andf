@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import {
-  Heart, Users, Play, Clock, Eye, X,
+  Heart, Play, Clock, Eye, X,
   Calendar, ChevronRight, Tv, Sparkles, Film, Star, Zap, Bell,
   Share2, Megaphone, ArrowRight, Monitor,
 } from "lucide-react";
@@ -52,19 +52,21 @@ interface Video {
   muxPlaybackId?: string;
 }
 
+const MUX_VIDEO_ID = "DvUNmWbAG0100yvsdMvVzTod00dPKsJrL00xu1lG5MmsKIA";
+
 const VIDEOS: Video[] = [
-  { id: "1", title: "Band Camp Summer Showcase 2025", description: "Watch the full performance from our annual Band Camp Summer Showcase featuring talented young musicians performing original compositions and classic arrangements.", category: "Past Streams", duration: "1:42:30", date: "Aug 15, 2025", views: 2847, image: "/images/programs/band-camp-logo.jpg", program: "Band Camp", featured: true },
-  { id: "2", title: "Drone Racing Championship", description: "The finals of our youth Drone Racing Championship — watch as pilots navigate obstacle courses at high speed with commentary and interviews.", category: "Events", duration: "58:15", date: "Jul 22, 2025", views: 1563, image: "/images/programs/drone-teach.jpg", program: "Drone Experience" },
-  { id: "3", title: "Behind the Scenes: TopGolf Experience", description: "Go behind the scenes of our TopGolf Experience program. See how we use golf as a vehicle for mentorship and personal development.", category: "Behind the Scenes", duration: "12:45", date: "Jul 10, 2025", views: 984, image: "/images/programs/topgolf-logo.jpg", program: "TopGolf" },
-  { id: "4", title: "Mentorship Program Spotlight", description: "Hear from mentors and mentees about the impact of our one-on-one mentorship program. Real stories of growth and transformation.", category: "Programs", duration: "28:30", date: "Jun 28, 2025", views: 1205, image: "/images/programs/mentorship-session.jpg", program: "Mentorship" },
-  { id: "5", title: "HBCU Heroes Panel Discussion", description: "A powerful panel discussion with HBCU alumni sharing their journeys, the importance of historically Black colleges, and advice for students.", category: "Past Streams", duration: "1:15:00", date: "Jun 15, 2025", views: 3210, image: "/images/gallery/opening-panel.jpg", program: "HBCU Heroes", featured: true },
-  { id: "6", title: "Youth Music Workshop Highlights", description: "Highlights from our weekend music workshops where young people learn instruments, songwriting, and production from professionals.", category: "Programs", duration: "35:20", date: "Jun 1, 2025", views: 756, image: "/images/gallery/knowledj-teaches.jpg", program: "Band Camp" },
-  { id: "7", title: "Foundation Gala 2025 Recap", description: "Relive the magic of our 2025 Annual Gala — an evening of celebration, awards, and special guest speakers.", category: "Events", duration: "45:10", date: "May 18, 2025", views: 4102, image: "/images/gallery/leadership-group.jpg" },
-  { id: "8", title: "Meet Our Mentors", description: "Get to know the dedicated volunteers who make our mentorship programs possible. Learn what drives them and the impact they see.", category: "Behind the Scenes", duration: "18:45", date: "May 5, 2025", views: 892, image: "/images/gallery/volunteer-leader.jpg", program: "Mentorship" },
-  { id: "9", title: "NASA STEM Day Highlights", description: "Real NASA engineers spent the day with our students, proving that rocket science isn't just for textbooks. See the full experience.", category: "Programs", duration: "42:15", date: "Apr 20, 2025", views: 2105, image: "/images/gallery/nasa-team-teaches.jpg" },
-  { id: "10", title: "Sisters Hangout Launch Event", description: "The inaugural Sisters Hangout event — an empowering afternoon of connection, creativity, and community for young women.", category: "Events", duration: "33:00", date: "Apr 8, 2025", views: 1340, image: "/images/programs/sisters-logo.jpg", program: "Sisters Hangout" },
-  { id: "11", title: "FNF Scholarship Night 2024", description: "The emotional scholarship awards ceremony where deserving students received life-changing educational support.", category: "Past Streams", duration: "1:05:00", date: "Mar 22, 2025", views: 3890, image: "/images/gallery/fnf-scholarship-2024.jpg" },
-  { id: "12", title: "Day in the Life: ANDF Staff", description: "Follow our passionate team through a typical day of changing lives — from program planning to community outreach.", category: "Behind the Scenes", duration: "15:30", date: "Mar 10, 2025", views: 678, image: "/images/gallery/siedah-garrett-dawnn.jpg" },
+  { id: "1", title: "Band Camp Summer Showcase 2025", description: "The full performance from our annual Band Camp Summer Showcase — talented young musicians performing original compositions and classic arrangements in front of a live audience.", category: "Past Streams", duration: "1:42:30", date: "Aug 15, 2025", views: 2847, image: "/images/programs/band-camp-logo.jpg", program: "Band Camp", featured: true, muxPlaybackId: MUX_VIDEO_ID },
+  { id: "2", title: "Drone Experience — Racing Championship Finals", description: "The finals of the ANDF Drone Racing Championship. Young pilots navigate obstacle courses at high speed with live commentary and post-race interviews.", category: "Events", duration: "58:15", date: "Jul 22, 2025", views: 1563, image: "/images/programs/drone-teach.jpg", program: "Drone Experience", muxPlaybackId: MUX_VIDEO_ID },
+  { id: "3", title: "TopGolf Experience: Mentorship on the Green", description: "See how ANDF uses the TopGolf Experience program to pair youth with mentors in a fun, relaxed environment that builds confidence and life skills.", category: "Behind the Scenes", duration: "12:45", date: "Jul 10, 2025", views: 984, image: "/images/programs/topgolf-logo.jpg", program: "TopGolf", muxPlaybackId: MUX_VIDEO_ID },
+  { id: "4", title: "Mentorship Program — Real Stories of Growth", description: "Mentors and mentees share the impact of ANDF's one-on-one mentorship program. Hear firsthand how consistent guidance changes trajectories.", category: "Programs", duration: "28:30", date: "Jun 28, 2025", views: 1205, image: "/images/programs/mentorship-session.jpg", program: "Mentorship", muxPlaybackId: MUX_VIDEO_ID },
+  { id: "5", title: "HBCU Heroes — Alumni Panel Discussion", description: "HBCU alumni share their journeys, the importance of historically Black colleges and universities, and practical advice for the next generation of students.", category: "Past Streams", duration: "1:15:00", date: "Jun 15, 2025", views: 3210, image: "/images/gallery/opening-panel.jpg", program: "HBCU Heroes", featured: true, muxPlaybackId: MUX_VIDEO_ID },
+  { id: "6", title: "Band Camp Workshop — Learning From the Pros", description: "Weekend music workshops where young people learn instruments, songwriting, and music production alongside professional musicians and producers.", category: "Programs", duration: "35:20", date: "Jun 1, 2025", views: 756, image: "/images/gallery/knowledj-teaches.jpg", program: "Band Camp", muxPlaybackId: MUX_VIDEO_ID },
+  { id: "7", title: "ANDF Annual Gala 2025 Recap", description: "Highlights from the 2025 ANDF Annual Gala — an evening celebrating community impact, honoring volunteers, and raising funds for youth programming.", category: "Events", duration: "45:10", date: "May 18, 2025", views: 4102, image: "/images/gallery/leadership-group.jpg", muxPlaybackId: MUX_VIDEO_ID },
+  { id: "8", title: "Meet the ANDF Volunteer Mentors", description: "Get to know the dedicated volunteers who power ANDF mentorship programs. Learn what drives them and the lasting impact they witness in young lives.", category: "Behind the Scenes", duration: "18:45", date: "May 5, 2025", views: 892, image: "/images/gallery/volunteer-leader.jpg", program: "Mentorship", muxPlaybackId: MUX_VIDEO_ID },
+  { id: "9", title: "NASA STEM Day — Engineers Meet Students", description: "Real NASA engineers spent the day with ANDF students, leading hands-on experiments and proving that STEM careers are within reach for every young person.", category: "Programs", duration: "42:15", date: "Apr 20, 2025", views: 2105, image: "/images/gallery/nasa-team-teaches.jpg", muxPlaybackId: MUX_VIDEO_ID },
+  { id: "10", title: "Sisters Hangout — Inaugural Launch Event", description: "The very first Sisters Hangout event — an empowering afternoon of connection, creativity, and community building for young women in the ANDF family.", category: "Events", duration: "33:00", date: "Apr 8, 2025", views: 1340, image: "/images/programs/sisters-logo.jpg", program: "Sisters Hangout", muxPlaybackId: MUX_VIDEO_ID },
+  { id: "11", title: "FNF Scholarship Awards Night 2024", description: "The emotional Friday Night Flights scholarship ceremony where deserving students received life-changing educational support from the ANDF community.", category: "Past Streams", duration: "1:05:00", date: "Mar 22, 2025", views: 3890, image: "/images/gallery/fnf-scholarship-2024.jpg", muxPlaybackId: MUX_VIDEO_ID },
+  { id: "12", title: "A Day in the Life: ANDF Team", description: "Follow the passionate ANDF team through a day of changing lives — from morning program planning to afternoon mentorship sessions and community outreach.", category: "Behind the Scenes", duration: "15:30", date: "Mar 10, 2025", views: 678, image: "/images/gallery/siedah-garrett-dawnn.jpg", muxPlaybackId: MUX_VIDEO_ID },
 ];
 
 
@@ -80,8 +82,6 @@ interface ActiveAd {
   priority: number;
 }
 
-// Mux playback IDs for demo content
-const MUX_CONTENT_PLAYBACK_ID = "DvUNmWbAG0100yvsdMvVzTod00dPKsJrL00xu1lG5MmsKIA";
 const MUX_AD_PLAYBACK_ID = "3w9WlvYAhCZSPnUgrfnwK1mlP0087Kgp802tmOQowAaDU";
 
 // Demo ad — served from Mux
@@ -97,9 +97,8 @@ const DEMO_AD: ActiveAd = {
   priority: 5,
 };
 
-// Demo content — served from Mux with local fallback
+// Local video fallback
 const DEMO_CONTENT_URL = "/videos/andf-content.mp4";
-const DEMO_CONTENT_MUX = MUX_CONTENT_PLAYBACK_ID;
 
 /* ───── helpers ───── */
 
@@ -194,7 +193,6 @@ function FadeIn({ children, className, delay = 0 }: { children: React.ReactNode;
 
 export default function LivePage() {
   const activeChannel = "channel_1";
-  const [isLive] = useState(false);
   const [donationAmount, setDonationAmount] = useState("");
   const [showDonationModal, setShowDonationModal] = useState(false);
   const [donationSuccess, setDonationSuccess] = useState(false);
@@ -271,9 +269,9 @@ export default function LivePage() {
         <div className="mx-auto max-w-5xl px-6 flex flex-wrap justify-center gap-8 sm:gap-16">
           {[
             { icon: Film, num: "12+", label: "Videos" },
-            { icon: Eye, num: "15K+", label: "Total Views" },
+            { icon: Eye, num: "25K+", label: "Total Views" },
             { icon: Clock, num: "50+", label: "Hours of Content" },
-            { icon: Monitor, num: "1", label: "Live Channel" },
+            { icon: Monitor, num: "7", label: "Programs" },
           ].map((s) => (
             <div key={s.label} className="flex items-center gap-3 text-white">
               <s.icon className="h-5 w-5 text-secondary-300" />
@@ -291,18 +289,10 @@ export default function LivePage() {
         <div className="mx-auto max-w-7xl">
           <FadeIn>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-              <div className="flex items-center gap-3">
-                <div className={`flex items-center gap-2 px-4 py-1.5 rounded-full border ${
-                  isLive ? "bg-red-50 border-red-200" : "bg-neutral-100 border-neutral-200"
-                }`}>
-                  <div className={`h-2.5 w-2.5 rounded-full ${isLive ? "bg-red-500 animate-pulse" : "bg-neutral-400"}`} />
-                  <span className={`text-sm font-bold uppercase tracking-wider ${isLive ? "text-red-600" : "text-neutral-500"}`}>
-                    {isLive ? "Live Now" : "Offline"}
-                  </span>
-                </div>
-                <h2 className="font-display text-2xl font-bold text-foreground">Live Stream</h2>
-              </div>
-
+              <h2 className="font-display text-2xl font-bold text-foreground flex items-center gap-3">
+                <Tv className="h-6 w-6 text-primary-500" />
+                A New Day Now!
+              </h2>
             </div>
           </FadeIn>
 
@@ -312,9 +302,8 @@ export default function LivePage() {
               <div className="relative rounded-2xl overflow-hidden border border-border bg-neutral-900">
                 {/* Mux player — demo content with ad insertion at 10s */}
                 <MuxStreamPlayer
-                  playbackId={isLive ? "LIVE_PLAYBACK_ID_1" : DEMO_CONTENT_MUX}
-                  videoUrl={!isLive ? DEMO_CONTENT_URL : undefined}
-                  isLive={isLive}
+                  playbackId={MUX_VIDEO_ID}
+                  videoUrl={DEMO_CONTENT_URL}
                   title="ANDF Now!"
                   channel={activeChannel}
                   ads={activeAds}
@@ -322,18 +311,6 @@ export default function LivePage() {
                   adIntervalMinutes={15}
                   onAdImpression={handleAdImpression}
                 />
-
-                {isLive && (
-                  <div className="absolute top-4 left-4 flex items-center gap-2 z-30">
-                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-600 text-white text-sm font-bold">
-                      <div className="h-2 w-2 rounded-full bg-white animate-pulse" />
-                      LIVE
-                    </div>
-                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/50 backdrop-blur-sm text-white text-sm">
-                      <Users className="h-3.5 w-3.5" /> 142 watching
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* Stream info */}
@@ -501,7 +478,7 @@ export default function LivePage() {
                   <div className="grid grid-cols-1 lg:grid-cols-3">
                     <div className="lg:col-span-2 relative">
                       <MuxStreamPlayer
-                        playbackId={selectedVideo.muxPlaybackId || DEMO_CONTENT_MUX}
+                        playbackId={selectedVideo.muxPlaybackId || MUX_VIDEO_ID}
                         videoUrl={DEMO_CONTENT_URL}
                         title={selectedVideo.title}
                         ads={activeAds}
