@@ -14,6 +14,6 @@ export function getOpenAI() {
 // Keep backward-compatible export
 export const openai = new Proxy({} as OpenAI, {
   get(_, prop) {
-    return (getOpenAI() as Record<string, unknown>)[prop as string];
+    return (getOpenAI() as unknown as Record<string, unknown>)[prop as string];
   },
 });
