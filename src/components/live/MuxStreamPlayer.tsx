@@ -1,8 +1,9 @@
 "use client";
 
 import { useRef, useEffect, useState, useCallback } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Volume2, VolumeX, ExternalLink, SkipForward } from "lucide-react";
+import { Volume2, VolumeX, ExternalLink, SkipForward, Heart } from "lucide-react";
 
 interface Ad {
   id: string;
@@ -29,6 +30,8 @@ interface MuxStreamPlayerProps {
   className?: string;
   autoPlay?: boolean;
   muted?: boolean;
+  showDonateButton?: boolean;
+  onDonateClick?: () => void;
 }
 
 function selectAd(ads: Ad[]): Ad {
@@ -55,6 +58,8 @@ export default function MuxStreamPlayer({
   className = "",
   autoPlay = false,
   muted: initialMuted = false,
+  showDonateButton = true,
+  onDonateClick,
 }: MuxStreamPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const adVideoRef = useRef<HTMLVideoElement>(null);
@@ -339,6 +344,27 @@ export default function MuxStreamPlayer({
             <div className="h-2 w-2 rounded-full bg-white animate-pulse" />
             LIVE
           </div>
+        </div>
+      )}
+
+      {/* Donate button — always visible on video */}
+      {showDonateButton && !showAd && (
+        <div className="absolute top-3 right-3 z-10">
+          {onDonateClick ? (
+            <button
+              onClick={onDonateClick}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-secondary-500 text-white text-xs font-bold shadow-lg hover:bg-secondary-600 transition-colors animate-pulse hover:animate-none"
+            >
+              <Heart className="h-3.5 w-3.5" fill="currentColor" /> Donate
+            </button>
+          ) : (
+            <Link
+              href="/donate"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-secondary-500 text-white text-xs font-bold shadow-lg hover:bg-secondary-600 transition-colors animate-pulse hover:animate-none"
+            >
+              <Heart className="h-3.5 w-3.5" fill="currentColor" /> Donate
+            </Link>
+          )}
         </div>
       )}
     </div>

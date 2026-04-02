@@ -201,6 +201,29 @@ export default function LivePage() {
   const selectedPlayerRef = useRef<HTMLDivElement>(null);
   const [fullscreenVideo, setFullscreenVideo] = useState<Video | null>(null);
   const [activeAds, setActiveAds] = useState<ActiveAd[]>([DEMO_AD]);
+  const [muxData, setMuxData] = useState<{ duration?: string; views?: number; createdAt?: string } | null>(null);
+
+  // Fetch real Mux video data (duration, views, date)
+  useEffect(() => {
+    fetch(`/api/mux/video-data?playbackId=${MUX_VIDEO_ID}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.duration) {
+          setMuxData({
+            duration: data.duration,
+            views: data.views,
+            createdAt: data.createdAt,
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const openDonateModal = useCallback(() => {
+    setDonationAmount("25");
+    setDonationSuccess(false);
+    setShowDonationModal(true);
+  }, []);
 
   // Fetch active ads on mount (merge with demo ad)
   useEffect(() => {
@@ -278,7 +301,7 @@ export default function LivePage() {
         <div className="mx-auto max-w-5xl px-6 flex flex-wrap justify-center gap-8 sm:gap-16">
           {[
             { icon: Film, num: "12+", label: "Videos" },
-            { icon: Eye, num: "25K+", label: "Total Views" },
+            { icon: Eye, num: muxData?.views ? `${(muxData.views / 1000).toFixed(1)}K+` : "25K+", label: "Total Views" },
             { icon: Clock, num: "50+", label: "Hours of Content" },
             { icon: Monitor, num: "7", label: "Programs" },
           ].map((s) => (
@@ -319,6 +342,7 @@ export default function LivePage() {
                   adBreakAt={10}
                   adIntervalMinutes={15}
                   onAdImpression={handleAdImpression}
+                  onDonateClick={openDonateModal}
                 />
               </div>
 
@@ -423,13 +447,13 @@ export default function LivePage() {
                   <div className="flex items-center gap-3">
                     <span className="text-xs font-semibold uppercase tracking-wider text-primary-500">{featuredVideo.category}</span>
                     <span className="text-neutral-300">·</span>
-                    <span className="text-xs text-foreground-muted">{featuredVideo.duration}</span>
+                    <span className="text-xs text-foreground-muted">{muxData?.duration || featuredVideo.duration}</span>
                   </div>
                   <h3 className="font-display text-3xl lg:text-4xl font-bold text-foreground">{featuredVideo.title}</h3>
                   <p className="text-foreground-muted leading-relaxed">{featuredVideo.description}</p>
                   <div className="flex items-center gap-6 text-sm text-foreground-subtle">
                     <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4" />{featuredVideo.date}</span>
-                    <span className="flex items-center gap-1.5"><Eye className="h-4 w-4" />{featuredVideo.views.toLocaleString()} views</span>
+                    <span className="flex items-center gap-1.5"><Eye className="h-4 w-4" />{(muxData?.views || featuredVideo.views).toLocaleString()} views</span>
                   </div>
                   <div className="flex items-center gap-3 pt-2">
                     <button onClick={() => setFullscreenVideo(featuredVideo)} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-primary-500 text-white font-semibold hover:bg-primary-600 transition-colors">
@@ -494,6 +518,7 @@ export default function LivePage() {
                         adBreakAt={10}
                         adIntervalMinutes={10}
                         onAdImpression={handleAdImpression}
+                        onDonateClick={openDonateModal}
                         autoPlay
                       />
                     </div>
@@ -706,6 +731,7 @@ export default function LivePage() {
                   videoUrl="/videos/andf-content.mp4"
                   title={fullscreenVideo.title}
                   autoPlay
+                  onDonateClick={openDonateModal}
                 />
               </div>
             </div>
