@@ -12,6 +12,17 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { loadStripe } from "@stripe/stripe-js";
+import {
+  Elements,
+  CardElement,
+  useStripe,
+  useElements,
+} from "@stripe/react-stripe-js";
+
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
+);
 
 /* ───── lazy-load MuxStreamPlayer (client-only) ───── */
 const MuxStreamPlayer = dynamic(() => import("@/components/live/MuxStreamPlayer"), {
@@ -97,6 +108,83 @@ const DEMO_CONTENT_MUX = MUX_CONTENT_PLAYBACK_ID;
 
 /* ───── helpers ───── */
 
+/* ───── Live Donation Form (inside Stripe Elements) ───── */
+
+function LiveDonationForm({ amount, onSuccess, onCancel }: { amount: number; onSuccess: () => void; onCancel: () => void }) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [processing, setProcessing] = useState(false);
+  const [error, setError] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!stripe || !elements) return;
+    setProcessing(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/donations/create-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount,
+          donorName: name || "Live Stream Donor",
+          donorEmail: email || "",
+          isAnonymous: !name,
+          message: "Donated during live stream",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.details || data.error || "Payment failed");
+
+      const cardElement = elements.getElement(CardElement);
+      if (!cardElement) throw new Error("Card element not found");
+
+      const { error: stripeError } = await stripe.confirmCardPayment(data.clientSecret, {
+        payment_method: { card: cardElement, billing_details: { name: name || "Anonymous", email: email || undefined } },
+      });
+
+      if (stripeError) {
+        setError(stripeError.message || "Payment failed");
+        setProcessing(false);
+        return;
+      }
+
+      onSuccess();
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Payment failed");
+      setProcessing(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="text-center mb-2">
+        <div className="text-3xl font-bold text-secondary-500">${amount}</div>
+        <p className="text-sm text-foreground-muted">Live Stream Donation</p>
+      </div>
+      <Input placeholder="Your name (optional)" value={name} onChange={(e) => setName(e.target.value)} />
+      <Input placeholder="Email (for receipt)" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+      <div className="p-3 rounded-lg bg-background-elevated border border-border">
+        <CardElement options={{ style: { base: { fontSize: "16px", color: "#1C1917", "::placeholder": { color: "#78716C" } } } }} />
+      </div>
+      {error && <p className="text-red-400 text-sm">{error}</p>}
+      <Button type="submit" variant="primary" className="w-full" disabled={processing || !stripe}>
+        {processing ? (
+          <><span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Processing...</>
+        ) : (
+          <><Heart className="h-4 w-4" /> Donate ${amount}</>
+        )}
+      </Button>
+      <button type="button" onClick={onCancel} className="w-full text-sm text-foreground-muted hover:text-foreground transition-colors">
+        Cancel
+      </button>
+    </form>
+  );
+}
+
 function FadeIn({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
@@ -113,6 +201,8 @@ export default function LivePage() {
   const [activeChannel, setActiveChannel] = useState<"channel_1" | "channel_2">("channel_1");
   const [isLive] = useState(false);
   const [donationAmount, setDonationAmount] = useState("");
+  const [showDonationModal, setShowDonationModal] = useState(false);
+  const [donationSuccess, setDonationSuccess] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
   const [activeAds, setActiveAds] = useState<ActiveAd[]>([DEMO_AD]);
@@ -312,7 +402,15 @@ export default function LivePage() {
                   ))}
                 </div>
                 <Input placeholder="Custom amount" type="number" min={1} value={donationAmount} onChange={(e) => setDonationAmount(e.target.value)} />
-                <Button variant="primary" className="w-full" disabled={!isLive}>
+                <Button
+                  variant="primary"
+                  className="w-full"
+                  disabled={!donationAmount || Number(donationAmount) < 1}
+                  onClick={() => {
+                    setDonationSuccess(false);
+                    setShowDonationModal(true);
+                  }}
+                >
                   <Heart className="h-4 w-4" />
                   Donate {donationAmount ? `$${donationAmount}` : ""}
                 </Button>
@@ -656,6 +754,80 @@ export default function LivePage() {
           </FadeIn>
         </div>
       </section>
+
+      {/* ── Donation Modal ── */}
+      <AnimatePresence>
+        {showDonationModal && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {/* Backdrop */}
+            <motion.div
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowDonationModal(false)}
+            />
+
+            {/* Modal */}
+            <motion.div
+              className="relative w-full max-w-md rounded-2xl bg-background-card border border-border p-6 shadow-2xl"
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: "spring", duration: 0.5 }}
+            >
+              <button
+                onClick={() => setShowDonationModal(false)}
+                className="absolute top-4 right-4 h-8 w-8 rounded-full bg-background-elevated flex items-center justify-center text-foreground-muted hover:text-foreground transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+
+              {donationSuccess ? (
+                <div className="text-center py-6 space-y-4">
+                  <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center mx-auto">
+                    <Heart className="h-8 w-8 text-green-600" />
+                  </div>
+                  <h3 className="font-display text-2xl font-bold text-foreground">Thank You!</h3>
+                  <p className="text-foreground-muted">
+                    Your ${donationAmount} donation helps us continue changing lives. You&apos;re making a real difference!
+                  </p>
+                  <Button
+                    variant="primary"
+                    className="mt-4"
+                    onClick={() => {
+                      setShowDonationModal(false);
+                      setDonationSuccess(false);
+                      setDonationAmount("");
+                    }}
+                  >
+                    Continue Watching
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="text-center">
+                    <h3 className="font-display text-xl font-bold text-foreground">Support ANDF Live</h3>
+                    <p className="text-sm text-foreground-muted mt-1">Your donation directly funds youth programs</p>
+                  </div>
+                  <Elements stripe={stripePromise}>
+                    <LiveDonationForm
+                      amount={Number(donationAmount)}
+                      onSuccess={() => setDonationSuccess(true)}
+                      onCancel={() => setShowDonationModal(false)}
+                    />
+                  </Elements>
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
