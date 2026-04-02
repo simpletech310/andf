@@ -83,6 +83,7 @@ export async function POST(req: NextRequest) {
       .from("program_applications")
       .insert({
         program_id: program.id,
+        program_slug: programSlug,
         applicant_name: applicantName,
         applicant_email: applicantEmail,
         applicant_phone: applicantPhone,
@@ -106,7 +107,7 @@ export async function POST(req: NextRequest) {
           email: applicantEmail,
           full_name: applicantName,
           phone: applicantPhone,
-          source: "program_application",
+          source: "website",
           status: "new",
           last_interaction_at: new Date().toISOString(),
         },
@@ -119,7 +120,7 @@ export async function POST(req: NextRequest) {
     if (lead) {
       await supabase.from("lead_interactions").insert({
         lead_id: lead.id,
-        interaction_type: "program_application",
+        interaction_type: "form_submission",
         description: `Applied to program: ${program.title}`,
         metadata: { application_id: application.id, program_slug: programSlug },
       });
