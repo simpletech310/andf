@@ -4,6 +4,7 @@ import { use, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import {
   ArrowLeft,
   ArrowRight,
@@ -29,6 +30,17 @@ import {
 } from "@/components/shared/section-wrapper";
 import { BrandDivider } from "@/components/shared/brand-divider";
 import { Button } from "@/components/ui/button";
+
+const MuxStreamPlayer = dynamic(() => import("@/components/live/MuxStreamPlayer"), {
+  ssr: false,
+  loading: () => (
+    <div className="aspect-video bg-neutral-100 rounded-2xl flex items-center justify-center">
+      <div className="h-8 w-8 border-3 border-primary-500/30 border-t-primary-500 rounded-full animate-spin" />
+    </div>
+  ),
+});
+
+const MUX_VIDEO_ID = "DvUNmWbAG0100yvsdMvVzTod00dPKsJrL00xu1lG5MmsKIA";
 
 /* ─────────────────────────────────────────────── */
 /*  Program data                                   */
@@ -428,85 +440,25 @@ function Lightbox({
 /* ─────────────────────────────────────────────── */
 
 function VideoSection({
-  videoId,
   videoTitle,
-  heroImage,
-  color,
 }: {
   videoId?: string;
   videoTitle?: string;
   heroImage?: string;
   color: string;
 }) {
-  const [playing, setPlaying] = useState(false);
-
-  // If there's a YouTube video ID, show the embed player
-  if (videoId && playing) {
-    return (
-      <SectionWrapper className="py-16 px-6">
-        <div className="mx-auto max-w-5xl">
-          <h2 className="font-display text-3xl font-bold text-foreground mb-6">
-            {videoTitle || "Watch the Highlights"}
-          </h2>
-          <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl bg-neutral-900">
-            <iframe
-              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
-              title={videoTitle || "Program Video"}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="absolute inset-0 w-full h-full"
-            />
-          </div>
-        </div>
-      </SectionWrapper>
-    );
-  }
-
-  // Show thumbnail with play button
   return (
     <SectionWrapper className="py-16 px-6">
       <div className="mx-auto max-w-5xl">
         <h2 className="font-display text-3xl font-bold text-foreground mb-6">
           {videoTitle || "Watch the Highlights"}
         </h2>
-        <div
-          className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl group cursor-pointer"
-          onClick={() => videoId && setPlaying(true)}
-        >
-          {heroImage ? (
-            <Image
-              src={heroImage}
-              alt={videoTitle || "Program video thumbnail"}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-              sizes="(max-width: 768px) 100vw, 1024px"
-            />
-          ) : (
-            <div className={`absolute inset-0 bg-gradient-to-br ${color}`} />
-          )}
-
-          {/* Dark overlay */}
-          <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
-
-          {/* Play button */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <motion.div
-              className="h-20 w-20 md:h-24 md:w-24 rounded-full bg-secondary-500 flex items-center justify-center shadow-2xl"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Play className="h-8 w-8 md:h-10 md:w-10 text-white ml-1" fill="white" />
-            </motion.div>
-          </div>
-
-          {/* Video label */}
-          {!videoId && (
-            <div className="absolute bottom-4 left-4 right-4 text-center">
-              <span className="text-white/90 text-sm bg-black/50 px-4 py-2 rounded-full">
-                Video coming soon
-              </span>
-            </div>
-          )}
+        <div className="relative w-full rounded-2xl overflow-hidden shadow-xl bg-neutral-900">
+          <MuxStreamPlayer
+            playbackId={MUX_VIDEO_ID}
+            videoUrl="/videos/andf-content.mp4"
+            title={videoTitle || "Program Video"}
+          />
         </div>
       </div>
     </SectionWrapper>
