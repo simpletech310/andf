@@ -1,0 +1,277 @@
+@import "tailwindcss";
+
+:root {
+  /* Primary Blue (ANDF brand #2F3192) */
+  --primary-50: #ECECF8;
+  --primary-100: #D0D0EE;
+  --primary-200: #A5A6DD;
+  --primary-300: #7A7CCC;
+  --primary-400: #5254B5;
+  --primary-500: #2F3192;
+  --primary-600: #272878;
+  --primary-700: #1E1F5E;
+  --primary-800: #151644;
+  --primary-900: #0C0D2A;
+
+  /* Secondary Orange (sunrise element) */
+  --secondary-50: #FFF5EB;
+  --secondary-100: #FFE5CC;
+  --secondary-200: #FFCC99;
+  --secondary-300: #FFB366;
+  --secondary-400: #FF9933;
+  --secondary-500: #F07D1A;
+  --secondary-600: #CC6600;
+  --secondary-700: #994D00;
+  --secondary-800: #663300;
+  --secondary-900: #3D1F00;
+
+  /* Accent Teal */
+  --accent-50: #E6FAF5;
+  --accent-100: #B3F0E0;
+  --accent-200: #80E6CC;
+  --accent-300: #4DDCB7;
+  --accent-400: #26D1A5;
+  --accent-500: #0DBF94;
+  --accent-600: #0A9975;
+  --accent-700: #077357;
+  --accent-800: #054D3A;
+  --accent-900: #02261D;
+
+  /* Gold (retained for donation moments) */
+  --gold-50: #FFF9E6;
+  --gold-100: #FFF0BF;
+  --gold-200: #FFE599;
+  --gold-300: #F5D26E;
+  --gold-400: #E5BE5A;
+  --gold-500: #D4A843;
+  --gold-600: #B8912E;
+  --gold-700: #8C6D1F;
+  --gold-800: #604A14;
+  --gold-900: #34270B;
+
+  /* Warm Neutrals */
+  --neutral-50: #FAFAF8;
+  --neutral-100: #F5F3F0;
+  --neutral-200: #E8E5E0;
+  --neutral-300: #D4D0CA;
+  --neutral-400: #A8A29E;
+  --neutral-500: #78716C;
+  --neutral-600: #57534E;
+  --neutral-700: #44403C;
+  --neutral-800: #292524;
+  --neutral-900: #1C1917;
+
+  /* Semantic tokens — Light mode */
+  --background: #FAFAF8;
+  --background-card: #FFFFFF;
+  --background-elevated: #F5F3F0;
+  --foreground: #1C1917;
+  --foreground-muted: #57534E;
+  --foreground-subtle: #78716C;
+
+  --border: #E8E5E0;
+  --border-hover: #D4D0CA;
+  --ring: rgba(47, 49, 146, 0.4);
+}
+
+/* Admin dark theme scope */
+[data-theme="dark"] {
+  --background: #0A0A0A;
+  --background-card: #141414;
+  --background-elevated: #1C1C1C;
+  --foreground: #FAFAFA;
+  --foreground-muted: #A1A1AA;
+  --foreground-subtle: #71717A;
+  --border: rgba(212, 168, 67, 0.1);
+  --border-hover: rgba(212, 168, 67, 0.3);
+  --ring: rgba(212, 168, 67, 0.4);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-background-card: var(--background-card);
+  --color-background-elevated: var(--background-elevated);
+  --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-foreground-subtle: var(--foreground-subtle);
+
+  --color-primary-50: var(--primary-50);
+  --color-primary-100: var(--primary-100);
+  --color-primary-200: var(--primary-200);
+  --color-primary-300: var(--primary-300);
+  --color-primary-400: var(--primary-400);
+  --color-primary-500: var(--primary-500);
+  --color-primary-600: var(--primary-600);
+  --color-primary-700: var(--primary-700);
+  --color-primary-800: var(--primary-800);
+  --color-primary-900: var(--primary-900);
+
+  --color-secondary-50: var(--secondary-50);
+  --color-secondary-100: var(--secondary-100);
+  --color-secondary-200: var(--secondary-200);
+  --color-secondary-300: var(--secondary-300);
+  --color-secondary-400: var(--secondary-400);
+  --color-secondary-500: var(--secondary-500);
+  --color-secondary-600: var(--secondary-600);
+  --color-secondary-700: var(--secondary-700);
+  --color-secondary-800: var(--secondary-800);
+  --color-secondary-900: var(--secondary-900);
+
+  --color-accent-50: var(--accent-50);
+  --color-accent-100: var(--accent-100);
+  --color-accent-200: var(--accent-200);
+  --color-accent-300: var(--accent-300);
+  --color-accent-400: var(--accent-400);
+  --color-accent-500: var(--accent-500);
+  --color-accent-600: var(--accent-600);
+  --color-accent-700: var(--accent-700);
+  --color-accent-800: var(--accent-800);
+  --color-accent-900: var(--accent-900);
+
+  --color-gold-50: var(--gold-50);
+  --color-gold-100: var(--gold-100);
+  --color-gold-200: var(--gold-200);
+  --color-gold-300: var(--gold-300);
+  --color-gold-400: var(--gold-400);
+  --color-gold-500: var(--gold-500);
+  --color-gold-600: var(--gold-600);
+  --color-gold-700: var(--gold-700);
+  --color-gold-800: var(--gold-800);
+  --color-gold-900: var(--gold-900);
+
+  --color-neutral-50: var(--neutral-50);
+  --color-neutral-100: var(--neutral-100);
+  --color-neutral-200: var(--neutral-200);
+  --color-neutral-300: var(--neutral-300);
+  --color-neutral-400: var(--neutral-400);
+  --color-neutral-500: var(--neutral-500);
+  --color-neutral-600: var(--neutral-600);
+  --color-neutral-700: var(--neutral-700);
+  --color-neutral-800: var(--neutral-800);
+  --color-neutral-900: var(--neutral-900);
+
+  --color-border: var(--border);
+  --color-border-hover: var(--border-hover);
+  --color-ring: var(--ring);
+
+  --font-display: "Poppins", system-ui, sans-serif;
+  --font-sans: "Poppins", system-ui, sans-serif;
+
+  --animate-fade-up: fade-up 0.6s ease-out forwards;
+  --animate-fade-in: fade-in 0.6s ease-out forwards;
+  --animate-shimmer: shimmer 2s linear infinite;
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-pulse-brand: pulse-brand 2s ease-in-out infinite;
+  --animate-bounce-slow: bounce-slow 2s ease-in-out infinite;
+  --animate-counter: counter 1.5s ease-out forwards;
+  --animate-slide-in-right: slide-in-right 0.4s ease-out forwards;
+  --animate-scroll-left: scroll-left 30s linear infinite;
+  --animate-scroll-right: scroll-right 30s linear infinite;
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  @keyframes pulse-brand {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(26, 115, 212, 0.3); }
+    50% { box-shadow: 0 0 20px 5px rgba(26, 115, 212, 0.15); }
+  }
+  @keyframes bounce-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  @keyframes slide-in-right {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes counter {
+    from { opacity: 0; transform: scale(0.5); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes scroll-left {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes scroll-right {
+    from { transform: translateX(-50%); }
+    to { transform: translateX(0); }
+  }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-600) var(--background-elevated);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(26, 115, 212, 0.2);
+  color: var(--foreground);
+}
+
+/* Brand gradient text utility */
+.text-brand-gradient {
+  background: linear-gradient(135deg, var(--primary-500), var(--secondary-500));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Keep gold gradient for backward compat in admin */
+.text-gold-gradient {
+  background: linear-gradient(135deg, var(--gold-400), var(--gold-500), var(--gold-600));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass card effect (admin dark theme) */
+.glass-card {
+  background: rgba(20, 20, 20, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 168, 67, 0.1);
+}
+
+.glass-card:hover {
+  border-color: rgba(212, 168, 67, 0.3);
+  box-shadow: 0 0 30px rgba(212, 168, 67, 0.08);
+}
+
+/* Brand shimmer line */
+.gold-shimmer {
+  background: linear-gradient(90deg, transparent, var(--primary-500), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+}

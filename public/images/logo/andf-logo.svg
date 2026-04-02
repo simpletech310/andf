@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Orange/gold circle background -->
+  <circle cx="100" cy="100" r="95" fill="#E8941A"/>
+
+  <!-- Subtle gradient overlay for depth -->
+  <defs>
+    <radialGradient id="circleGrad" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#F0A830"/>
+      <stop offset="100%" stop-color="#D4800E"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="100" cy="100" r="95" fill="url(#circleGrad)"/>
+  <circle cx="100" cy="100" r="95" fill="url(#glow)"/>
+
+  <!-- Person silhouette reaching upward - white -->
+  <path d="
+    M 105 42
+    C 111 42, 116 47, 116 53
+    C 116 59, 111 64, 105 64
+    C 99 64, 94 59, 94 53
+    C 94 47, 99 42, 105 42
+    Z
+  " fill="white"/>
+
+  <!-- Body reaching up and to the right -->
+  <path d="
+    M 108 66
+    C 112 66, 116 68, 118 72
+    L 138 108
+    C 140 112, 138 116, 134 118
+    C 130 120, 126 118, 124 114
+    L 112 90
+    L 108 100
+    L 120 140
+    C 122 146, 118 152, 112 152
+    C 108 152, 104 148, 103 144
+    L 95 114
+    L 87 144
+    C 86 148, 82 152, 78 152
+    C 72 152, 68 146, 70 140
+    L 82 100
+    L 78 90
+    L 66 114
+    C 64 118, 60 120, 56 118
+    C 52 116, 50 112, 52 108
+    L 72 72
+    C 74 68, 78 66, 82 66
+    Z
+  " fill="white"/>
+
+  <!-- Reaching arm up -->
+  <path d="
+    M 118 72
+    L 140 48
+    C 143 44, 148 44, 151 47
+    C 154 50, 153 55, 150 58
+    L 128 80
+    Z
+  " fill="white"/>
+</svg>
