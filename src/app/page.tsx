@@ -10,20 +10,23 @@ import { ProgramsPreview } from "@/components/home/programs-preview";
 import { PartnersSection } from "@/components/home/partners-section";
 import { TestimonialsSlider } from "@/components/home/testimonials-slider";
 import { DonationCTA } from "@/components/home/donation-cta";
+import { usePageContent, getSectionContent } from "@/lib/hooks/use-page-content";
 
 export default function HomePage() {
+  const { contentMap } = usePageContent("home");
+
   return (
     <>
       <Navbar />
       <main>
-        <HeroSection />
+        <HeroSection cms={contentMap.hero?.content} />
         <ANDFNowSection />
         <EventsCarousel />
-        <ImpactStats />
+        <ImpactStats cms={contentMap.impact_stats?.content} />
         <ProgramsPreview />
         <PartnersSection />
         <TestimonialsSlider />
-        <DonationCTA />
+        <DonationCTA cms={contentMap.donation_cta?.content} />
       </main>
       <Footer />
     </>

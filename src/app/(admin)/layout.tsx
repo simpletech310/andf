@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard, Calendar, DollarSign, Users, FileText, Radio, Settings,
   ChevronLeft, ChevronRight, LogOut, Menu, X, Music, Megaphone,
-  ClipboardList, Film, Shield
+  ClipboardList, Film, Shield, Globe, Image as ImageIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
@@ -18,21 +18,61 @@ interface NavItem {
   requiredRole?: string;
 }
 
-const navItems: NavItem[] = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/events", label: "Events", icon: Calendar },
-  { href: "/admin/applications", label: "Applications", icon: ClipboardList },
-  { href: "/admin/donations", label: "Donations", icon: DollarSign },
-  { href: "/admin/leads", label: "Leads / CRM", icon: Users },
-  { href: "/admin/content/programs", label: "Programs", icon: Music },
-  { href: "/admin/content/team", label: "Team", icon: Users },
-  { href: "/admin/content/testimonials", label: "Testimonials", icon: FileText },
-  { href: "/admin/streams", label: "Live Streams", icon: Radio },
-  { href: "/admin/videos", label: "Videos", icon: Film },
-  { href: "/admin/ads", label: "Ad Sponsors", icon: Megaphone },
-  { href: "/admin/staff", label: "Staff", icon: Shield, requiredRole: "super_admin" },
-  { href: "/admin/settings", label: "Settings", icon: Settings },
+interface NavGroup {
+  label: string;
+  items: NavItem[];
+}
+
+const navGroups: NavGroup[] = [
+  {
+    label: "",
+    items: [
+      { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+    ],
+  },
+  {
+    label: "Content",
+    items: [
+      { href: "/admin/content/pages", label: "Website Pages", icon: Globe },
+      { href: "/admin/content/programs", label: "Programs", icon: Music },
+      { href: "/admin/content/team", label: "Team", icon: Users },
+      { href: "/admin/content/testimonials", label: "Testimonials", icon: FileText },
+      { href: "/admin/media", label: "Media Library", icon: ImageIcon },
+    ],
+  },
+  {
+    label: "Events",
+    items: [
+      { href: "/admin/events", label: "All Events", icon: Calendar },
+      { href: "/admin/applications", label: "Applications", icon: ClipboardList },
+    ],
+  },
+  {
+    label: "Fundraising",
+    items: [
+      { href: "/admin/donations", label: "Donations", icon: DollarSign },
+      { href: "/admin/leads", label: "Leads / CRM", icon: Users },
+    ],
+  },
+  {
+    label: "Video & Streaming",
+    items: [
+      { href: "/admin/streams", label: "Live Streams", icon: Radio },
+      { href: "/admin/videos", label: "Video Library", icon: Film },
+      { href: "/admin/ads", label: "Ad Sponsors", icon: Megaphone },
+    ],
+  },
+  {
+    label: "System",
+    items: [
+      { href: "/admin/staff", label: "Staff", icon: Shield, requiredRole: "super_admin" },
+      { href: "/admin/settings", label: "Settings", icon: Settings },
+    ],
+  },
 ];
+
+// Flatten for backward compat
+const navItems: NavItem[] = navGroups.flatMap((g) => g.items);
 
 interface UserProfile {
   full_name: string | null;
@@ -117,29 +157,50 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         {/* Nav */}
         <nav className="flex-1 py-4 overflow-y-auto">
-          <ul className="space-y-1 px-3">
-            {filteredNavItems.map((item) => {
-              const isActive = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
+          <div className="space-y-4 px-3">
+            {navGroups.map((group) => {
+              const groupItems = group.items.filter((item) => {
+                if (item.requiredRole && userProfile?.role !== item.requiredRole) return false;
+                return true;
+              });
+              if (groupItems.length === 0) return null;
               return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    onClick={() => setMobileOpen(false)}
-                    className={cn(
-                      "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-                      isActive
-                        ? "bg-gold-500/10 text-gold-500"
-                        : "text-foreground-muted hover:text-foreground hover:bg-background-elevated"
-                    )}
-                    title={collapsed ? item.label : undefined}
-                  >
-                    <item.icon className="h-5 w-5 shrink-0" />
-                    {!collapsed && <span>{item.label}</span>}
-                  </Link>
-                </li>
+                <div key={group.label || "main"}>
+                  {group.label && !collapsed && (
+                    <div className="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-foreground-subtle">
+                      {group.label}
+                    </div>
+                  )}
+                  {group.label && collapsed && (
+                    <div className="mx-3 mb-1.5 h-px bg-border" />
+                  )}
+                  <ul className="space-y-0.5">
+                    {groupItems.map((item) => {
+                      const isActive = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
+                      return (
+                        <li key={item.href}>
+                          <Link
+                            href={item.href}
+                            onClick={() => setMobileOpen(false)}
+                            className={cn(
+                              "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                              isActive
+                                ? "bg-gold-500/10 text-gold-500"
+                                : "text-foreground-muted hover:text-foreground hover:bg-background-elevated"
+                            )}
+                            title={collapsed ? item.label : undefined}
+                          >
+                            <item.icon className="h-5 w-5 shrink-0" />
+                            {!collapsed && <span>{item.label}</span>}
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
               );
             })}
-          </ul>
+          </div>
         </nav>
 
         {/* Bottom */}

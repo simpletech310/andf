@@ -3,14 +3,19 @@
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { AnimatedCounter } from "@/components/shared/animated-counter";
 
-const stats = [
+interface StatsContent {
+  stats?: { target: number; prefix?: string; suffix?: string; label: string; description?: string }[];
+}
+
+const DEFAULT_STATS = [
   { target: 2500, suffix: "+", label: "Youth Served", description: "Young lives impacted" },
   { target: 12, suffix: "", label: "Programs", description: "Active initiatives" },
   { target: 85, suffix: "+", label: "Events Hosted", description: "Transformative experiences" },
   { target: 150, prefix: "$", suffix: "K+", label: "Funds Raised", description: "Community support" },
 ];
 
-export function ImpactStats() {
+export function ImpactStats({ cms }: { cms?: StatsContent }) {
+  const stats = cms?.stats?.length ? cms.stats : DEFAULT_STATS;
   return (
     <SectionWrapper className="py-20 px-6">
       <div className="mx-auto max-w-6xl">

@@ -6,13 +6,40 @@ import Image from "next/image";
 import { ChevronDown, Heart, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export function HeroSection() {
+interface HeroContent {
+  label?: string;
+  title_line1?: string;
+  title_line2?: string;
+  title_line3?: string;
+  subtitle?: string;
+  background_image?: string;
+  cta1_text?: string;
+  cta1_link?: string;
+  cta2_text?: string;
+  cta2_link?: string;
+}
+
+const DEFAULTS: HeroContent = {
+  label: "Empowering Youth Since Day One",
+  title_line1: "Building",
+  title_line2: "Tomorrow's",
+  title_line3: "Leaders",
+  subtitle: "A New Day Foundation creates transformative experiences for young people through music, technology, mentorship, and community — shaping the future, one life at a time.",
+  background_image: "/images/hero/community-group.jpg",
+  cta1_text: "Explore Programs",
+  cta1_link: "/programs",
+  cta2_text: "Make a Donation",
+  cta2_link: "/donate",
+};
+
+export function HeroSection({ cms }: { cms?: HeroContent }) {
+  const c = { ...DEFAULTS, ...cms };
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background photo */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/hero/community-group.jpg"
+          src={c.background_image!}
           alt="A New Day Foundation community"
           fill
           className="object-cover"
@@ -38,7 +65,7 @@ export function HeroSection() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
           >
-            Empowering Youth Since Day One
+            {c.label}
           </motion.span>
 
           {/* Main heading */}
@@ -48,11 +75,11 @@ export function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.7 }}
           >
-            <span className="text-neutral-900">Building</span>
+            <span className="text-neutral-900">{c.title_line1}</span>
             <br />
-            <span className="text-brand-gradient">Tomorrow&apos;s</span>
+            <span className="text-brand-gradient">{c.title_line2}</span>
             <br />
-            <span className="text-neutral-900">Leaders</span>
+            <span className="text-neutral-900">{c.title_line3}</span>
           </motion.h1>
 
           {/* Subtitle */}
@@ -62,9 +89,7 @@ export function HeroSection() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.6 }}
           >
-            A New Day Foundation creates transformative experiences for young people
-            through music, technology, mentorship, and community — shaping the future,
-            one life at a time.
+            {c.subtitle}
           </motion.p>
 
           {/* CTAs */}
@@ -74,16 +99,16 @@ export function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.5 }}
           >
-            <Link href="/programs">
+            <Link href={c.cta1_link!}>
               <Button size="lg" variant="outline" className="group border-primary-500/80 text-primary-700 hover:bg-primary-500 hover:text-white">
-                Explore Programs
+                {c.cta1_text}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
-            <Link href="/donate">
+            <Link href={c.cta2_link!}>
               <Button size="lg" variant="donate" className="group">
                 <Heart className="h-4 w-4" />
-                Make a Donation
+                {c.cta2_text}
               </Button>
             </Link>
           </motion.div>
