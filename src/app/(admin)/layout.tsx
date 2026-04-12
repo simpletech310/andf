@@ -6,7 +6,8 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard, Calendar, DollarSign, Users, FileText, Radio, Settings,
   ChevronLeft, ChevronRight, LogOut, Menu, X, Music, Megaphone,
-  ClipboardList, Film, Shield, Globe, Image as ImageIcon
+  ClipboardList, Film, Shield, Globe, Image as ImageIcon, Target,
+  UserCheck, BarChart3, ScrollText, Lock
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
@@ -45,12 +46,14 @@ const navGroups: NavGroup[] = [
     items: [
       { href: "/admin/events", label: "All Events", icon: Calendar },
       { href: "/admin/applications", label: "Applications", icon: ClipboardList },
+      { href: "/admin/participants", label: "Participants", icon: UserCheck },
     ],
   },
   {
     label: "Fundraising",
     items: [
       { href: "/admin/donations", label: "Donations", icon: DollarSign },
+      { href: "/admin/donations/campaigns", label: "Campaigns", icon: Target },
       { href: "/admin/leads", label: "Leads / CRM", icon: Users },
     ],
   },
@@ -60,6 +63,7 @@ const navGroups: NavGroup[] = [
       { href: "/admin/streams", label: "Live Streams", icon: Radio },
       { href: "/admin/videos", label: "Video Library", icon: Film },
       { href: "/admin/ads", label: "Ad Sponsors", icon: Megaphone },
+      { href: "/admin/ads/analytics", label: "Ad Analytics", icon: BarChart3 },
     ],
   },
   {
@@ -67,6 +71,8 @@ const navGroups: NavGroup[] = [
     items: [
       { href: "/admin/staff", label: "Staff", icon: Shield, requiredRole: "super_admin" },
       { href: "/admin/settings", label: "Settings", icon: Settings },
+      { href: "/admin/settings/roles", label: "Roles", icon: Lock, requiredRole: "super_admin" },
+      { href: "/admin/settings/audit-log", label: "Audit Log", icon: ScrollText, requiredRole: "super_admin" },
     ],
   },
 ];
