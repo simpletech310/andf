@@ -72,7 +72,7 @@ export function ContentBlockEditor({ block, onSave, onDelete, isDragging }: Cont
     <div
       className={cn(
         "rounded-xl border transition-all",
-        isDragging ? "border-gold-500 shadow-lg" : "border-border",
+        isDragging ? "border-primary-500 shadow-lg" : "border-border",
         !block.is_visible && "opacity-50",
         editing ? "bg-background-card" : "bg-background-card/50 hover:bg-background-card"
       )}
@@ -120,7 +120,7 @@ export function ContentBlockEditor({ block, onSave, onDelete, isDragging }: Cont
           {onDelete && (
             <button
               onClick={() => onDelete(block.id)}
-              className="p-1.5 rounded-md text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
+              className="p-1.5 rounded-md text-red-600 hover:text-red-500 hover:bg-red-500/10 transition-colors"
               title="Delete section"
             >
               <Trash2 className="h-4 w-4" />

@@ -103,10 +103,10 @@ export default function AdminEventsPage() {
 
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="h-8 w-8 animate-spin text-gold-500" />
+          <Loader2 className="h-8 w-8 animate-spin text-primary-500" />
         </div>
       ) : error ? (
-        <div className="text-center py-20 text-red-400">{error}</div>
+        <div className="text-center py-20 text-red-600">{error}</div>
       ) : (
         <Card hover={false}>
           <CardContent className="p-0">
@@ -127,7 +127,7 @@ export default function AdminEventsPage() {
                     <tr key={event.id} className="border-b border-border last:border-0 hover:bg-background-elevated/50 transition-colors">
                       <td className="px-6 py-4">
                         <div>
-                          <Link href={`/admin/events/${event.id}`} className="text-sm font-medium text-foreground hover:text-gold-500 transition-colors">
+                          <Link href={`/admin/events/${event.id}`} className="text-sm font-medium text-foreground hover:text-primary-600 transition-colors">
                             {event.title}
                           </Link>
                           <div className="text-xs text-foreground-subtle mt-0.5">
@@ -137,7 +137,7 @@ export default function AdminEventsPage() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2 text-sm text-foreground-muted">
-                          <Calendar className="h-4 w-4 text-gold-500" /> {formatDate(event.start_date)}
+                          <Calendar className="h-4 w-4 text-primary-600" /> {formatDate(event.start_date)}
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -151,7 +151,7 @@ export default function AdminEventsPage() {
                         </div>
                         {event.capacity && (
                           <div className="w-20 h-1.5 rounded-full bg-background-elevated mt-1">
-                            <div className="h-full rounded-full bg-gold-500" style={{ width: `${Math.min((event.registration_count / event.capacity) * 100, 100)}%` }} />
+                            <div className="h-full rounded-full bg-primary-500" style={{ width: `${Math.min((event.registration_count / event.capacity) * 100, 100)}%` }} />
                           </div>
                         )}
                       </td>

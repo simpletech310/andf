@@ -20,10 +20,10 @@ interface AuditEntry {
 }
 
 const ACTION_COLORS: Record<string, string> = {
-  create: "bg-emerald-500/10 text-emerald-400",
+  create: "bg-emerald-500/10 text-emerald-600",
   update: "bg-blue-500/10 text-blue-400",
-  delete: "bg-red-500/10 text-red-400",
-  login: "bg-gold-500/10 text-gold-500",
+  delete: "bg-red-500/10 text-red-600",
+  login: "bg-primary-50 text-primary-600",
   export: "bg-purple-500/10 text-purple-400",
 };
 

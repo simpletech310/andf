@@ -64,7 +64,7 @@ function SortableField({
       style={style}
       className={cn(
         "rounded-lg border bg-background-card transition-all",
-        isDragging ? "border-gold-500 shadow-lg" : "border-border"
+        isDragging ? "border-primary-500 shadow-lg" : "border-border"
       )}
     >
       <div className="flex items-center gap-2 p-3">
@@ -82,14 +82,14 @@ function SortableField({
         <div className="flex items-center gap-1 shrink-0">
           <button
             onClick={() => onUpdate({ ...field, required: !field.required })}
-            className={cn("text-xs px-1.5 py-0.5 rounded", field.required ? "bg-red-500/10 text-red-400" : "text-foreground-subtle hover:text-foreground-muted")}
+            className={cn("text-xs px-1.5 py-0.5 rounded", field.required ? "bg-red-500/10 text-red-600" : "text-foreground-subtle hover:text-foreground-muted")}
           >
             {field.required ? "Required" : "Optional"}
           </button>
           <button onClick={() => setExpanded(!expanded)} className="p-1 text-foreground-muted hover:text-foreground">
             {expanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
           </button>
-          <button onClick={onRemove} className="p-1 text-red-400 hover:text-red-300">
+          <button onClick={onRemove} className="p-1 text-red-600 hover:text-red-500">
             <Trash2 className="h-3.5 w-3.5" />
           </button>
         </div>
@@ -176,7 +176,7 @@ export function FormBuilder({ fields, onChange }: FormBuilderProps) {
             <button
               key={ft.type}
               onClick={() => addField(ft.type)}
-              className="flex items-center gap-2 p-3 rounded-lg border border-border hover:border-gold-500/30 hover:bg-gold-500/5 transition-all"
+              className="flex items-center gap-2 p-3 rounded-lg border border-border hover:border-primary-200 hover:bg-primary-50 transition-all"
             >
               <ft.icon className="h-4 w-4 text-foreground-muted" />
               <span className="text-sm text-foreground">{ft.label}</span>

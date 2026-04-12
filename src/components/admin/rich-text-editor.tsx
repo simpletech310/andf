@@ -37,7 +37,7 @@ function ToolbarButton({
       className={cn(
         "p-1.5 rounded-md transition-colors",
         active
-          ? "bg-gold-500/20 text-gold-500"
+          ? "bg-primary-100 text-primary-600"
           : "text-foreground-muted hover:text-foreground hover:bg-background-elevated"
       )}
     >
@@ -54,7 +54,7 @@ export function RichTextEditor({ content, onChange, placeholder, className }: Ri
       }),
       Link.configure({
         openOnClick: false,
-        HTMLAttributes: { class: "text-gold-500 underline" },
+        HTMLAttributes: { class: "text-primary-600 underline" },
       }),
       Image.configure({
         HTMLAttributes: { class: "rounded-lg max-w-full" },

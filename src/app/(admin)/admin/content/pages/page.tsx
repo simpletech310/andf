@@ -52,15 +52,15 @@ export default function ContentPagesListPage() {
             <Link
               key={page.key}
               href={`/admin/content/pages/${page.key}`}
-              className="group relative p-6 rounded-xl border border-border bg-background-card hover:border-gold-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-gold-500/5"
+              className="group relative p-6 rounded-xl border border-border bg-background-card hover:border-primary-200 transition-all duration-300 hover:shadow-lg hover:shadow-primary-500/5"
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-lg bg-gold-500/10 flex items-center justify-center group-hover:bg-gold-500/20 transition-colors">
-                    <FileText className="h-5 w-5 text-gold-500" />
+                  <div className="h-10 w-10 rounded-lg bg-primary-50 flex items-center justify-center group-hover:bg-primary-100 transition-colors">
+                    <FileText className="h-5 w-5 text-primary-600" />
                   </div>
                   <div>
-                    <h3 className="text-base font-semibold text-foreground group-hover:text-gold-500 transition-colors">
+                    <h3 className="text-base font-semibold text-foreground group-hover:text-primary-600 transition-colors">
                       {page.label}
                     </h3>
                     <p className="text-sm text-foreground-muted mt-0.5">
@@ -68,7 +68,7 @@ export default function ContentPagesListPage() {
                     </p>
                   </div>
                 </div>
-                <ArrowRight className="h-5 w-5 text-foreground-subtle group-hover:text-gold-500 group-hover:translate-x-1 transition-all" />
+                <ArrowRight className="h-5 w-5 text-foreground-subtle group-hover:text-primary-600 group-hover:translate-x-1 transition-all" />
               </div>
 
               <div className="mt-4 flex items-center gap-4 text-xs text-foreground-subtle">

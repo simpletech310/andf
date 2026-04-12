@@ -92,8 +92,8 @@ export default function AdminTestimonialsPage() {
     } catch { alert("Failed to delete testimonial."); }
   };
 
-  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-gold-500" /></div>;
-  if (error) return <div className="text-center py-20 text-red-400">{error}</div>;
+  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-primary-500" /></div>;
+  if (error) return <div className="text-center py-20 text-red-600">{error}</div>;
 
   return (
     <div className="space-y-6">
@@ -145,7 +145,7 @@ export default function AdminTestimonialsPage() {
           <Card key={t.id} hover={false}>
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-3">
-                <Quote className="h-6 w-6 text-gold-500/30" />
+                <Quote className="h-6 w-6 text-primary-300" />
                 <div className="flex items-center gap-2">
                   {t.is_featured && <Badge variant="gold">Featured</Badge>}
                   <Badge variant={t.is_active ? "success" : "default"}>{t.is_active ? "Active" : "Inactive"}</Badge>
@@ -159,7 +159,7 @@ export default function AdminTestimonialsPage() {
                     {menuOpen === t.id && (
                       <div className="absolute right-0 top-8 z-10 bg-background-card border border-border rounded-lg shadow-lg py-1 min-w-[120px]">
                         <button onClick={() => openEdit(t)} className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-background-elevated transition-colors">Edit</button>
-                        <button onClick={() => handleDelete(t.id)} className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-background-elevated transition-colors">Delete</button>
+                        <button onClick={() => handleDelete(t.id)} className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-background-elevated transition-colors">Delete</button>
                       </div>
                     )}
                   </div>

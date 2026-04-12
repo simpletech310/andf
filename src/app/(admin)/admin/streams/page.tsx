@@ -71,8 +71,8 @@ export default function AdminStreamsPage() {
     });
   };
 
-  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-gold-500" /></div>;
-  if (error) return <div className="text-center py-20 text-red-400">{error}</div>;
+  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-primary-500" /></div>;
+  if (error) return <div className="text-center py-20 text-red-600">{error}</div>;
 
   return (
     <div className="space-y-6">
@@ -93,7 +93,7 @@ export default function AdminStreamsPage() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
-                  <Radio className="h-5 w-5 text-gold-500" />
+                  <Radio className="h-5 w-5 text-primary-600" />
                   {stream.title}
                 </CardTitle>
                 <Badge variant={stream.status === "active" ? "danger" : "default"}>
@@ -116,7 +116,7 @@ export default function AdminStreamsPage() {
                       size="icon"
                       onClick={() => copyKey(stream.id, stream.mux_stream_key!)}
                     >
-                      {copiedId === stream.id ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
+                      {copiedId === stream.id ? <Check className="h-4 w-4 text-emerald-600" /> : <Copy className="h-4 w-4" />}
                     </Button>
                   </div>
                 </div>
@@ -149,7 +149,7 @@ export default function AdminStreamsPage() {
           <p>1. Create a new stream above and copy the Stream Key</p>
           <p>2. Open OBS Studio (or your preferred streaming software)</p>
           <p>3. Go to Settings &rarr; Stream &rarr; Service: Custom</p>
-          <p>4. Server: <code className="bg-background-elevated px-2 py-0.5 rounded text-gold-500">rtmps://global-live.mux.com:443/app</code></p>
+          <p>4. Server: <code className="bg-background-elevated px-2 py-0.5 rounded text-primary-600">rtmps://global-live.mux.com:443/app</code></p>
           <p>5. Stream Key: Paste the key from above</p>
           <p>6. Click &quot;Start Streaming&quot; in OBS &mdash; the stream will automatically appear on your website&apos;s Live page</p>
         </CardContent>

@@ -268,7 +268,7 @@ export default function EventDetailPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-gold-500" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary-500" />
       </div>
     );
   }
@@ -276,10 +276,10 @@ export default function EventDetailPage() {
   if (error || !event) {
     return (
       <div className="text-center py-20">
-        <p className="text-red-400">{error || "Event not found"}</p>
+        <p className="text-red-600">{error || "Event not found"}</p>
         <Link
           href="/admin/events"
-          className="text-gold-500 mt-4 inline-block"
+          className="text-primary-600 mt-4 inline-block"
         >
           Back to Events
         </Link>
@@ -312,7 +312,7 @@ export default function EventDetailPage() {
       <div>
         <Link
           href="/admin/events"
-          className="inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-gold-500 transition-colors mb-4"
+          className="inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-primary-600 transition-colors mb-4"
         >
           <ArrowLeft className="h-4 w-4" /> Back to Events
         </Link>
@@ -361,7 +361,7 @@ export default function EventDetailPage() {
           <Card hover={false}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-gold-500" />
+                <FileText className="h-5 w-5 text-primary-600" />
                 Basic Info
               </CardTitle>
             </CardHeader>
@@ -450,7 +450,7 @@ export default function EventDetailPage() {
                 <div
                   className={`relative w-11 h-6 rounded-full transition-colors ${
                     isFeatured
-                      ? "bg-gold-500"
+                      ? "bg-primary-500"
                       : "bg-background-elevated border border-border"
                   }`}
                   onClick={() => setIsFeatured(!isFeatured)}
@@ -473,7 +473,7 @@ export default function EventDetailPage() {
           <Card hover={false}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <CalendarDays className="h-5 w-5 text-gold-500" />
+                <CalendarDays className="h-5 w-5 text-primary-600" />
                 Date & Location
               </CardTitle>
             </CardHeader>
@@ -530,7 +530,7 @@ export default function EventDetailPage() {
           <Card hover={false}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <DollarSign className="h-5 w-5 text-gold-500" />
+                <DollarSign className="h-5 w-5 text-primary-600" />
                 Capacity & Pricing
               </CardTitle>
             </CardHeader>
@@ -561,7 +561,7 @@ export default function EventDetailPage() {
           <Card hover={false}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <ImageIcon className="h-5 w-5 text-gold-500" />
+                <ImageIcon className="h-5 w-5 text-primary-600" />
                 Event Media
               </CardTitle>
             </CardHeader>
@@ -593,7 +593,7 @@ export default function EventDetailPage() {
           <Card hover={false}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <ListChecks className="h-5 w-5 text-gold-500" />
+                <ListChecks className="h-5 w-5 text-primary-600" />
                 What to Expect
               </CardTitle>
             </CardHeader>
@@ -622,7 +622,7 @@ export default function EventDetailPage() {
                       variant="ghost"
                       size="sm"
                       onClick={() => removeHighlight(i)}
-                      className="text-red-400 hover:text-red-300 shrink-0"
+                      className="text-red-600 hover:text-red-500 shrink-0"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -644,7 +644,7 @@ export default function EventDetailPage() {
           <Card hover={false}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Clock className="h-5 w-5 text-gold-500" />
+                <Clock className="h-5 w-5 text-primary-600" />
                 Event Schedule
               </CardTitle>
             </CardHeader>
@@ -662,7 +662,7 @@ export default function EventDetailPage() {
                       variant="ghost"
                       size="sm"
                       onClick={() => removeScheduleItem(i)}
-                      className="text-red-400 hover:text-red-300"
+                      className="text-red-600 hover:text-red-500"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -713,7 +713,7 @@ export default function EventDetailPage() {
           <Card hover={false}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-gold-500" />
+                <Sparkles className="h-5 w-5 text-primary-600" />
                 AI Registration Form Builder
               </CardTitle>
             </CardHeader>
@@ -765,7 +765,7 @@ export default function EventDetailPage() {
                         </div>
                         <div className="flex items-center gap-2">
                           {field.required && (
-                            <span className="text-xs text-gold-500">
+                            <span className="text-xs text-primary-600">
                               Required
                             </span>
                           )}
@@ -797,7 +797,7 @@ export default function EventDetailPage() {
         <Card hover={false}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5 text-gold-500" />
+              <Users className="h-5 w-5 text-primary-600" />
               Registrations ({registrations.length})
             </CardTitle>
           </CardHeader>
@@ -904,7 +904,7 @@ export default function EventDetailPage() {
                 label: "Registered",
                 value: String(registrations.length),
                 icon: ClipboardList,
-                color: "text-gold-500 bg-gold-500/10",
+                color: "text-primary-600 bg-primary-50",
               },
               {
                 label: "Checked In",
@@ -950,7 +950,7 @@ export default function EventDetailPage() {
                 <div className="flex items-center gap-4">
                   <div className="flex-1 h-4 rounded-full bg-background-elevated overflow-hidden">
                     <div
-                      className="h-full rounded-full bg-gold-500 transition-all"
+                      className="h-full rounded-full bg-primary-500 transition-all"
                       style={{ width: `${Math.min(capacityPct, 100)}%` }}
                     />
                   </div>

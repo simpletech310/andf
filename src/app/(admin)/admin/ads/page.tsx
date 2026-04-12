@@ -134,7 +134,7 @@ export default function AdminAdsPage() {
             <h3 className="text-lg font-semibold text-foreground">Reject Ad</h3>
             <p className="text-sm text-foreground-muted">Provide a reason for rejection:</p>
             <textarea
-              className="w-full px-4 py-3 rounded-lg bg-background-elevated border border-border text-sm text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-gold-500/40 min-h-[80px]"
+              className="w-full px-4 py-3 rounded-lg bg-background-elevated border border-border text-sm text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-primary-300 min-h-[80px]"
               placeholder="Enter rejection reason..."
               value={rejectReason}
               onChange={(e) => setRejectReason(e.target.value)}
@@ -162,7 +162,7 @@ export default function AdminAdsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-3">
-            <Megaphone className="h-7 w-7 text-gold-500" />
+            <Megaphone className="h-7 w-7 text-primary-600" />
             Ad Sponsorships
           </h1>
           <p className="text-foreground-muted mt-1">Manage ad submissions, sponsors, and campaigns.</p>
@@ -172,10 +172,10 @@ export default function AdminAdsPage() {
       {/* Stats */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="h-8 w-8 animate-spin text-gold-500" />
+          <Loader2 className="h-8 w-8 animate-spin text-primary-500" />
         </div>
       ) : error ? (
-        <div className="text-center py-20 text-red-400">{error}</div>
+        <div className="text-center py-20 text-red-600">{error}</div>
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -208,7 +208,7 @@ export default function AdminAdsPage() {
                 placeholder="Search ads or sponsors..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-background-elevated border border-border text-sm text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-gold-500/40"
+                className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-background-elevated border border-border text-sm text-foreground placeholder:text-foreground-subtle focus:outline-none focus:ring-2 focus:ring-primary-300"
               />
             </div>
             <div className="flex gap-2 flex-wrap">
@@ -219,7 +219,7 @@ export default function AdminAdsPage() {
                   className={cn(
                     "px-3 py-2 rounded-lg text-xs font-medium border transition-colors",
                     statusFilter === s
-                      ? "bg-gold-500/10 border-gold-500/30 text-gold-500"
+                      ? "bg-primary-50 border-primary-200 text-primary-600"
                       : "bg-background-elevated border-border text-foreground-muted hover:text-foreground"
                   )}
                 >

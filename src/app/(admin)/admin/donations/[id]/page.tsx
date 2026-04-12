@@ -133,7 +133,7 @@ export default function DonationDetailPage({ params }: { params: Promise<{ id: s
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-gold-500" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary-500" />
       </div>
     );
   }
@@ -141,10 +141,10 @@ export default function DonationDetailPage({ params }: { params: Promise<{ id: s
   if (error || !donation) {
     return (
       <div className="space-y-4">
-        <Link href="/admin/donations" className="inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-gold-500 transition-colors">
+        <Link href="/admin/donations" className="inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-primary-600 transition-colors">
           <ArrowLeft className="h-4 w-4" /> Back to Donations
         </Link>
-        <p className="text-red-400">{error || "Donation not found"}</p>
+        <p className="text-red-600">{error || "Donation not found"}</p>
       </div>
     );
   }
@@ -153,7 +153,7 @@ export default function DonationDetailPage({ params }: { params: Promise<{ id: s
 
   return (
     <div className="space-y-6 max-w-5xl">
-      <Link href="/admin/donations" className="inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-gold-500 transition-colors">
+      <Link href="/admin/donations" className="inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-primary-600 transition-colors">
         <ArrowLeft className="h-4 w-4" /> Back to Donations
       </Link>
 
@@ -162,10 +162,10 @@ export default function DonationDetailPage({ params }: { params: Promise<{ id: s
         <Card hover={false}>
           <CardContent className="p-6 space-y-5">
             <div className="text-center space-y-2">
-              <div className="mx-auto h-16 w-16 rounded-full bg-gold-500/10 flex items-center justify-center">
-                <DollarSign className="h-8 w-8 text-gold-500" />
+              <div className="mx-auto h-16 w-16 rounded-full bg-primary-50 flex items-center justify-center">
+                <DollarSign className="h-8 w-8 text-secondary-600" />
               </div>
-              <div className="text-3xl font-bold text-gold-500">${donation.amount}</div>
+              <div className="text-3xl font-bold text-secondary-600">${donation.amount}</div>
               <Badge variant={statusColors[donation.status] || "default"}>{donation.status}</Badge>
             </div>
 
@@ -223,7 +223,7 @@ export default function DonationDetailPage({ params }: { params: Promise<{ id: s
             <div className="pt-4 border-t border-border">
               <div className="text-xs font-semibold text-foreground-muted uppercase tracking-wider mb-3">Thank You</div>
               {donation.thankYouSent ? (
-                <div className="flex items-center gap-2 text-sm text-emerald-400">
+                <div className="flex items-center gap-2 text-sm text-emerald-600">
                   <Check className="h-4 w-4" />
                   Sent {donation.thankYouSentAt
                     ? new Date(donation.thankYouSentAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })
@@ -247,7 +247,7 @@ export default function DonationDetailPage({ params }: { params: Promise<{ id: s
               <div className="pt-4 border-t border-border">
                 <Link
                   href={`/admin/leads/${lead.id}`}
-                  className="flex items-center gap-2 text-sm text-gold-500 hover:text-gold-400 transition-colors"
+                  className="flex items-center gap-2 text-sm text-primary-600 hover:text-primary-500 transition-colors"
                 >
                   <ExternalLink className="h-3 w-3" />
                   View Lead Profile ({lead.name})
@@ -265,7 +265,7 @@ export default function DonationDetailPage({ params }: { params: Promise<{ id: s
               <div className="flex items-center justify-between">
                 <CardTitle>Donor History</CardTitle>
                 <div className="text-sm text-foreground-muted">
-                  Total from donor: <span className="text-gold-500 font-semibold">${totalFromDonor}</span>
+                  Total from donor: <span className="text-secondary-600 font-semibold">${totalFromDonor}</span>
                 </div>
               </div>
             </CardHeader>
@@ -281,11 +281,11 @@ export default function DonationDetailPage({ params }: { params: Promise<{ id: s
                       className="flex items-center justify-between p-3 rounded-lg bg-background-elevated hover:bg-background-elevated/80 transition-colors"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-full bg-gold-500/10 flex items-center justify-center">
-                          <DollarSign className="h-4 w-4 text-gold-500" />
+                        <div className="h-8 w-8 rounded-full bg-primary-50 flex items-center justify-center">
+                          <DollarSign className="h-4 w-4 text-secondary-600" />
                         </div>
                         <div>
-                          <div className="text-sm font-medium text-foreground">${d.amount}</div>
+                          <div className="text-sm font-medium text-secondary-600">${d.amount}</div>
                           <div className="text-xs text-foreground-subtle">{d.program || "General"}</div>
                         </div>
                       </div>
@@ -326,11 +326,11 @@ export default function DonationDetailPage({ params }: { params: Promise<{ id: s
                     <div key={note.id} className="flex gap-3 p-3 rounded-lg bg-background-elevated">
                       <div className="h-7 w-7 rounded-full bg-background-card border border-border flex items-center justify-center shrink-0">
                         {note.type === "thank_you_sent" ? (
-                          <Check className="h-3.5 w-3.5 text-emerald-400" />
+                          <Check className="h-3.5 w-3.5 text-emerald-600" />
                         ) : note.type === "phone_call" ? (
                           <Clock className="h-3.5 w-3.5 text-blue-400" />
                         ) : (
-                          <MessageSquare className="h-3.5 w-3.5 text-gold-500" />
+                          <MessageSquare className="h-3.5 w-3.5 text-primary-600" />
                         )}
                       </div>
                       <div className="flex-1">

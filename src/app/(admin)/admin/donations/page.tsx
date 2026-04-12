@@ -99,8 +99,8 @@ export default function AdminDonationsPage() {
           <Card key={stat.label} hover={false}>
             <CardContent className="p-5">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-gold-500/10 flex items-center justify-center">
-                  <stat.icon className="h-5 w-5 text-gold-500" />
+                <div className="h-10 w-10 rounded-xl bg-primary-50 flex items-center justify-center">
+                  <stat.icon className="h-5 w-5 text-primary-600" />
                 </div>
                 <div>
                   <div className="text-lg font-bold text-foreground">{stat.value}</div>
@@ -149,7 +149,7 @@ export default function AdminDonationsPage() {
         <CardContent className="p-0">
           {loading ? (
             <div className="flex items-center justify-center py-20">
-              <Loader2 className="h-6 w-6 animate-spin text-gold-500" />
+              <Loader2 className="h-6 w-6 animate-spin text-primary-500" />
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -176,11 +176,11 @@ export default function AdminDonationsPage() {
                     <tr key={d.id} className="border-b border-border last:border-0 hover:bg-background-elevated/50 transition-colors">
                       <td className="px-6 py-4">
                         <Link href={`/admin/donations/${d.id}`} className="block">
-                          <div className="text-sm font-medium text-foreground hover:text-gold-500 transition-colors">{d.donor}</div>
+                          <div className="text-sm font-medium text-foreground hover:text-primary-600 transition-colors">{d.donor}</div>
                           <div className="text-xs text-foreground-subtle">{d.email}</div>
                         </Link>
                       </td>
-                      <td className="px-6 py-4 text-sm font-semibold text-gold-500">${d.amount}</td>
+                      <td className="px-6 py-4 text-sm font-semibold text-secondary-600">${d.amount}</td>
                       <td className="px-6 py-4">
                         <Badge variant={d.type === "recurring" ? "info" : "default"}>
                           {d.type === "recurring" ? "Monthly" : "One-time"}

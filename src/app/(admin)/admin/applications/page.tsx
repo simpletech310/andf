@@ -258,19 +258,19 @@ export default function AdminApplicationsPage() {
           {
             label: "Pending Review",
             count: stats.submitted + stats.under_review,
-            color: "text-amber-400",
+            color: "text-amber-600",
             icon: Clock,
           },
           {
             label: "Accepted",
             count: stats.accepted,
-            color: "text-emerald-400",
+            color: "text-emerald-600",
             icon: CheckCircle2,
           },
           {
             label: "Rejected",
             count: stats.rejected,
-            color: "text-red-400",
+            color: "text-red-600",
             icon: XCircle,
           },
         ].map((stat) => (

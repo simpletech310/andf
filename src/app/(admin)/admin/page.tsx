@@ -46,7 +46,7 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-gold-500" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary-500" />
       </div>
     );
   }
@@ -54,7 +54,7 @@ export default function AdminDashboard() {
   if (error || !data) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-red-400">{error || "Failed to load dashboard"}</p>
+        <p className="text-red-600">{error || "Failed to load dashboard"}</p>
       </div>
     );
   }
@@ -85,10 +85,10 @@ export default function AdminDashboard() {
           <Card key={stat.title} hover={false}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
-                <div className="h-10 w-10 rounded-xl bg-gold-500/10 flex items-center justify-center">
-                  <stat.icon className="h-5 w-5 text-gold-500" />
+                <div className="h-10 w-10 rounded-xl bg-primary-50 flex items-center justify-center">
+                  <stat.icon className="h-5 w-5 text-primary-600" />
                 </div>
-                <div className="flex items-center gap-1 text-xs font-medium text-emerald-400">
+                <div className="flex items-center gap-1 text-xs font-medium text-emerald-600">
                   <ArrowUpRight className="h-3 w-3" />
                 </div>
               </div>
@@ -116,7 +116,7 @@ export default function AdminDashboard() {
               {recentLeads.map((lead) => (
                 <div key={lead.id} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="h-9 w-9 rounded-full bg-background-elevated flex items-center justify-center text-sm font-semibold text-gold-500">
+                    <div className="h-9 w-9 rounded-full bg-background-elevated flex items-center justify-center text-sm font-semibold text-primary-600">
                       {lead.name.split(" ").map(n => n[0]).join("").slice(0, 2)}
                     </div>
                     <div>
@@ -160,7 +160,7 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                     <div className="h-1.5 rounded-full bg-background-elevated overflow-hidden">
-                      <div className="h-full rounded-full bg-gold-500 transition-all" style={{ width: `${percent}%` }} />
+                      <div className="h-full rounded-full bg-primary-500 transition-all" style={{ width: `${percent}%` }} />
                     </div>
                   </div>
                 );
@@ -182,8 +182,8 @@ export default function AdminDashboard() {
               {recentDonations.map((donation) => (
                 <div key={donation.id} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="h-9 w-9 rounded-full bg-gold-500/10 flex items-center justify-center">
-                      <DollarSign className="h-4 w-4 text-gold-500" />
+                    <div className="h-9 w-9 rounded-full bg-primary-50 flex items-center justify-center">
+                      <DollarSign className="h-4 w-4 text-primary-600" />
                     </div>
                     <div>
                       <div className="text-sm font-medium text-foreground">{donation.name}</div>
@@ -191,7 +191,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm font-semibold text-gold-500">${donation.amount}</div>
+                    <div className="text-sm font-semibold text-secondary-600">${donation.amount}</div>
                     <Badge variant={donation.type === "Monthly" ? "info" : "default"} className="mt-1">
                       {donation.type}
                     </Badge>
@@ -215,7 +215,7 @@ export default function AdminDashboard() {
                   <span className="text-foreground font-medium">${stats.totalDonationsMonth.toLocaleString()} / $20,000</span>
                 </div>
                 <div className="h-3 rounded-full bg-background-elevated overflow-hidden">
-                  <div className="h-full rounded-full bg-gradient-to-r from-gold-600 to-gold-400" style={{ width: `${goalProgress}%` }} />
+                  <div className="h-full rounded-full bg-gradient-to-r from-primary-500 to-primary-400" style={{ width: `${goalProgress}%` }} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">

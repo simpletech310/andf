@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { mux } from "@/lib/mux/client";
 import { randomUUID } from "crypto";
 
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
@@ -63,16 +64,48 @@ export async function POST(req: NextRequest) {
     }
 
     const isVideo = VIDEO_TYPES.includes(file.type);
-    const maxSize = isVideo ? 50 * 1024 * 1024 : 10 * 1024 * 1024;
+    const maxSize = isVideo ? 500 * 1024 * 1024 : 10 * 1024 * 1024;
     if (file.size > maxSize) {
       return NextResponse.json({ error: `File too large. Max: ${maxSize / (1024 * 1024)}MB` }, { status: 400 });
     }
 
+    const supabase = createAdminClient();
+
+    // For video files: create a Mux direct upload and return the upload URL
+    if (isVideo) {
+      const upload = await mux.video.uploads.create({
+        cors_origin: "*",
+        new_asset_settings: {
+          playback_policy: ["public"],
+        },
+      });
+
+      const { data: asset, error: insertError } = await supabase
+        .from("media_assets")
+        .insert({
+          file_name: file.name,
+          file_path: `mux/${upload.id}`,
+          url: "", // Will be updated when Mux processing completes
+          mime_type: file.type,
+          file_size: file.size,
+          alt_text: file.name.replace(/\.[^.]+$/, "").replace(/[-_]/g, " "),
+          category: folder,
+          mux_upload_id: upload.id,
+          mux_status: "waiting",
+        })
+        .select()
+        .single();
+
+      if (insertError) throw insertError;
+
+      return NextResponse.json({ asset, uploadUrl: upload.url, muxUpload: true });
+    }
+
+    // For image files: upload to Supabase Storage
     const ext = file.name.split(".").pop()?.toLowerCase() || "bin";
     const uniqueName = `${randomUUID()}.${ext}`;
     const filePath = `media/${folder}/${uniqueName}`;
 
-    const supabase = createAdminClient();
     const buffer = Buffer.from(await file.arrayBuffer());
 
     const { error: uploadError } = await supabase.storage
@@ -83,7 +116,6 @@ export async function POST(req: NextRequest) {
 
     const { data: urlData } = supabase.storage.from("media").getPublicUrl(filePath);
 
-    // Insert into media_assets table
     const { data: asset, error: insertError } = await supabase
       .from("media_assets")
       .insert({

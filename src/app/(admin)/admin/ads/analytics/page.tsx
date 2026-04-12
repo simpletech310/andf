@@ -41,7 +41,7 @@ export default function AdAnalyticsPage() {
         />
         <Link
           href="/admin/ads"
-          className="text-sm text-foreground-muted hover:text-gold-500 transition-colors"
+          className="text-sm text-foreground-muted hover:text-primary-600 transition-colors"
         >
           Back to Sponsors
         </Link>
@@ -110,7 +110,7 @@ export default function AdAnalyticsPage() {
                       <td className="px-4 py-3 text-sm text-foreground-muted">{s.campaign_name || "—"}</td>
                       <td className="px-4 py-3 text-sm text-center">
                         <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                          s.payment_status === "paid" ? "bg-emerald-500/10 text-emerald-400" : "bg-amber-500/10 text-amber-400"
+                          s.payment_status === "paid" ? "bg-emerald-500/10 text-emerald-600" : "bg-amber-500/10 text-amber-600"
                         }`}>
                           {s.payment_status || "pending"}
                         </span>

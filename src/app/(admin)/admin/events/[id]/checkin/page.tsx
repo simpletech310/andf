@@ -238,10 +238,10 @@ export default function EventCheckinPage() {
               <span
                 className={`px-2.5 py-1 rounded-full text-xs font-medium ${
                   reg.payment_status === "paid"
-                    ? "bg-emerald-500/20 text-emerald-400"
+                    ? "bg-emerald-500/10 text-emerald-600"
                     : reg.payment_status === "free"
                     ? "bg-background-elevated text-foreground-muted"
-                    : "bg-amber-500/20 text-amber-400"
+                    : "bg-amber-500/10 text-amber-600"
                 }`}
               >
                 {reg.payment_status === "paid"
@@ -251,7 +251,7 @@ export default function EventCheckinPage() {
               <span
                 className={`px-2.5 py-1 rounded-full text-xs font-medium ${
                   reg.status === "confirmed"
-                    ? "bg-emerald-500/20 text-emerald-400"
+                    ? "bg-emerald-500/10 text-emerald-600"
                     : "bg-background-elevated text-foreground-muted"
                 }`}
               >
@@ -262,7 +262,7 @@ export default function EventCheckinPage() {
             {/* Check-in action */}
             {reg.checked_in ? (
               <div className="flex items-center justify-between">
-                <span className="text-xs text-emerald-400">
+                <span className="text-xs text-emerald-600">
                   Checked in at{" "}
                   {reg.checked_in_at
                     ? new Date(reg.checked_in_at).toLocaleTimeString()

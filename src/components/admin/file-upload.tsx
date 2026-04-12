@@ -128,7 +128,7 @@ export function FileUpload({
               variant="ghost"
               size="sm"
               onClick={handleRemove}
-              className="text-red-400 hover:text-red-300 shrink-0"
+              className="text-red-600 hover:text-red-300 shrink-0"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -144,19 +144,19 @@ export function FileUpload({
           onDrop={handleDrop}
           className={`relative rounded-lg border-2 border-dashed p-6 text-center transition-colors ${
             dragOver
-              ? "border-gold-500 bg-gold-500/5"
+              ? "border-primary-500 bg-primary-50"
               : "border-border bg-background-elevated hover:border-foreground-subtle"
           }`}
         >
           {uploading ? (
             <div className="space-y-3">
-              <Loader2 className="h-8 w-8 animate-spin text-gold-500 mx-auto" />
+              <Loader2 className="h-8 w-8 animate-spin text-primary-500 mx-auto" />
               <p className="text-sm text-foreground-muted">
                 Uploading... {progress}%
               </p>
               <div className="w-full max-w-xs mx-auto h-2 rounded-full bg-background overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-gold-500 transition-all duration-300"
+                  className="h-full rounded-full bg-primary-500 transition-all duration-300"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -176,7 +176,7 @@ export function FileUpload({
                   <button
                     type="button"
                     onClick={() => inputRef.current?.click()}
-                    className="text-gold-500 hover:text-gold-400 font-medium"
+                    className="text-primary-500 hover:text-primary-400 font-medium"
                   >
                     browse
                   </button>
@@ -201,7 +201,7 @@ export function FileUpload({
       )}
 
       {error && (
-        <div className="flex items-center gap-2 text-sm text-red-400">
+        <div className="flex items-center gap-2 text-sm text-red-600">
           <AlertCircle className="h-4 w-4 shrink-0" />
           {error}
         </div>

@@ -20,8 +20,8 @@ export function StatCard({
   value,
   label,
   trend,
-  iconColor = "text-gold-500",
-  iconBg = "bg-gold-500/10",
+  iconColor = "text-primary-600",
+  iconBg = "bg-primary-50",
 }: StatCardProps) {
   return (
     <Card hover={false}>
@@ -34,7 +34,7 @@ export function StatCard({
             <div
               className={cn(
                 "flex items-center gap-1 text-xs font-medium",
-                trend.up ? "text-emerald-400" : "text-red-400"
+                trend.up ? "text-emerald-600" : "text-red-600"
               )}
             >
               {trend.up ? (

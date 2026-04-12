@@ -134,7 +134,7 @@ export default function AdminStaffPage() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: "Admins", count: staff.filter((s) => s.role === "admin").length, color: "text-gold-500" },
+          { label: "Admins", count: staff.filter((s) => s.role === "admin").length, color: "text-primary-600" },
           { label: "Editors", count: staff.filter((s) => s.role === "editor").length, color: "text-blue-400" },
           { label: "Viewers", count: staff.filter((s) => s.role === "viewer").length, color: "text-foreground-subtle" },
         ].map((stat) => (
@@ -176,7 +176,7 @@ export default function AdminStaffPage() {
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="h-9 w-9 rounded-full bg-background-elevated flex items-center justify-center text-sm font-semibold text-gold-500">
+                          <div className="h-9 w-9 rounded-full bg-background-elevated flex items-center justify-center text-sm font-semibold text-primary-600">
                             {member.full_name
                               ? member.full_name
                                   .split(" ")
@@ -217,7 +217,7 @@ export default function AdminStaffPage() {
                           <button
                             onClick={() => handleRemove(member.id, member.full_name)}
                             disabled={removing === member.id}
-                            className="p-2 rounded-lg text-foreground-subtle hover:text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-50"
+                            className="p-2 rounded-lg text-foreground-subtle hover:text-red-600 hover:bg-red-500/10 transition-colors disabled:opacity-50"
                             title="Remove"
                           >
                             <X className="h-4 w-4" />

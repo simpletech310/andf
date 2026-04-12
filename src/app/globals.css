@@ -74,18 +74,6 @@
   --ring: rgba(47, 49, 146, 0.4);
 }
 
-/* Admin dark theme scope */
-[data-theme="dark"] {
-  --background: #0A0A0A;
-  --background-card: #141414;
-  --background-elevated: #1C1C1C;
-  --foreground: #FAFAFA;
-  --foreground-muted: #A1A1AA;
-  --foreground-subtle: #71717A;
-  --border: rgba(212, 168, 67, 0.1);
-  --border-hover: rgba(212, 168, 67, 0.3);
-  --ring: rgba(212, 168, 67, 0.4);
-}
 
 @theme inline {
   --color-background: var(--background);
@@ -247,16 +235,16 @@ body {
   background-clip: text;
 }
 
-/* Glass card effect (admin dark theme) */
+/* Glass card effect */
 .glass-card {
-  background: rgba(20, 20, 20, 0.8);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(212, 168, 67, 0.1);
+  border: 1px solid var(--border);
 }
 
 .glass-card:hover {
-  border-color: rgba(212, 168, 67, 0.3);
-  box-shadow: 0 0 30px rgba(212, 168, 67, 0.08);
+  border-color: var(--border-hover);
+  box-shadow: 0 4px 20px rgba(47, 49, 146, 0.08);
 }
 
 /* Brand shimmer line */

@@ -88,7 +88,7 @@ export default function RolesPermissionsPage() {
             <div key={role} className="rounded-xl border border-border bg-background-card overflow-hidden">
               <div className="px-6 py-4 border-b border-border bg-background-elevated/30">
                 <div className="flex items-center gap-2">
-                  <Shield className="h-4 w-4 text-gold-500" />
+                  <Shield className="h-4 w-4 text-primary-600" />
                   <h3 className="text-sm font-semibold text-foreground capitalize">{role.replace("_", " ")}</h3>
                   {role === "super_admin" && (
                     <span className="text-xs text-foreground-subtle">(All permissions, cannot be modified)</span>
@@ -121,10 +121,10 @@ export default function RolesPermissionsPage() {
                                 disabled={role === "super_admin" || isSaving}
                                 className={`inline-flex items-center justify-center h-7 w-7 rounded-md transition-colors ${
                                   role === "super_admin"
-                                    ? "bg-emerald-500/10 text-emerald-400 cursor-not-allowed"
+                                    ? "bg-emerald-500/10 text-emerald-600 cursor-not-allowed"
                                     : allowed
-                                    ? "bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"
-                                    : "bg-red-500/10 text-red-400 hover:bg-red-500/20"
+                                    ? "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20"
+                                    : "bg-red-500/10 text-red-600 hover:bg-red-500/20"
                                 }`}
                               >
                                 {isSaving ? (

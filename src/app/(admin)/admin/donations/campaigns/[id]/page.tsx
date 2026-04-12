@@ -95,7 +95,7 @@ export default function CampaignDetailPage() {
           <Button variant="outline" onClick={() => setEditing(!editing)}>
             <Edit2 className="h-4 w-4" /> Edit
           </Button>
-          <Button variant="outline" className="text-red-400" onClick={() => setShowDelete(true)}>
+          <Button variant="outline" className="text-red-600" onClick={() => setShowDelete(true)}>
             <Trash2 className="h-4 w-4" />
           </Button>
         </div>
@@ -116,7 +116,7 @@ export default function CampaignDetailPage() {
         </div>
         <div className="w-full h-3 rounded-full bg-background-elevated overflow-hidden">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-gold-500 to-secondary-500 transition-all duration-700"
+            className="h-full rounded-full bg-gradient-to-r from-primary-500 to-secondary-500 transition-all duration-700"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -166,7 +166,7 @@ export default function CampaignDetailPage() {
               donations.map((d: any) => (
                 <tr key={d.id} className="hover:bg-background-card/50">
                   <td className="px-4 py-3 text-sm text-foreground">{d.donor_name || d.donor_email}</td>
-                  <td className="px-4 py-3 text-sm text-right text-gold-500 font-medium">${Number(d.amount).toLocaleString()}</td>
+                  <td className="px-4 py-3 text-sm text-right text-secondary-600 font-medium">${Number(d.amount).toLocaleString()}</td>
                   <td className="px-4 py-3 text-sm text-foreground-muted">{format(new Date(d.created_at), "MMM d, yyyy")}</td>
                 </tr>
               ))

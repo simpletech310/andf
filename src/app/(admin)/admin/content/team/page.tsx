@@ -100,8 +100,8 @@ export default function AdminTeamPage() {
     } catch { alert("Failed to delete member."); }
   };
 
-  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-gold-500" /></div>;
-  if (error) return <div className="text-center py-20 text-red-400">{error}</div>;
+  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-primary-500" /></div>;
+  if (error) return <div className="text-center py-20 text-red-600">{error}</div>;
 
   return (
     <div className="space-y-6">
@@ -187,7 +187,7 @@ export default function AdminTeamPage() {
                   <tr key={member.id} className="border-b border-border last:border-0 hover:bg-background-elevated/50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 rounded-full bg-gold-500/10 flex items-center justify-center text-sm font-semibold text-gold-500">
+                        <div className="h-9 w-9 rounded-full bg-primary-50 flex items-center justify-center text-sm font-semibold text-primary-600">
                           {member.name.split(" ").map(n => n[0]).join("").slice(0, 2)}
                         </div>
                         <span className="text-sm font-medium text-foreground">{member.name}</span>
@@ -212,7 +212,7 @@ export default function AdminTeamPage() {
                       {menuOpen === member.id && (
                         <div className="absolute right-6 top-12 z-10 bg-background-card border border-border rounded-lg shadow-lg py-1 min-w-[120px]">
                           <button onClick={() => openEdit(member)} className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-background-elevated transition-colors">Edit</button>
-                          <button onClick={() => handleDelete(member.id)} className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-background-elevated transition-colors">Delete</button>
+                          <button onClick={() => handleDelete(member.id)} className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-background-elevated transition-colors">Delete</button>
                         </div>
                       )}
                     </td>

@@ -326,7 +326,7 @@ export default function AdminVideoDetailPage() {
                     <tr key={cp.id} className="border-b border-border last:border-0">
                       <td className="px-4 py-3">
                         <span className="flex items-center gap-1.5 text-sm font-mono text-foreground">
-                          <Clock className="h-3.5 w-3.5 text-gold-500" />
+                          <Clock className="h-3.5 w-3.5 text-primary-600" />
                           {formatTimestamp(cp.trigger_at_seconds)}
                         </span>
                       </td>
@@ -341,7 +341,7 @@ export default function AdminVideoDetailPage() {
                       <td className="px-4 py-3 text-right">
                         <button
                           onClick={() => handleDeleteCuePoint(cp.id)}
-                          className="p-1.5 rounded-lg text-foreground-subtle hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                          className="p-1.5 rounded-lg text-foreground-subtle hover:text-red-600 hover:bg-red-500/10 transition-colors"
                         >
                           <X className="h-4 w-4" />
                         </button>

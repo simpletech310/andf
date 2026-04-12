@@ -277,7 +277,7 @@ export default function AdminVideosPage() {
                   <div>
                     <Link
                       href={`/admin/videos/${video.id}`}
-                      className="text-sm font-semibold text-foreground hover:text-gold-500 transition-colors line-clamp-1"
+                      className="text-sm font-semibold text-foreground hover:text-primary-600 transition-colors line-clamp-1"
                     >
                       {video.title}
                     </Link>
@@ -314,7 +314,7 @@ export default function AdminVideosPage() {
                     <button
                       onClick={() => handleDelete(video.id)}
                       disabled={deleting === video.id}
-                      className="p-1.5 rounded-lg text-foreground-subtle hover:text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-50"
+                      className="p-1.5 rounded-lg text-foreground-subtle hover:text-red-600 hover:bg-red-500/10 transition-colors disabled:opacity-50"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -388,7 +388,7 @@ export default function AdminVideosPage() {
                   <label className="text-sm font-medium text-foreground-muted">Video File</label>
                   <div
                     onClick={() => fileInputRef.current?.click()}
-                    className="flex flex-col items-center justify-center gap-2 p-6 rounded-xl border-2 border-dashed border-border hover:border-gold-500 cursor-pointer transition-colors"
+                    className="flex flex-col items-center justify-center gap-2 p-6 rounded-xl border-2 border-dashed border-border hover:border-primary-500 cursor-pointer transition-colors"
                   >
                     <Upload className="h-8 w-8 text-foreground-subtle" />
                     {uploadFile ? (
@@ -415,7 +415,7 @@ export default function AdminVideosPage() {
                     </div>
                     <div className="w-full h-2 rounded-full bg-background-elevated overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-gold-500 transition-all duration-300"
+                        className="h-full rounded-full bg-primary-500 transition-all duration-300"
                         style={{ width: `${uploadProgress}%` }}
                       />
                     </div>

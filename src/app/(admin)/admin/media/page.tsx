@@ -134,7 +134,7 @@ export default function MediaLibraryPage() {
             placeholder="Search files..."
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-            className="w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-background-card text-sm text-foreground placeholder:text-foreground-subtle focus:outline-none focus:border-gold-500/50"
+            className="w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-background-card text-sm text-foreground placeholder:text-foreground-subtle focus:outline-none focus:border-primary-300"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -150,13 +150,13 @@ export default function MediaLibraryPage() {
           <div className="flex border border-border rounded-lg overflow-hidden">
             <button
               onClick={() => setViewMode("grid")}
-              className={`p-2 ${viewMode === "grid" ? "bg-gold-500/10 text-gold-500" : "text-foreground-muted hover:text-foreground"}`}
+              className={`p-2 ${viewMode === "grid" ? "bg-primary-50 text-primary-600" : "text-foreground-muted hover:text-foreground"}`}
             >
               <Grid className="h-4 w-4" />
             </button>
             <button
               onClick={() => setViewMode("list")}
-              className={`p-2 ${viewMode === "list" ? "bg-gold-500/10 text-gold-500" : "text-foreground-muted hover:text-foreground"}`}
+              className={`p-2 ${viewMode === "list" ? "bg-primary-50 text-primary-600" : "text-foreground-muted hover:text-foreground"}`}
             >
               <List className="h-4 w-4" />
             </button>
@@ -200,7 +200,7 @@ export default function MediaLibraryPage() {
                   key={asset.id}
                   onClick={() => setSelectedAsset(asset)}
                   className={`group relative aspect-square rounded-xl overflow-hidden border-2 transition-all ${
-                    selectedAsset?.id === asset.id ? "border-gold-500 ring-2 ring-gold-500/20" : "border-border hover:border-gold-500/30"
+                    selectedAsset?.id === asset.id ? "border-primary-500 ring-2 ring-primary-200" : "border-border hover:border-primary-200"
                   }`}
                 >
                   {isImage(asset.mime_type) ? (
@@ -228,7 +228,7 @@ export default function MediaLibraryPage() {
                   key={asset.id}
                   onClick={() => setSelectedAsset(asset)}
                   className={`w-full flex items-center gap-4 p-3 rounded-lg border transition-all ${
-                    selectedAsset?.id === asset.id ? "border-gold-500 bg-gold-500/5" : "border-border hover:border-gold-500/30"
+                    selectedAsset?.id === asset.id ? "border-primary-500 bg-primary-50" : "border-border hover:border-primary-200"
                   }`}
                 >
                   <div className="h-12 w-12 rounded-lg overflow-hidden shrink-0 bg-background-elevated">
@@ -329,7 +329,7 @@ export default function MediaLibraryPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="text-red-400 hover:text-red-300"
+                    className="text-red-600 hover:text-red-500"
                     onClick={() => setDeleteId(selectedAsset.id)}
                   >
                     <Trash2 className="h-3.5 w-3.5" />

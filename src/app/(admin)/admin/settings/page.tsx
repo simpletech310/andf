@@ -82,8 +82,8 @@ export default function AdminSettingsPage() {
     }
   };
 
-  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-gold-500" /></div>;
-  if (error) return <div className="text-center py-20 text-red-400">{error}</div>;
+  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 animate-spin text-primary-500" /></div>;
+  if (error) return <div className="text-center py-20 text-red-600">{error}</div>;
 
   return (
     <div className="space-y-6 max-w-3xl">

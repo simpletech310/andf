@@ -153,7 +153,7 @@ export default function PageEditorPage() {
           href={PAGE_URLS[pageKey] || "/"}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 text-sm text-foreground-muted hover:text-gold-500 transition-colors"
+          className="flex items-center gap-2 text-sm text-foreground-muted hover:text-primary-600 transition-colors"
         >
           <ExternalLink className="h-4 w-4" />
           Preview Page
@@ -161,7 +161,7 @@ export default function PageEditorPage() {
       </div>
 
       {saving && (
-        <div className="flex items-center gap-2 text-sm text-gold-500">
+        <div className="flex items-center gap-2 text-sm text-primary-600">
           <Loader2 className="h-4 w-4 animate-spin" />
           Saving...
         </div>
@@ -222,7 +222,7 @@ export default function PageEditorPage() {
               <button
                 key={bt.type}
                 onClick={() => handleAddBlock(bt.type)}
-                className="p-4 rounded-lg border border-border hover:border-gold-500/30 hover:bg-gold-500/5 transition-all text-center"
+                className="p-4 rounded-lg border border-border hover:border-primary-200 hover:bg-primary-50 transition-all text-center"
               >
                 <span className="text-sm font-medium text-foreground">{bt.label}</span>
               </button>

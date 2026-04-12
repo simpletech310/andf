@@ -90,10 +90,10 @@ export default function AdminLeadsPage() {
   };
 
   const funnelStages = [
-    { label: "New", key: "new", color: "text-gold-500" },
+    { label: "New", key: "new", color: "text-primary-600" },
     { label: "Contacted", key: "contacted", color: "text-blue-400" },
-    { label: "Engaged", key: "engaged", color: "text-emerald-400" },
-    { label: "Donors", key: "donor", color: "text-gold-400" },
+    { label: "Engaged", key: "engaged", color: "text-emerald-600" },
+    { label: "Donors", key: "donor", color: "text-primary-500" },
     { label: "Volunteers", key: "volunteer", color: "text-green-400" },
     { label: "Inactive", key: "inactive", color: "text-foreground-subtle" },
   ];
@@ -168,7 +168,7 @@ export default function AdminLeadsPage() {
         <CardContent className="p-0">
           {loading ? (
             <div className="flex items-center justify-center py-20">
-              <Loader2 className="h-6 w-6 animate-spin text-gold-500" />
+              <Loader2 className="h-6 w-6 animate-spin text-primary-500" />
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -196,11 +196,11 @@ export default function AdminLeadsPage() {
                       <td className="px-6 py-4">
                         <Link href={`/admin/leads/${lead.id}`} className="block">
                           <div className="flex items-center gap-3">
-                            <div className="h-9 w-9 rounded-full bg-background-elevated flex items-center justify-center text-sm font-semibold text-gold-500">
+                            <div className="h-9 w-9 rounded-full bg-background-elevated flex items-center justify-center text-sm font-semibold text-primary-600">
                               {lead.name.split(" ").map(n => n[0]).join("").slice(0, 2)}
                             </div>
                             <div>
-                              <div className="text-sm font-medium text-foreground hover:text-gold-500 transition-colors">{lead.name}</div>
+                              <div className="text-sm font-medium text-foreground hover:text-primary-600 transition-colors">{lead.name}</div>
                               <div className="text-xs text-foreground-subtle">{lead.email}</div>
                             </div>
                           </div>
@@ -221,7 +221,7 @@ export default function AdminLeadsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-sm text-foreground-muted">
-                        {lead.totalDonated > 0 ? <span className="text-gold-500 font-medium">${lead.totalDonated}</span> : "\u2014"}
+                        {lead.totalDonated > 0 ? <span className="text-secondary-600 font-medium">${lead.totalDonated}</span> : "\u2014"}
                       </td>
                       <td className="px-6 py-4 text-sm text-foreground-subtle">{relativeTime(lead.lastInteraction)}</td>
                     </tr>

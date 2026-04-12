@@ -131,7 +131,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-gold-500" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary-500" />
       </div>
     );
   }
@@ -139,10 +139,10 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
   if (error || !lead) {
     return (
       <div className="space-y-4">
-        <Link href="/admin/leads" className="inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-gold-500 transition-colors">
+        <Link href="/admin/leads" className="inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-primary-600 transition-colors">
           <ArrowLeft className="h-4 w-4" /> Back to Leads
         </Link>
-        <p className="text-red-400">{error || "Lead not found"}</p>
+        <p className="text-red-600">{error || "Lead not found"}</p>
       </div>
     );
   }
@@ -151,7 +151,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
 
   return (
     <div className="space-y-6 max-w-5xl">
-      <Link href="/admin/leads" className="inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-gold-500 transition-colors">
+      <Link href="/admin/leads" className="inline-flex items-center gap-2 text-sm text-foreground-muted hover:text-primary-600 transition-colors">
         <ArrowLeft className="h-4 w-4" /> Back to Leads
       </Link>
 
@@ -159,7 +159,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
         {/* Profile Card */}
         <Card hover={false}>
           <CardContent className="p-6 text-center space-y-4">
-            <div className="mx-auto h-20 w-20 rounded-full bg-gold-500/10 flex items-center justify-center text-2xl font-display font-bold text-gold-500">
+            <div className="mx-auto h-20 w-20 rounded-full bg-primary-50 flex items-center justify-center text-2xl font-display font-bold text-primary-600">
               {initials}
             </div>
             <div>
@@ -168,11 +168,11 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
             </div>
             <div className="space-y-2 text-sm text-left">
               <div className="flex items-center gap-3 text-foreground-muted">
-                <Mail className="h-4 w-4 text-gold-500" /> {lead.email}
+                <Mail className="h-4 w-4 text-primary-600" /> {lead.email}
               </div>
               {lead.phone && (
                 <div className="flex items-center gap-3 text-foreground-muted">
-                  <Phone className="h-4 w-4 text-gold-500" /> {lead.phone}
+                  <Phone className="h-4 w-4 text-primary-600" /> {lead.phone}
                 </div>
               )}
             </div>
@@ -183,7 +183,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-foreground-muted">Total Donated</span>
-                <span className="text-gold-500 font-semibold">${lead.totalDonated}</span>
+                <span className="text-secondary-600 font-semibold">${lead.totalDonated}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-foreground-muted">Events Registered</span>
@@ -257,7 +257,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                       return (
                         <div key={interaction.id} className="relative flex gap-4 pl-2">
                           <div className="h-8 w-8 rounded-full bg-background-elevated border border-border flex items-center justify-center shrink-0 z-10">
-                            <Icon className="h-4 w-4 text-gold-500" />
+                            <Icon className="h-4 w-4 text-primary-600" />
                           </div>
                           <div className="flex-1 pb-2">
                             <p className="text-sm text-foreground">{interaction.description}</p>

@@ -65,7 +65,7 @@ export default function ParticipantsPage() {
             placeholder="Search by name, email, or phone..."
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-            className="w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-background-card text-sm text-foreground placeholder:text-foreground-subtle focus:outline-none focus:border-gold-500/50"
+            className="w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-background-card text-sm text-foreground placeholder:text-foreground-subtle focus:outline-none focus:border-primary-300"
           />
         </div>
         <Button variant="outline"><Download className="h-4 w-4" /> Export CSV</Button>
@@ -97,7 +97,7 @@ export default function ParticipantsPage() {
                   <td className="px-4 py-3 text-sm text-foreground-muted hidden md:table-cell">{p.phone || "—"}</td>
                   <td className="px-4 py-3 text-sm text-center text-foreground">{p.events.length}</td>
                   <td className="px-4 py-3 text-sm text-center">
-                    <span className={p.checkins > 0 ? "text-emerald-400" : "text-foreground-subtle"}>
+                    <span className={p.checkins > 0 ? "text-emerald-600" : "text-foreground-subtle"}>
                       {p.checkins}
                     </span>
                   </td>

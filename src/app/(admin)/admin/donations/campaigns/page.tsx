@@ -26,9 +26,9 @@ interface Campaign {
 
 const STATUS_COLORS: Record<string, string> = {
   draft: "bg-neutral-500/10 text-neutral-400",
-  active: "bg-emerald-500/10 text-emerald-400",
-  completed: "bg-gold-500/10 text-gold-500",
-  cancelled: "bg-red-500/10 text-red-400",
+  active: "bg-emerald-500/10 text-emerald-600",
+  completed: "bg-primary-50 text-primary-600",
+  cancelled: "bg-red-500/10 text-red-600",
 };
 
 export default function CampaignsPage() {
@@ -90,7 +90,7 @@ export default function CampaignsPage() {
             <Link
               key={campaign.id}
               href={`/admin/donations/campaigns/${campaign.id}`}
-              className="block p-6 rounded-xl border border-border bg-background-card hover:border-gold-500/30 transition-all"
+              className="block p-6 rounded-xl border border-border bg-background-card hover:border-primary-200 transition-all"
             >
               <div className="flex items-start justify-between mb-4">
                 <div>
@@ -106,7 +106,7 @@ export default function CampaignsPage() {
                   )}
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-display font-bold text-gold-500">
+                  <p className="text-2xl font-display font-bold text-secondary-600">
                     ${Number(campaign.raised_amount).toLocaleString()}
                   </p>
                   <p className="text-xs text-foreground-subtle">
@@ -118,7 +118,7 @@ export default function CampaignsPage() {
               {/* Progress bar */}
               <div className="w-full h-2 rounded-full bg-background-elevated overflow-hidden mb-3">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-gold-500 to-secondary-500 transition-all duration-500"
+                  className="h-full rounded-full bg-gradient-to-r from-primary-500 to-secondary-500 transition-all duration-500"
                   style={{ width: `${campaign.progressPercent}%` }}
                 />
               </div>
