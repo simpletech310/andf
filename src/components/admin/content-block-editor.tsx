@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
+import { FileUpload } from "@/components/admin/file-upload";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -163,7 +164,13 @@ function renderFieldsForBlockType(
           <Input label="Title (Line 2)" value={content.title_line2 || ""} onChange={(e) => updateField("title_line2", e.target.value)} />
           <Input label="Title (Line 3)" value={content.title_line3 || ""} onChange={(e) => updateField("title_line3", e.target.value)} />
           <Textarea label="Subtitle" value={content.subtitle || ""} onChange={(e) => updateField("subtitle", e.target.value)} />
-          <Input label="Background Image URL" value={content.background_image || ""} onChange={(e) => updateField("background_image", e.target.value)} />
+          <FileUpload
+            label="Background Image"
+            accept="image/jpeg,image/png,image/gif,image/webp"
+            folder="content/heroes"
+            currentUrl={content.background_image || ""}
+            onUpload={(url) => updateField("background_image", url)}
+          />
           <Input label="CTA 1 Text" value={content.cta1_text || ""} onChange={(e) => updateField("cta1_text", e.target.value)} />
           <Input label="CTA 1 Link" value={content.cta1_link || ""} onChange={(e) => updateField("cta1_link", e.target.value)} />
           <Input label="CTA 2 Text" value={content.cta2_text || ""} onChange={(e) => updateField("cta2_text", e.target.value)} />
@@ -286,7 +293,13 @@ function renderFieldsForBlockType(
     case "image":
       return (
         <div className="space-y-3">
-          <Input label="Image URL" value={content.url || ""} onChange={(e) => updateField("url", e.target.value)} />
+          <FileUpload
+            label="Image"
+            accept="image/jpeg,image/png,image/gif,image/webp"
+            folder="content/images"
+            currentUrl={content.url || ""}
+            onUpload={(url) => updateField("url", url)}
+          />
           <Input label="Alt Text" value={content.alt || ""} onChange={(e) => updateField("alt", e.target.value)} />
           <Input label="Caption (optional)" value={content.caption || ""} onChange={(e) => updateField("caption", e.target.value)} />
         </div>
@@ -295,10 +308,22 @@ function renderFieldsForBlockType(
     case "video":
       return (
         <div className="space-y-3">
-          <Input label="Video URL or Mux Playback ID" value={content.video_url || ""} onChange={(e) => updateField("video_url", e.target.value)} />
+          <FileUpload
+            label="Video"
+            accept="video/mp4,video/quicktime,video/webm"
+            folder="content/videos"
+            currentUrl={content.video_url || ""}
+            onUpload={(url) => updateField("video_url", url)}
+          />
           <Input label="Title" value={content.title || ""} onChange={(e) => updateField("title", e.target.value)} />
           <Textarea label="Description" value={content.description || ""} onChange={(e) => updateField("description", e.target.value)} />
-          <Input label="Thumbnail URL" value={content.thumbnail || ""} onChange={(e) => updateField("thumbnail", e.target.value)} />
+          <FileUpload
+            label="Thumbnail"
+            accept="image/jpeg,image/png,image/gif,image/webp"
+            folder="content/thumbnails"
+            currentUrl={content.thumbnail || ""}
+            onUpload={(url) => updateField("thumbnail", url)}
+          />
         </div>
       );
 

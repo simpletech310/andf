@@ -9,6 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/admin/page-header";
+import { FileUpload } from "@/components/admin/file-upload";
+import { MultiFileUpload } from "@/components/admin/multi-file-upload";
 
 const ICON_OPTIONS = [
   "Music", "Cpu", "Target", "Users", "GraduationCap", "Heart", "MessageCircle",
@@ -312,60 +314,42 @@ export default function AdminProgramsPage() {
         {/* Media Tab */}
         {activeTab === "media" && (
           <div className="rounded-xl border border-border bg-background-card p-6 space-y-5">
-            <Input label="Hero Image URL" value={form.hero_image_url} onChange={e => setForm({ ...form, hero_image_url: e.target.value })} placeholder="/images/programs/..." />
-            <Input label="Logo Image URL" value={form.logo_url} onChange={e => setForm({ ...form, logo_url: e.target.value })} placeholder="/images/partners/..." />
+            <FileUpload
+              label="Hero Image"
+              accept="image/jpeg,image/png,image/gif,image/webp"
+              folder="programs/heroes"
+              currentUrl={form.hero_image_url}
+              onUpload={(url) => setForm({ ...form, hero_image_url: url })}
+            />
+            <FileUpload
+              label="Logo Image"
+              accept="image/jpeg,image/png,image/gif,image/webp"
+              folder="programs/logos"
+              currentUrl={form.logo_url}
+              onUpload={(url) => setForm({ ...form, logo_url: url })}
+            />
 
-            {/* Preview */}
-            {form.hero_image_url && (
-              <div className="relative h-40 rounded-lg overflow-hidden bg-background-elevated">
-                <img src={form.hero_image_url} alt="Hero preview" className="w-full h-full object-cover" />
-                <div className="absolute top-2 left-2 px-2 py-1 rounded bg-black/60 text-white text-xs">Hero Image</div>
-              </div>
-            )}
-
-            <div className="border-t border-border pt-5 space-y-3">
-              <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-foreground-muted">Photo Gallery URLs</label>
-                <Button variant="outline" size="sm" onClick={() => setForm({ ...form, gallery_urls: [...form.gallery_urls, ""] })}>
-                  <Plus className="h-3 w-3" /> Add Image
-                </Button>
-              </div>
-              {form.gallery_urls.map((url, i) => (
-                <div key={i} className="flex gap-2 items-start">
-                  <div className="flex-1">
-                    <Input
-                      value={url}
-                      onChange={e => {
-                        const updated = [...form.gallery_urls];
-                        updated[i] = e.target.value;
-                        setForm({ ...form, gallery_urls: updated });
-                      }}
-                      placeholder={`Image URL ${i + 1}`}
-                    />
-                  </div>
-                  {url && (
-                    <div className="h-11 w-11 rounded-lg overflow-hidden bg-background-elevated shrink-0">
-                      <img src={url} alt="" className="w-full h-full object-cover" />
-                    </div>
-                  )}
-                  {form.gallery_urls.length > 1 && (
-                    <button
-                      onClick={() => setForm({ ...form, gallery_urls: form.gallery_urls.filter((_, j) => j !== i) })}
-                      className="p-2 text-red-600 hover:text-red-500 shrink-0"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  )}
-                </div>
-              ))}
+            <div className="border-t border-border pt-5">
+              <MultiFileUpload
+                label="Photo Gallery"
+                folder="programs/gallery"
+                urls={form.gallery_urls.filter(Boolean)}
+                onUrlsChange={(urls) => setForm({ ...form, gallery_urls: urls })}
+              />
             </div>
 
             <div className="border-t border-border pt-5 space-y-3">
               <label className="text-sm font-medium text-foreground-muted flex items-center gap-2"><Film className="h-4 w-4" /> Video</label>
               <Input label="Video Title" value={form.video_title} onChange={e => setForm({ ...form, video_title: e.target.value })} placeholder="e.g., Band Camp Highlights" />
-              <Input label="Mux Playback ID" value={form.mux_playback_id} onChange={e => setForm({ ...form, mux_playback_id: e.target.value })} placeholder="e.g., DvUNmWbAG0100yvs..." />
-              <Input label="Fallback Video URL" value={form.video_url} onChange={e => setForm({ ...form, video_url: e.target.value })} placeholder="/videos/program-video.mp4" />
-              <p className="text-xs text-foreground-subtle">Select a Mux Playback ID from your Video Library, or enter a direct video URL as fallback.</p>
+              <FileUpload
+                label="Program Video"
+                accept="video/mp4,video/quicktime,video/webm"
+                folder="programs/videos"
+                currentUrl={form.video_url}
+                onUpload={(url) => setForm({ ...form, video_url: url })}
+              />
+              <Input label="Mux Playback ID (optional)" value={form.mux_playback_id} onChange={e => setForm({ ...form, mux_playback_id: e.target.value })} placeholder="e.g., DvUNmWbAG0100yvs..." />
+              <p className="text-xs text-foreground-subtle">Upload a video directly, or enter a Mux Playback ID from your Video Library.</p>
             </div>
           </div>
         )}

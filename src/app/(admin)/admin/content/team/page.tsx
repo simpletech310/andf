@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { FileUpload } from "@/components/admin/file-upload";
 
 interface TeamMember {
   id: string;
@@ -125,7 +126,13 @@ export default function AdminTeamPage() {
               </select>
             </div>
             <Textarea id="mBio" label="Bio" value={formBio} onChange={(e) => setFormBio(e.target.value)} />
-            <Input id="mPhoto" label="Photo URL" value={formPhoto} onChange={(e) => setFormPhoto(e.target.value)} />
+            <FileUpload
+              label="Photo"
+              accept="image/jpeg,image/png,image/gif,image/webp"
+              folder="team/photos"
+              currentUrl={formPhoto}
+              onUpload={(url) => setFormPhoto(url)}
+            />
             <div className="flex items-center gap-2">
               <input type="checkbox" id="mActive" checked={formIsActive} onChange={(e) => setFormIsActive(e.target.checked)} className="rounded" />
               <label htmlFor="mActive" className="text-sm text-foreground-muted">Active</label>
