@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -15,64 +15,26 @@ import {
   GraduationCap,
   MessageCircle,
   Heart,
+  Star,
+  Zap,
+  Camera,
+  Award,
+  BookOpen,
+  Rocket,
+  Globe,
+  Play,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 /* ─────────────────────────────────────────────── */
-/*  Program metadata for display                   */
+/*  Icon map for DB icon strings                   */
 /* ─────────────────────────────────────────────── */
 
-const programMeta: Record<
-  string,
-  { title: string; description: string; color: string; icon: React.ElementType }
-> = {
-  "band-camp": {
-    title: "Band Camp",
-    description:
-      "An immersive musical experience where young people discover their rhythm and build confidence.",
-    color: "from-violet-500 to-purple-600",
-    icon: Music,
-  },
-  "drone-experience": {
-    title: "Drone Experience",
-    description:
-      "Hands-on drone piloting and aerial photography workshops for aspiring tech leaders.",
-    color: "from-cyan-500 to-blue-600",
-    icon: Cpu,
-  },
-  topgolf: {
-    title: "TopGolf Experience",
-    description: "Sports, networking, and mentorship in an exciting environment.",
-    color: "from-emerald-500 to-green-600",
-    icon: Target,
-  },
-  mentorship: {
-    title: "Mentorship Program",
-    description: "One-on-one and group mentoring with successful professionals.",
-    color: "from-amber-500 to-orange-600",
-    icon: Users,
-  },
-  "hbcu-heroes": {
-    title: "HBCU Heroes",
-    description:
-      "Spotlighting the achievements of Historically Black Colleges and Universities.",
-    color: "from-primary-500 to-primary-700",
-    icon: GraduationCap,
-  },
-  mentors: {
-    title: "MenTORS",
-    description: "Real conversations, real growth, real mentorship for men.",
-    color: "from-red-500 to-rose-600",
-    icon: MessageCircle,
-  },
-  "sisters-hangout": {
-    title: "Sisters Hangout",
-    description: "A supportive space for young women to connect, grow, and lead.",
-    color: "from-rose-700 to-red-900",
-    icon: Heart,
-  },
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  Music, Cpu, Target, Users, GraduationCap, Heart, MessageCircle,
+  Star, Zap, Camera, Award, BookOpen, Rocket, Globe, Sparkles, Play,
 };
 
 /* ─────────────────────────────────────────────── */
@@ -128,12 +90,39 @@ export default function ProgramApplyPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
-  const program = programMeta[slug];
 
+  const [program, setProgram] = useState<any>(null);
+  const [loadingProgram, setLoadingProgram] = useState(true);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [age, setAge] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    async function fetchProgram() {
+      try {
+        const res = await fetch(`/api/programs?slug=${slug}`);
+        if (!res.ok) throw new Error("Not found");
+        const data = await res.json();
+        if (data.program) {
+          setProgram(data.program);
+        }
+      } catch {
+        // program stays null → shows not found
+      } finally {
+        setLoadingProgram(false);
+      }
+    }
+    fetchProgram();
+  }, [slug]);
+
+  if (loadingProgram) {
+    return (
+      <div className="pt-32 pb-24 px-6 flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary-500" />
+      </div>
+    );
+  }
 
   if (!program) {
     return (
@@ -141,6 +130,9 @@ export default function ProgramApplyPage({
         <h1 className="text-3xl font-display font-bold text-foreground">
           Program Not Found
         </h1>
+        <p className="text-foreground-muted mt-2">
+          This program is no longer accepting applications.
+        </p>
         <Link href="/programs" className="text-primary-500 mt-4 inline-block">
           Back to Programs
         </Link>
@@ -148,7 +140,8 @@ export default function ProgramApplyPage({
     );
   }
 
-  const Icon = program.icon;
+  const Icon = ICON_MAP[program.icon] || Music;
+  const color = program.color || "from-primary-500 to-primary-700";
   const isMinor = age !== undefined && age < 18;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -282,7 +275,7 @@ export default function ProgramApplyPage({
           {/* Program Header */}
           <div className="flex items-center gap-4 mb-6">
             <div
-              className={`h-14 w-14 rounded-xl bg-gradient-to-br ${program.color} flex items-center justify-center`}
+              className={`h-14 w-14 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center`}
             >
               <Icon className="h-7 w-7 text-white" />
             </div>
@@ -290,7 +283,7 @@ export default function ProgramApplyPage({
               <h1 className="font-display text-3xl font-bold text-foreground">
                 Apply to {program.title}
               </h1>
-              <p className="text-foreground-muted mt-1">{program.description}</p>
+              <p className="text-foreground-muted mt-1">{program.tagline || program.description}</p>
             </div>
           </div>
 

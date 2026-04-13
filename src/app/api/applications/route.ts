@@ -69,6 +69,7 @@ export async function POST(req: NextRequest) {
       .from("programs")
       .select("id, title")
       .eq("slug", programSlug)
+      .eq("is_active", true)
       .single();
 
     if (!program) {
