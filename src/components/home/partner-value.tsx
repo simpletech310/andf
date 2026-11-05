@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { COLLABORATORS } from "@/lib/impact";
 
 const REASONS = [
   {
@@ -25,7 +24,7 @@ const REASONS = [
 
 export function PartnerValue() {
   return (
-    <section className="py-24 lg:py-32 px-6 bg-neutral-50">
+    <section className="pt-24 lg:pt-32 pb-4 px-6 bg-neutral-50">
       <div className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-14">
         <div className="lg:col-span-4">
           <h2 className="font-display font-bold text-4xl sm:text-5xl leading-[1.08] text-foreground">
@@ -54,18 +53,6 @@ export function PartnerValue() {
               </div>
             ))}
           </dl>
-
-          <div className="mt-16">
-            <h3 className="text-base font-semibold text-foreground">In good company</h3>
-            <p className="mt-1 text-sm text-foreground-muted">Organizations we collaborate with to serve youth</p>
-            <ul className="mt-5 flex flex-wrap gap-2">
-              {COLLABORATORS.map((name) => (
-                <li key={name} className="rounded-full border border-neutral-300 bg-white px-3.5 py-1.5 text-sm text-neutral-700">
-                  {name}
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
       </div>
     </section>

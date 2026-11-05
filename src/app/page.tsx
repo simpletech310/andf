@@ -26,7 +26,7 @@ export default function HomePage() {
         <ProgramsPreview />
         <EventsCarousel />
         <PartnerValue />
-        <PartnersSection />
+        <PartnersSection className="pt-16 lg:pt-20 pb-24 lg:pb-32" />
         <WatchSection />
         <DonationCTA />
       </main>

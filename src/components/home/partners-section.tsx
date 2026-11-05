@@ -65,9 +65,9 @@ function MarqueeRow({ partners, direction }: { partners: typeof partnersRow1; di
   );
 }
 
-export function PartnersSection() {
+export function PartnersSection({ className = "py-24 lg:py-32" }: { className?: string }) {
   return (
-    <SectionWrapper className="py-24 lg:py-32 px-6 bg-neutral-50">
+    <SectionWrapper className={`${className} px-6 bg-neutral-50`}>
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           label="Our Partners"

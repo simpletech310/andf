@@ -54,6 +54,11 @@ export const BOARD_AND_ADVISORS: TeamMember[] = [
     ],
   },
   {
+    name: "Lenny McNeil",
+    title: "Board Member",
+    image: "/images/team/lenny-mcneil.jpg",
+  },
+  {
     name: "George Gibbs",
     title: "Advisory Board Member",
     image: "/images/team/george-gibbs.jpg",
