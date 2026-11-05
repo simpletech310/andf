@@ -2,15 +2,16 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useInView, AnimatePresence } from "framer-motion";
-import { useRef, useState, useEffect, useCallback } from "react";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 import {
   ArrowRight, Heart, Sparkles,
-  Users, Award, Rocket, Globe, Target, Quote, Star, CheckCircle2, X
+  Users, Award, Rocket, Globe, Target, Star, CheckCircle2
 } from "lucide-react";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { SectionWrapper, StaggerChildren, StaggerItem } from "@/components/shared/section-wrapper";
 import { Button } from "@/components/ui/button";
+import { BOARD, ADVISORY_BOARD, TEAM } from "@/lib/team";
 import { CareerRail, CommunityWall } from "@/components/shared/dawnn-career";
 import { PRESS_PHOTOS } from "@/lib/dawnn";
 import { DAWNN_CREDITS } from "@/lib/impact";
@@ -25,93 +26,6 @@ const timeline = [
   { year: "2026", title: "Coast to Coast", description: "A Celebrity Golf Classic with Topgolf, The First Tee, and Callaway; Drone Experiences in Indianapolis and Los Angeles; TopGolf in Atlanta and Chicago.", image: "/images/experiences/topgolf-celebrity-classic-2026.jpg", color: "from-primary-400 to-primary-700", stat: "5 cities" },
 ];
 
-type TeamMember = { name: string; title: string; image: string; bio?: string[] };
-
-const boardMembers: TeamMember[] = [
-  {
-    name: "Dawnn Lewis",
-    title: "Founder & President",
-    image: "/images/team/dawnn-lewis.jpg",
-    bio: [
-      "Dawnn Lewis is a multi-talented and multifaceted individual: a Grammy Award-winning singer, a multiple ASCAP and BMI Award-winning songwriter, a film, TV, and stage actor, composer, and series TV creator and producer. She is also President of Morning Jewel Inc.",
-      "Her commitment to the community includes service on several boards and as a spokesperson for a variety of organizations: the National Advisory Board of the National Center for Civil and Human Rights; the SAG and SAG-AFTRA National Board of Directors, where she participated in the successful merger while serving as National and Los Angeles Chair of the SAG (now SAG-AFTRA) Singers Committee; SAG Pension Trustee; the K.I.S. Foundation for Sickle Cell Disease; UNCF; the American Heart Association; the American Cancer Society; and the EMPOWHER Institute.",
-      "Dawnn co-produced, with the Los Angeles Urban League, A NEW DAY: Concert for a Cause — \u201cThe Entertainment Family Gives Back\u201d — a concert event featuring 40 celebrity musicians, artists, and performers who donated their performances to raise awareness and financial support for community-based nonprofit organizations.",
-    ],
-  },
-  {
-    name: "Cheri Haft",
-    title: "Treasurer",
-    image: "/images/team/cheri-haft.jpg",
-    bio: [
-      "Cheri has provided accounting and business management services for more than 30 years. Her clients include nonprofit organizations, entertainment companies, and a range of other businesses, among them Kidpower.org, New Leash on Life: Animal Rescue Foundation, Rodeo Realty, The Haft Group, Platform International Animation Festival Entertainment, KMV Productions, Morning Jewel Inc., Method Animation, Steven Pines CPA, and Portmanteau Productions.",
-      "Cheri is passionate about giving back to the community and providing exceptional service to all of her clients.",
-    ],
-  },
-  {
-    name: "Claire Padmore-Clarke",
-    title: "Board Member",
-    image: "/images/team/claire-padmore-clarke.jpg",
-    bio: [
-      "Claire Padmore-Clarke is an experienced professional at a leading beverage company, with deep expertise in leadership, compliance, and organizational change management. Known for resolving challenges and driving process improvements, she is committed to advancing inclusion through 21 years of Employee Resource Group leadership, championing \u201cA Space to Be YOU\u201d for all.",
-      "Outside of work, Claire is involved in initiatives that support job preparedness and address food insecurity, and she serves on the boards of the YMCA of Anaheim and The K.I.S. Foundation. She believes in the power of education and small, meaningful actions to create lasting, positive impact.",
-    ],
-  },
-  {
-    name: "Scott McGregor",
-    title: "Board Member",
-    image: "/images/team/scott-mcgregor.jpg",
-    bio: [
-      "Scott McGregor is a 16-year Cisco veteran who, as Director of Cisco\u2019s Social Justice Action Office, leads the company\u2019s $150 million, five-year commitment to Historically Black Colleges and Universities and related rural broadband initiatives. He moved into the People, Policy & Purpose organization in 2020 and now drives sustainable, tech-powered solutions for digital and educational equity in underserved communities.",
-      "Scott is passionate about lifting the burden of network and security maintenance from resource-strapped institutions so they can focus on their core missions. He actively seeks nonprofit and industry partners to deliver the infrastructure support and training that will put these communities on a path to long-term success.",
-    ],
-  },
-  {
-    name: "Deane Leavenworth",
-    title: "Board Member",
-    image: "/images/team/deane-leavenworth.jpg",
-    bio: [
-      "Deane Leavenworth is a Government Relations Consultant and Advisor. He has spent four decades connecting the public sector, private sector, and the educational and non-profit communities, resulting in public/private partnerships that benefit the communities these organizations serve.",
-      "Deane began his career as a classroom teacher and established one of the first computer-assisted and computer-managed instructional labs on the West Coast, delivering daily, individualized instruction to students.",
-      "In the public sector, he has served the City of Los Angeles as a senior official in the Office of the Mayor and City Council, and as a Los Angeles County Commissioner. In the private sector, Deane held executive positions at a major entertainment and technology company for two decades.",
-      "Deane continues to provide leadership and guidance in his areas of passion: education and workforce development, the arts, civil rights, and corporate social responsibility and inclusivity.",
-    ],
-  },
-  {
-    name: "George Gibbs",
-    title: "Advisory Board Member",
-    image: "/images/team/george-gibbs.jpg",
-    bio: [
-      "George Gibbs is the retired Community Affairs Manager for UPS\u2019s West Region, an organization of 120,000 employees, where he oversaw community affairs and philanthropic strategy and was responsible for maintaining UPS\u2019s reputation as a good corporate citizen and employer of choice. He also oversaw the region\u2019s $19 million annual United Way employee giving campaign.",
-      "His previous positions include UPS Northeast Texas District Employee Relations Manager, UPS Southwest Region Workforce Planning Manager, Learning & Development Manager, Comprehensive Health & Safety Program Manager, and UPS Pacific Region Employee Relations Manager.",
-      "George has donated his time and expertise to the community by serving on several community and ecumenical boards, including The Greater Dallas Urban League, the National Urban League\u2019s Black Executive Exchange Program, and Bible Way Bible Church\u2019s Board of Elders. He currently serves as Chairman of the Los Angeles UNCF Leadership Council.",
-    ],
-  },
-  {
-    name: "Arnold Hackett",
-    title: "Advisory Board Member",
-    image: "/images/team/arnold-hackett.jpg",
-    bio: [
-      "Arnold Hackett is Senior Advisor to the Chief Executive Officer of the Los Angeles County Metropolitan Transportation Authority (LA Metro). He supports the digital transformation of LA Metro\u2019s major initiatives, bringing deep experience in financial strategy (including cost-benefit analysis), operations, and innovation, and helps ensure those initiatives are aligned with agency priorities, operationally sound, and efficiently executed.",
-      "He provides leadership to strengthen internal coordination, streamline processes, and enhance oversight of complex projects and programs.",
-      "Arnold is the former Vice President of Alliance and Partnership Management for Xerox, where he built an exemplary 28-year career. A seasoned and versatile executive, he has a successful track record of spearheading business services and technology advancements, formulating key efficiency strategies, leading teams to deliver significant results, and serving as an effective change agent who influences at every level of an organization.",
-    ],
-  },
-  {
-    name: "Adriane Lamar-Snider",
-    title: "Advisory Board Member",
-    image: "/images/team/adriane-lamar-snider.jpg",
-    bio: [
-      "Adriane Lamar-Snider is a passionate and dedicated advocate for women and girls who has worked to ensure that the concerns of Black women and girls are at the forefront of our political, social, and economic discourse.",
-      "Adriane is currently the Executive Director of the Riverside Area Rape Crisis Center. She previously served 13 years as Chief Operations Officer at Jenesse Center and one year as Executive Director of the Violence Prevention Coalition.",
-      "Having earned a Master of Science degree, she advances social justice and economic empowerment by working with organizations to ensure sound fiscal, programmatic, and administrative oversight. Her mission is to provide exceptional stewardship of program resources and see that those programs and organizations thrive.",
-    ],
-  },
-];
-
-const staffMembers: TeamMember[] = [
-  { name: "Christy Zhou", title: "Programs", image: "/images/team/christy-zhou.jpg" },
-  { name: "Sheila Gilmore", title: "Outreach", image: "/images/team/sheila-gilmore.jpg" },
-];
 
 const impactStats = [
   { value: "2,000+", label: "Youth Served", icon: Users },
@@ -143,108 +57,6 @@ const photoHighlights = [
 ];
 
 /* ─── Sub-Components ───────────────────────────────────────────────── */
-
-function TeamMemberCard({ name, title, image, bio, featured, onOpen }: TeamMember & { featured?: boolean; onOpen?: () => void }) {
-  const hasBio = Boolean(bio?.length && onOpen);
-  return (
-    <motion.div
-      className={`group text-center ${hasBio ? "cursor-pointer" : ""}`}
-      whileHover={{ y: -6 }}
-      transition={{ duration: 0.3 }}
-      onClick={hasBio ? onOpen : undefined}
-      onKeyDown={hasBio ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onOpen?.(); } } : undefined}
-      role={hasBio ? "button" : undefined}
-      tabIndex={hasBio ? 0 : undefined}
-      aria-label={hasBio ? `Read ${name}'s bio` : undefined}
-    >
-      <div className={`relative mx-auto rounded-2xl overflow-hidden border-2 transition-all duration-500 mb-4 shadow-sm group-hover:shadow-xl ${
-        featured
-          ? "w-40 h-40 sm:w-48 sm:h-48 border-secondary-400 group-hover:border-secondary-500"
-          : "w-36 h-36 sm:w-44 sm:h-44 border-neutral-200 group-hover:border-primary-400"
-      }`}>
-        <Image
-          src={image}
-          alt={name}
-          fill
-          className="object-cover transition-transform duration-700 group-hover:scale-110"
-          sizes="192px"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        {featured && (
-          <div className="absolute top-2 right-2 bg-secondary-500 text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
-            Founder
-          </div>
-        )}
-      </div>
-      <h3 className={`font-semibold group-hover:text-primary-500 transition-colors ${featured ? "text-lg text-foreground" : "text-foreground"}`}>{name}</h3>
-      <p className="text-sm text-foreground-muted">{title}</p>
-      {hasBio && (
-        <span className="mt-2 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-primary-500 group-hover:gap-2 transition-all">
-          Read bio <ArrowRight className="h-3 w-3" />
-        </span>
-      )}
-    </motion.div>
-  );
-}
-
-function BioModal({ member, onClose }: { member: TeamMember | null; onClose: () => void }) {
-  useEffect(() => {
-    if (!member) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKey);
-    return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
-  }, [member, onClose]);
-
-  return (
-    <AnimatePresence>
-      {member && (
-        <motion.div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <div className="absolute inset-0 bg-neutral-950/70 backdrop-blur-sm" onClick={onClose} />
-          <motion.div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="bio-title"
-            className="relative w-full max-w-2xl max-h-[88vh] overflow-y-auto rounded-3xl bg-white shadow-2xl"
-            initial={{ opacity: 0, y: 30, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.98 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-          >
-            <button
-              onClick={onClose}
-              className="absolute top-4 right-4 z-10 h-9 w-9 inline-flex items-center justify-center rounded-full bg-neutral-100 text-neutral-600 hover:bg-neutral-200 transition-colors"
-              aria-label="Close bio"
-            >
-              <X className="h-4 w-4" />
-            </button>
-            <div className="bg-gradient-to-br from-primary-600 to-primary-800 px-6 sm:px-10 pt-10 pb-8 flex flex-col sm:flex-row items-center sm:items-end gap-6">
-              <div className="relative h-28 w-28 sm:h-32 sm:w-32 shrink-0 rounded-2xl overflow-hidden border-4 border-white/90 shadow-xl">
-                <Image src={member.image} alt={member.name} fill className="object-cover" sizes="128px" />
-              </div>
-              <div className="text-center sm:text-left">
-                <span className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary-300">A New Day Foundation</span>
-                <h3 id="bio-title" className="mt-1 text-2xl sm:text-3xl font-bold text-white">{member.name}</h3>
-                <p className="text-primary-100">{member.title}</p>
-              </div>
-            </div>
-            <div className="px-6 sm:px-10 py-8 space-y-4">
-              {member.bio?.map((para, i) => (
-                <p key={i} className="text-foreground-muted leading-relaxed">{para}</p>
-              ))}
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
 
 function AnimatedCounter({ value, label, icon: Icon }: { value: string; label: string; icon: React.ElementType }) {
   return (
@@ -364,12 +176,8 @@ function Timeline() {
 /* ─── Page ──────────────────────────────────────────────────────────── */
 
 export default function AboutPage() {
-  const [activeBio, setActiveBio] = useState<TeamMember | null>(null);
-  const closeBio = useCallback(() => setActiveBio(null), []);
-
   return (
     <div className="pb-0">
-      <BioModal member={activeBio} onClose={closeBio} />
 
       {/* ───── 1. HERO — Cinematic full-bleed ───── */}
       <section className="relative overflow-hidden">
@@ -662,46 +470,28 @@ export default function AboutPage() {
         </div>
       </SectionWrapper>
 
-      {/* ───── 6. LEADERSHIP — Board & Staff ───── */}
-      <section className="py-24 px-6 bg-gradient-to-b from-neutral-50 to-white">
-        <div className="mx-auto max-w-6xl">
-          <SectionHeading
-            label="Leadership"
-            title="The People Behind the Mission"
-            description="Our board and team bring together leaders from diverse industries united by a passion for empowering the next generation."
-          />
-
-          {/* Board */}
-          <div className="mt-16">
-            <h3 className="text-center text-sm font-semibold uppercase tracking-[0.2em] text-primary-500 mb-3">Board of Directors</h3>
-            <p className="text-center text-sm text-foreground-muted mb-10">Select a board member to read their story.</p>
-            <StaggerChildren className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8 lg:gap-10">
-              {boardMembers.map((member, i) => (
-                <StaggerItem key={member.name}>
-                  <TeamMemberCard {...member} featured={i === 0} onOpen={() => setActiveBio(member)} />
-                </StaggerItem>
+      {/* ───── 6. LEADERSHIP — teaser, full page at /leadership ───── */}
+      <section className="py-20 px-6 bg-gradient-to-b from-neutral-50 to-white">
+        <div className="mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          <div className="lg:col-span-5">
+            <h2 className="font-display font-bold text-3xl sm:text-4xl text-foreground">The people behind the mission</h2>
+            <p className="mt-4 text-foreground-muted leading-relaxed">
+              {BOARD.length} board directors, {ADVISORY_BOARD.length} advisors, and a dedicated team bring experience from
+              entertainment, technology, transportation, finance, and advocacy.
+            </p>
+            <Link href="/leadership" className="mt-6 inline-block">
+              <Button size="lg">Meet the board &amp; team</Button>
+            </Link>
+          </div>
+          <Link href="/leadership" className="lg:col-span-7 group" aria-label="Meet the board and team">
+            <ul className="grid grid-cols-4 sm:grid-cols-5 gap-3">
+              {[...BOARD, ...ADVISORY_BOARD, ...TEAM].map((m) => (
+                <li key={m.name} className="relative aspect-square overflow-hidden rounded-xl bg-neutral-200 ring-1 ring-neutral-200">
+                  <Image src={m.image} alt={m.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="120px" />
+                </li>
               ))}
-            </StaggerChildren>
-          </div>
-
-          {/* Divider */}
-          <div className="my-16 flex items-center gap-4">
-            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-neutral-300 to-transparent" />
-            <div className="h-2 w-2 rounded-full bg-primary-400" />
-            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-neutral-300 to-transparent" />
-          </div>
-
-          {/* Staff */}
-          <div>
-            <h3 className="text-center text-sm font-semibold uppercase tracking-[0.2em] text-primary-500 mb-10">Our Team</h3>
-            <StaggerChildren className="grid grid-cols-2 gap-8 lg:gap-10 max-w-md mx-auto">
-              {staffMembers.map((member) => (
-                <StaggerItem key={member.name}>
-                  <TeamMemberCard {...member} />
-                </StaggerItem>
-              ))}
-            </StaggerChildren>
-          </div>
+            </ul>
+          </Link>
         </div>
       </section>
 

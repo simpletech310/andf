@@ -34,6 +34,8 @@ const nextConfig: NextConfig = {
       { source: "/programs/drone-experience", destination: "/programs", permanent: true },
       { source: "/programs/drone-experience/apply", destination: "/programs", permanent: true },
       { source: "/partner", destination: "/sponsor", permanent: true },
+      { source: "/board", destination: "/leadership#board", permanent: true },
+      { source: "/team", destination: "/leadership#team", permanent: true },
     ];
   },
   async headers() {
