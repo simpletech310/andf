@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { PROGRAMS } from "@/lib/programs";
 import { motion, useInView } from "framer-motion";
 import {
   ArrowRight, Music, Cpu, Target, Users, GraduationCap, Heart,
@@ -22,64 +23,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
 
 /* ─── Fallback Data (used when DB is empty) ─────────────────────── */
 
-const fallbackPrograms = [
-  {
-    slug: "band-camp", title: "Band Camp", tagline: "Music that moves the soul",
-    description: "An immersive musical experience where young people discover their rhythm, build confidence through performance, and connect with professional musicians. From instruments to vocals, our camp covers it all.",
-    icon: "Music", color: "from-violet-500 to-purple-600",
-    hero_image_url: "/images/programs/engaged-students.jpg",
-    features: ["Professional instruction", "Ensemble workshops", "Live performance", "Instrument access"],
-    outcomes: [{ stat: "500+", label: "Students Trained" }],
-  },
-  {
-    slug: "drone-experience", title: "Drone Experience", tagline: "Sky's not the limit",
-    description: "Hands-on drone piloting and aerial photography workshops that introduce youth to cutting-edge technology and career opportunities in STEM fields.",
-    icon: "Cpu", color: "from-cyan-500 to-blue-600",
-    hero_image_url: "/images/programs/drone-teach.jpg",
-    features: ["Flight training", "Aerial photography", "STEM career paths", "FAA certification prep"],
-    outcomes: [{ stat: "200+", label: "Pilots Trained" }],
-  },
-  {
-    slug: "topgolf", title: "TopGolf Experience", tagline: "Driving success forward",
-    description: "A unique blend of sports, networking, and mentorship in an exciting environment that teaches teamwork, builds lasting connections, and develops leadership skills.",
-    icon: "Target", color: "from-emerald-500 to-green-600",
-    hero_image_url: "/images/gallery/leadership-group.jpg",
-    features: ["Golf instruction", "Networking events", "Team building", "Leadership development"],
-    outcomes: [{ stat: "300+", label: "Participants" }],
-  },
-  {
-    slug: "mentors", title: "MenTORS", tagline: "Men Talking Of Relevant Situations",
-    description: "A mentoring initiative where men come together to discuss real-life challenges, career development, and personal growth — creating a safe space for honest conversation and meaningful guidance.",
-    icon: "MessageCircle", color: "from-red-500 to-rose-600",
-    hero_image_url: "/images/gallery/dawnn-steve-wesson.jpg",
-    features: ["Group discussions", "Real-talk sessions", "Career mentoring", "Personal development"],
-    outcomes: [{ stat: "100+", label: "Men Mentored" }],
-  },
-  {
-    slug: "sisters-hangout", title: "Sisters Hangout", tagline: "Empowering young women together",
-    description: "A supportive space for young women to connect, share experiences, and build confidence through workshops, peer mentoring, and community activities that celebrate sisterhood and strength.",
-    icon: "Heart", color: "from-pink-500 to-rose-600",
-    hero_image_url: "/images/gallery/dawnn-zeta-sorors.jpg",
-    features: ["Peer mentoring", "Leadership workshops", "Community building", "Wellness activities"],
-    outcomes: [{ stat: "120+", label: "Young Women Served" }],
-  },
-  {
-    slug: "mentorship", title: "Mentorship Program", tagline: "Guidance that transforms",
-    description: "One-on-one and group mentoring with successful professionals who provide guidance, support, and real-world insight to shape future leaders in every field.",
-    icon: "Users", color: "from-amber-500 to-orange-600",
-    hero_image_url: "/images/programs/mentorship-session.jpg",
-    features: ["1-on-1 mentoring", "Group sessions", "Professional networking", "Career guidance"],
-    outcomes: [{ stat: "150+", label: "Active Mentees" }],
-  },
-  {
-    slug: "hbcu-heroes", title: "HBCU Heroes", tagline: "Celebrating excellence",
-    description: "Spotlighting the achievements and impact of Historically Black Colleges and Universities, inspiring the next generation of scholars, leaders, and change-makers.",
-    icon: "GraduationCap", color: "from-primary-500 to-primary-700",
-    hero_image_url: "/images/gallery/omega-psi-phi.jpg",
-    features: ["Campus tours", "Speaker series", "Scholarship info", "Alumni connections"],
-    outcomes: [{ stat: "400+", label: "Students Reached" }],
-  },
-];
+const fallbackPrograms = PROGRAMS;
 
 /* ─── Partners & static data ─────────────────────────────────────── */
 
@@ -112,28 +56,11 @@ const partners = [
 
 const impactStats = [
   { value: "2,000+", label: "Youth Served", icon: Users },
-  { value: "7", label: "Active Programs", icon: Zap },
+  { value: "6", label: "Active Programs", icon: Zap },
   { value: "50+", label: "Corporate Partners", icon: Star },
   { value: "100%", label: "Free to Attend", icon: Heart },
 ];
 
-const testimonials = [
-  {
-    quote: "Band Camp changed my daughter's life. She went from shy to performing on stage in front of hundreds of people.",
-    name: "Parent of Band Camp participant",
-    program: "Band Camp",
-  },
-  {
-    quote: "I never thought I'd be flying drones or thinking about a career in tech. ANDF opened doors I didn't know existed.",
-    name: "Drone Experience participant",
-    program: "Drone Experience",
-  },
-  {
-    quote: "The mentors here don't just talk — they listen. That's what makes MenTORS different from anything else out there.",
-    name: "MenTORS participant",
-    program: "MenTORS",
-  },
-];
 
 /* ─── Sub-Components ───────────────────────────────────────────────── */
 
@@ -184,9 +111,15 @@ function ProgramCard({ program, index }: { program: any; index: number }) {
           {/* Content side */}
           <div className="lg:w-[55%] flex flex-col justify-center p-8 lg:p-12 space-y-5">
             <div className="flex items-center gap-3">
-              <div className={`h-11 w-11 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shrink-0 shadow-sm`}>
-                <Icon className="h-5 w-5 text-white" />
-              </div>
+              {program.logo_url ? (
+                <div className="relative h-20 w-20 rounded-xl overflow-hidden bg-white border border-neutral-200 shrink-0">
+                  <Image src={program.logo_url} alt={`${program.title} logo`} fill className="object-contain" sizes="80px" />
+                </div>
+              ) : (
+                <div className={`h-11 w-11 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shrink-0 shadow-sm`}>
+                  <Icon className="h-5 w-5 text-white" />
+                </div>
+              )}
               <span className="text-xs font-bold uppercase tracking-[0.2em] text-foreground-muted">
                 {program.tagline}
               </span>
@@ -214,7 +147,7 @@ function ProgramCard({ program, index }: { program: any; index: number }) {
 
             <div className="pt-2">
               <span className="inline-flex items-center gap-2 text-primary-500 font-bold text-sm group-hover:gap-3 transition-all duration-300">
-                Explore Program
+                Explore {program.title}
                 <ArrowRight className="h-4 w-4" />
               </span>
             </div>
@@ -225,28 +158,6 @@ function ProgramCard({ program, index }: { program: any; index: number }) {
   );
 }
 
-function TestimonialCard({ testimonial, index }: { testimonial: typeof testimonials[0]; index: number }) {
-  return (
-    <motion.div
-      className="p-6 rounded-2xl bg-white border border-neutral-200 shadow-sm hover:shadow-md transition-all relative"
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.1, duration: 0.5 }}
-    >
-      <div className="absolute -top-3 left-6 h-6 w-6 rounded-full bg-secondary-500 flex items-center justify-center">
-        <span className="text-white text-xs font-bold">&ldquo;</span>
-      </div>
-      <p className="text-foreground leading-relaxed italic mt-2">
-        &ldquo;{testimonial.quote}&rdquo;
-      </p>
-      <div className="mt-4 pt-4 border-t border-neutral-100">
-        <p className="text-sm font-semibold text-foreground">{testimonial.name}</p>
-        <p className="text-xs text-primary-500 font-medium">{testimonial.program}</p>
-      </div>
-    </motion.div>
-  );
-}
 
 function ScrollingPartners() {
   const ref = useRef<HTMLDivElement>(null);
@@ -287,22 +198,8 @@ function ScrollingPartners() {
 /* ─── Page ──────────────────────────────────────────────────────────── */
 
 export default function ProgramsPage() {
-  const [programs, setPrograms] = useState<any[]>(fallbackPrograms);
+  const programs: any[] = fallbackPrograms;
 
-  useEffect(() => {
-    async function fetchPrograms() {
-      try {
-        const res = await fetch("/api/programs");
-        const data = await res.json();
-        if (data.programs?.length > 0) {
-          setPrograms(data.programs);
-        }
-      } catch {
-        // Keep fallback data
-      }
-    }
-    fetchPrograms();
-  }, []);
 
   return (
     <div className="pb-0">
@@ -321,7 +218,7 @@ export default function ProgramsPage() {
             Programs That<br /><span className="text-secondary-400">Change Lives</span>
           </motion.h1>
           <motion.p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
-            From music studios to drone fields, mentorship circles to college tours — every program is designed to unlock potential and build the leaders of tomorrow.
+            From music studios to forensic labs, mentorship circles to college prep — every program is designed to unlock potential and build the leaders of tomorrow.
           </motion.p>
           <motion.div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}>
             <a href="#programs">
@@ -355,7 +252,7 @@ export default function ProgramsPage() {
           <SectionHeading label="Why Choose ANDF" title="More Than Just Programs" description="Every experience we create is built on a foundation of mentorship, community, and real-world impact." />
           <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { icon: Sparkles, title: "Hands-On Learning", desc: "No textbooks, no lectures. Our programs put young people in the driver's seat — flying drones, playing instruments, and building real skills.", color: "from-violet-500 to-purple-600" },
+              { icon: Sparkles, title: "Hands-On Learning", desc: "No textbooks, no lectures. Our programs put young people in the driver's seat — playing instruments, and building real skills.", color: "from-violet-500 to-purple-600" },
               { icon: Users, title: "Mentorship at the Core", desc: "Every program pairs youth with experienced professionals who invest personally in their growth, confidence, and career development.", color: "from-secondary-400 to-secondary-600" },
               { icon: Heart, title: "Always Free", desc: "Cost should never be a barrier. All ANDF programs are completely free — including materials, meals, and resources.", color: "from-primary-500 to-primary-700" },
             ].map((item, i) => (
@@ -385,18 +282,6 @@ export default function ProgramsPage() {
           </div>
         </div>
       </section>
-
-      {/* ───── 5. TESTIMONIALS ───── */}
-      <SectionWrapper className="py-24 px-6">
-        <div className="mx-auto max-w-6xl">
-          <SectionHeading label="Real Stories" title="Hear From Our Community" description="The impact of our programs is best told by the people who experience them." />
-          <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((t, i) => (
-              <TestimonialCard key={i} testimonial={t} index={i} />
-            ))}
-          </div>
-        </div>
-      </SectionWrapper>
 
       {/* ───── 6. INLINE CTA ───── */}
       <section className="py-20 px-6 bg-primary-600 relative overflow-hidden">

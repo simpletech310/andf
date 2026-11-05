@@ -18,7 +18,23 @@ const nextConfig: NextConfig = {
         hostname: "stream.mux.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "i.ytimg.com",
+        pathname: "/vi/**",
+      },
     ],
+  },
+  async redirects() {
+    return [
+      { source: "/videos", destination: "/live", permanent: true },
+      { source: "/videos/:id", destination: "/live", permanent: true },
+      { source: "/sponsor/submit", destination: "/sponsor#inquire", permanent: true },
+      { source: "/checkin/:token", destination: "/events", permanent: false },
+      { source: "/programs/drone-experience", destination: "/programs", permanent: true },
+      { source: "/programs/drone-experience/apply", destination: "/programs", permanent: true },
+      { source: "/partner", destination: "/sponsor", permanent: true },
+    ];
   },
   async headers() {
     return [

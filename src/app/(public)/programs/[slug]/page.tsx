@@ -4,7 +4,9 @@ import { use, useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import dynamic from "next/dynamic";
+import { PROGRAMS_BY_SLUG } from "@/lib/programs";
+import { getBuiltInEvents } from "@/lib/featured-events";
+import { YouTubeCard } from "@/components/shared/youtube-card";
 import {
   ArrowLeft, ArrowRight, Calendar, MapPin, Users, Heart, Music, Cpu,
   Target, GraduationCap, MessageCircle, Play, X, ChevronLeft, ChevronRight,
@@ -15,16 +17,7 @@ import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { BrandDivider } from "@/components/shared/brand-divider";
 import { Button } from "@/components/ui/button";
 
-const MuxStreamPlayer = dynamic(() => import("@/components/live/MuxStreamPlayer"), {
-  ssr: false,
-  loading: () => (
-    <div className="aspect-video bg-neutral-100 rounded-2xl flex items-center justify-center">
-      <div className="h-8 w-8 border-3 border-primary-500/30 border-t-primary-500 rounded-full animate-spin" />
-    </div>
-  ),
-});
 
-const FALLBACK_MUX_ID = "DvUNmWbAG0100yvsdMvVzTod00dPKsJrL00xu1lG5MmsKIA";
 
 /* ─── Icon map ─────────────────────────────────────────────── */
 
@@ -35,78 +28,10 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
 
 /* ─── Hardcoded fallback data ──────────────────────────────── */
 
-const fallbackData: Record<string, any> = {
-  "band-camp": {
-    title: "Band Camp", tagline: "Music that moves the soul",
-    description: "An immersive musical experience where young people discover their rhythm and build confidence.",
-    long_description: "Our Band Camp program is more than just music lessons — it's a transformative experience that builds confidence, teaches discipline, and creates lasting bonds. Under the guidance of professional musicians and educators, participants explore various instruments, develop ensemble skills, and perform in a closing night concert that showcases their growth.\n\nFrom beginners picking up an instrument for the first time to experienced musicians looking to refine their craft, Band Camp meets every participant where they are and helps them reach the next level.",
-    icon: "Music", logo_url: "/images/partners/band-camp.jpg", color: "from-violet-500 to-purple-600",
-    hero_image_url: "/images/programs/engaged-students.jpg", video_title: "Band Camp Highlights",
-    features: ["Professional instrument instruction", "Ensemble and band workshops", "Music theory fundamentals", "Recording studio experience", "Closing night live concert", "Take-home practice resources"],
-    outcomes: [{ stat: "500+", label: "Students Trained" }, { stat: "95%", label: "Return Rate" }, { stat: "12", label: "Concerts Performed" }, { stat: "50+", label: "Instruments Available" }],
-    gallery_urls: ["/images/programs/engaged-students.jpg", "/images/programs/band-camp-logo.jpg", "/images/gallery/knowledj-teaches.jpg", "/images/gallery/noel-massie-teaches.jpg", "/images/gallery/opening-panel.jpg", "/images/gallery/event-photo.jpg"],
-  },
-  "drone-experience": {
-    title: "Drone Experience", tagline: "Sky's not the limit",
-    description: "Hands-on drone piloting and aerial photography workshops for aspiring tech leaders.",
-    long_description: "The Drone Experience program puts cutting-edge technology directly into the hands of young people. Participants learn to pilot drones, capture stunning aerial photography, and explore the rapidly growing world of unmanned aerial systems.\n\nBeyond the thrill of flight, this program introduces career pathways in aerospace, filmmaking, agriculture, surveying, and more. Participants work toward understanding FAA regulations and responsible drone operation.",
-    icon: "Cpu", color: "from-cyan-500 to-blue-600",
-    hero_image_url: "/images/programs/drone-teach.jpg", video_title: "Drone Experience Highlights",
-    features: ["Drone flight training", "Aerial photography & videography", "FAA regulation overview", "Career pathway exploration", "STEM fundamentals", "Equipment provided"],
-    outcomes: [{ stat: "200+", label: "Pilots Trained" }, { stat: "100%", label: "Hands-on Learning" }, { stat: "8", label: "Career Paths Explored" }, { stat: "30+", label: "Drones Available" }],
-    gallery_urls: ["/images/programs/drone-teach.jpg", "/images/programs/nasa-workshop.jpg", "/images/gallery/nasa-team-teaches.jpg", "/images/gallery/nasa-workshop-2.jpg", "/images/gallery/swat-experience.jpg", "/images/gallery/leadership-group.jpg"],
-  },
-  topgolf: {
-    title: "TopGolf Experience", tagline: "Driving success forward",
-    description: "Sports, networking, and mentorship in an exciting environment.",
-    long_description: "Our TopGolf Experience combines the excitement of golf with meaningful mentorship and networking opportunities. In a relaxed, fun setting, young people connect with professionals, learn about leadership, and develop social skills that will serve them throughout their lives.\n\nThis program breaks down barriers between youth and successful professionals, creating organic connections in a welcoming environment where everyone can have fun while learning.",
-    icon: "Target", logo_url: "/images/partners/top-golf.jpg", color: "from-emerald-500 to-green-600",
-    hero_image_url: "/images/gallery/leadership-group.jpg", video_title: "TopGolf Experience Highlights",
-    features: ["Golf instruction", "Professional networking", "Leadership workshops", "Team building activities", "Career conversations", "Refreshments included"],
-    outcomes: [{ stat: "300+", label: "Participants" }, { stat: "50+", label: "Mentors Engaged" }, { stat: "15", label: "Events Hosted" }, { stat: "90%", label: "Satisfaction Rate" }],
-    gallery_urls: ["/images/gallery/leadership-group.jpg", "/images/gallery/raffle-winner.jpg", "/images/gallery/opening-panel.jpg", "/images/gallery/event-photo.jpg"],
-  },
-  mentorship: {
-    title: "Mentorship Program", tagline: "Guidance that transforms",
-    description: "One-on-one and group mentoring with successful professionals.",
-    long_description: "The Mentorship Program is the heart of A New Day Foundation. We carefully match young people with experienced professionals who share their interests and career aspirations. Through regular meetings, goal-setting sessions, and real-world exposure, mentees develop the skills and confidence they need to succeed.\n\nOur mentors come from diverse backgrounds — entertainment, technology, business, education, and more — ensuring every participant can find guidance tailored to their dreams.",
-    icon: "Users", color: "from-amber-500 to-orange-600",
-    hero_image_url: "/images/programs/mentorship-session.jpg", video_title: "Mentorship Program Highlights",
-    features: ["1-on-1 mentor matching", "Monthly group sessions", "Goal setting & tracking", "Professional shadowing", "Resume & interview prep", "Ongoing support network"],
-    outcomes: [{ stat: "150+", label: "Active Mentees" }, { stat: "80+", label: "Volunteer Mentors" }, { stat: "3yr", label: "Avg. Relationship" }, { stat: "85%", label: "Goal Achievement" }],
-    gallery_urls: ["/images/programs/mentorship-session.jpg", "/images/gallery/dawnn-on-the-move.jpg", "/images/gallery/volunteer-leader.jpg", "/images/gallery/scholarship-recipient.jpg"],
-  },
-  "hbcu-heroes": {
-    title: "HBCU Heroes", tagline: "Celebrating excellence",
-    description: "Spotlighting the achievements of Historically Black Colleges and Universities.",
-    long_description: "HBCU Heroes shines a spotlight on the incredible impact and legacy of Historically Black Colleges and Universities. Through speaker series, campus connections, and scholarship information sessions, we inspire young people to consider the unique opportunities HBCUs offer.\n\nThis program features alumni who have gone on to remarkable careers, providing living proof of the HBCU impact. From virtual summits to in-person campus visits, HBCU Heroes opens doors to higher education excellence.",
-    icon: "GraduationCap", logo_url: "/images/partners/hbcu-heroes.jpg", color: "from-primary-500 to-primary-700",
-    hero_image_url: "/images/gallery/omega-psi-phi.jpg", video_title: "HBCU Heroes Highlights",
-    features: ["Alumni speaker series", "Virtual campus tours", "Scholarship guidance", "Application workshops", "Alumni networking", "Cultural celebrations"],
-    outcomes: [{ stat: "20+", label: "HBCUs Featured" }, { stat: "400+", label: "Students Reached" }, { stat: "$50K+", label: "Scholarships Connected" }, { stat: "10", label: "Campus Visits" }],
-    gallery_urls: ["/images/gallery/omega-psi-phi.jpg", "/images/gallery/zeta-phi-beta.jpg", "/images/gallery/dawnn-zeta-sorors.jpg", "/images/gallery/fnf-scholarship-2024.jpg", "/images/gallery/scholarship-recipient.jpg", "/images/gallery/fnf-group-lineup.jpg"],
-  },
-  mentors: {
-    title: "MenTORS", tagline: "Men Talking Of Relevant Situations",
-    description: "Real conversations, real growth, real mentorship for men.",
-    long_description: "MenTORS — Men Talking Of Relevant Situations — is a mentoring initiative that creates a safe, honest space for men to discuss the challenges they face in life, career, and community. Through guided group discussions and one-on-one pairings, participants build the tools they need to navigate real-world situations with confidence and integrity.\n\nFrom financial literacy and career development to emotional wellness and fatherhood, MenTORS covers the topics that matter most. Our facilitators and mentors bring lived experience and professional expertise to every session.",
-    icon: "MessageCircle", logo_url: "/images/partners/mentors.jpg", color: "from-red-500 to-rose-600",
-    hero_image_url: "/images/gallery/dawnn-steve-wesson.jpg", video_title: "MenTORS Highlights",
-    features: ["Facilitated group discussions", "One-on-one mentor pairing", "Financial literacy workshops", "Career development sessions", "Emotional wellness support", "Community networking"],
-    outcomes: [{ stat: "100+", label: "Men Mentored" }, { stat: "24", label: "Sessions Per Year" }, { stat: "90%", label: "Return Rate" }, { stat: "40+", label: "Active Mentors" }],
-    gallery_urls: ["/images/gallery/dawnn-steve-wesson.jpg", "/images/gallery/volunteer-leader.jpg", "/images/gallery/opening-panel.jpg", "/images/gallery/leadership-group.jpg"],
-  },
-  "sisters-hangout": {
-    title: "Sisters Hangout", tagline: "Empowering young women together",
-    description: "A supportive space for young women to connect, grow, and lead.",
-    long_description: "Sisters Hangout is a program designed to uplift, empower, and connect young women through meaningful experiences and honest conversations. In a supportive and judgment-free environment, participants explore topics like self-confidence, leadership, wellness, and career exploration.\n\nThrough peer mentoring, creative workshops, and community service projects, Sisters Hangout builds a sisterhood that extends far beyond program hours. Our goal is for every young woman to leave knowing her voice matters and her potential is limitless.",
-    icon: "Heart", logo_url: "/images/partners/sisters.jpg", color: "from-rose-700 to-red-900",
-    hero_image_url: "/images/gallery/dawnn-zeta-sorors.jpg", video_title: "Sisters Hangout Highlights",
-    features: ["Peer mentoring circles", "Leadership development", "Creative expression workshops", "Wellness and self-care", "Community service projects", "College & career prep"],
-    outcomes: [{ stat: "120+", label: "Young Women Served" }, { stat: "18", label: "Workshops Per Year" }, { stat: "95%", label: "Confidence Growth" }, { stat: "30+", label: "Volunteer Mentors" }],
-    gallery_urls: ["/images/gallery/dawnn-zeta-sorors.jpg", "/images/gallery/siedah-garrett-dawnn.jpg", "/images/gallery/zeta-phi-beta.jpg", "/images/gallery/scholarship-recipient.jpg", "/images/gallery/raffle-winner.jpg"],
-  },
-};
+
+
+// Program content comes from the official site (src/lib/programs.ts).
+const fallbackData: Record<string, any> = PROGRAMS_BY_SLUG;
 
 /* ─── Lightbox ─────────────────────────────────────────────── */
 
@@ -128,15 +53,13 @@ function Lightbox({ images, currentIndex, onClose, onPrev, onNext }: {
 
 /* ─── Video Section ────────────────────────────────────────── */
 
-function VideoSection({ videoTitle, muxPlaybackId, videoUrl }: { videoTitle?: string; muxPlaybackId?: string; videoUrl?: string }) {
-  const playbackId = muxPlaybackId || FALLBACK_MUX_ID;
+function VideoSection({ videoTitle, youtubeId }: { videoTitle?: string; youtubeId?: string }) {
+  // Only real program footage from the ANDF YouTube channel; no section when there is none.
+  if (!youtubeId) return null;
   return (
     <SectionWrapper className="py-16 px-6">
       <div className="mx-auto max-w-5xl">
-        <h2 className="font-display text-3xl font-bold text-foreground mb-6">{videoTitle || "Watch the Highlights"}</h2>
-        <div className="relative w-full rounded-2xl overflow-hidden shadow-xl bg-neutral-900">
-          <MuxStreamPlayer playbackId={playbackId} videoUrl={videoUrl || "/videos/andf-content.mp4"} title={videoTitle || "Program Video"} />
-        </div>
+        <YouTubeCard id={youtubeId} title={videoTitle || "Watch the Highlights"} tag="From A New Day Now" large />
       </div>
     </SectionWrapper>
   );
@@ -188,38 +111,15 @@ function GallerySection({ gallery, programTitle }: { gallery: string[]; programT
 
 export default function ProgramDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
-  const [program, setProgram] = useState<any>(null);
-  const [events, setEvents] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchProgram() {
-      try {
-        const res = await fetch(`/api/programs?slug=${slug}`);
-        const data = await res.json();
-        if (data.program) {
-          setProgram(data.program);
-          setEvents(data.events || []);
-        } else {
-          // Fallback to hardcoded
-          setProgram(fallbackData[slug] || null);
-        }
-      } catch {
-        setProgram(fallbackData[slug] || null);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchProgram();
-  }, [slug]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-10 w-10 animate-spin text-primary-500" />
-      </div>
-    );
-  }
+  const program: any = fallbackData[slug] ?? null;
+  const events = getBuiltInEvents()
+    .filter((e) => e.programs?.slug === slug && e.status === "published")
+    .map((e) => ({
+      id: e.id,
+      title: e.title,
+      location: e.location_name,
+      date: new Date(e.start_date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "America/Los_Angeles" }),
+    }));
 
   if (!program) {
     return (
@@ -299,7 +199,7 @@ export default function ProgramDetailPage({ params }: { params: Promise<{ slug: 
       )}
 
       {/* ── Featured Video ── */}
-      <VideoSection videoTitle={program.video_title} muxPlaybackId={program.mux_playback_id} videoUrl={program.video_url} />
+      <VideoSection videoTitle={program.video_title} youtubeId={program.youtube_id} />
 
       {/* ── About + Features ── */}
       <SectionWrapper className="py-20 px-6">
@@ -354,8 +254,8 @@ export default function ProgramDetailPage({ params }: { params: Promise<{ slug: 
                       {event.location && <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-primary-500" /> {event.location}</span>}
                     </div>
                   </div>
-                  <Link href="/events" className="mt-3 sm:mt-0">
-                    <Button variant="outline" size="sm">Register <ArrowRight className="h-4 w-4" /></Button>
+                  <Link href={`/events/${event.id}/register`} className="mt-3 sm:mt-0">
+                    <Button variant="outline" size="sm">RSVP <ArrowRight className="h-4 w-4" /></Button>
                   </Link>
                 </motion.div>
               ))}

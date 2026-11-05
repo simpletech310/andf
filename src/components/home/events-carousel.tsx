@@ -9,7 +9,7 @@ import { SectionHeading } from "@/components/shared/section-heading";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { createClient } from "@/lib/supabase/client";
+import { getBuiltInEvents } from "@/lib/featured-events";
 
 /* ─── Types ───────────────────────────────────────────────────────── */
 
@@ -33,6 +33,7 @@ interface DBEvent {
   cover_image_url: string | null;
   is_featured: boolean;
   programs: Program | null;
+  time_tba?: boolean;
 }
 
 /* ─── Color accent mapping by program slug ────────────────────────── */
@@ -117,18 +118,8 @@ export function EventsCarousel() {
 
   useEffect(() => {
     async function fetchEvents() {
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from("events")
-        .select("*, programs(title, slug, icon, color)")
-        .eq("status", "published")
-        .gte("start_date", new Date().toISOString())
-        .order("start_date", { ascending: true })
-        .limit(3);
-
-      if (!error && data) {
-        setEvents(data as DBEvent[]);
-      }
+      const upcoming = getBuiltInEvents().filter((e) => e.status === "published") as unknown as DBEvent[];
+      setEvents(upcoming.slice(0, 3));
       setLoading(false);
     }
     fetchEvents();
@@ -153,7 +144,7 @@ export function EventsCarousel() {
             const accent = accentMap[programSlug] || defaultAccent;
             const image = event.cover_image_url || defaultImage;
             const date = formatEventDate(event.start_date, event.end_date);
-            const time = formatEventTime(event.start_date, event.end_date);
+            const time = event.time_tba ? "Time TBA" : formatEventTime(event.start_date, event.end_date);
             const location = event.location_name || (event.event_type === "virtual" ? "Virtual Event" : "TBD");
             const type = formatEventType(event.event_type);
             const description = event.short_description || event.description || "";
@@ -212,7 +203,7 @@ export function EventsCarousel() {
                       </p>
 
                       <div className="mt-4 flex items-center text-sm font-medium text-primary-500 group-hover:text-primary-600">
-                        View Details
+                        View details<span className="sr-only"> for {event.title}</span>
                         <ArrowRight className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" />
                       </div>
                     </div>

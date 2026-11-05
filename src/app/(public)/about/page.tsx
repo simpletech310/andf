@@ -2,50 +2,122 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useRef, useState, useEffect, useCallback } from "react";
 import {
   ArrowRight, Heart, Sparkles,
-  Users, Award, Rocket, Globe, Target, Quote, Star, CheckCircle2
+  Users, Award, Rocket, Globe, Target, Quote, Star, CheckCircle2, X
 } from "lucide-react";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { SectionWrapper, StaggerChildren, StaggerItem } from "@/components/shared/section-wrapper";
 import { Button } from "@/components/ui/button";
+import { CareerRail, CommunityWall } from "@/components/shared/dawnn-career";
+import { YouTubeCard } from "@/components/shared/youtube-card";
+import { TINA_VIDEO } from "@/lib/videos";
+import { PRESS_PHOTOS } from "@/lib/dawnn";
+import { DAWNN_CREDITS } from "@/lib/impact";
 
 /* ─── Data ─────────────────────────────────────────────────────────── */
 
 const timeline = [
-  { year: "2018", title: "Founded", description: "A New Day Foundation was established with a vision to empower youth through innovative programs.", image: "/images/team/dawnn-lewis.jpg", color: "from-primary-500 to-primary-600", stat: "Day 1" },
-  { year: "2019", title: "First Programs", description: "Launched Band Camp and the Mentorship Program, serving over 100 young people in the first year.", image: "/images/programs/engaged-students.jpg", color: "from-violet-500 to-purple-600", stat: "100+ Youth" },
-  { year: "2020", title: "Digital Expansion", description: "Pivoted to virtual programming, reaching youth across the country during challenging times.", image: "/images/gallery/knowledj-teaches.jpg", color: "from-cyan-500 to-blue-600", stat: "Nationwide" },
-  { year: "2021", title: "Growing Impact", description: "Introduced the Drone Experience and TopGolf programs, expanding our reach and offerings.", image: "/images/programs/drone-teach.jpg", color: "from-emerald-500 to-green-600", stat: "5 Programs" },
-  { year: "2022", title: "HBCU Heroes", description: "Launched the HBCU Heroes initiative to celebrate and connect youth with HBCUs.", image: "/images/gallery/omega-psi-phi.jpg", color: "from-amber-500 to-orange-600", stat: "400+ Students" },
-  { year: "2023", title: "Community Growth", description: "Reached 1,500+ youth served milestone with expanded partnerships and corporate sponsorships.", image: "/images/gallery/leadership-group.jpg", color: "from-rose-500 to-red-600", stat: "1,500+ Youth" },
-  { year: "2024", title: "National Recognition", description: "Gained national recognition for our innovative approach to youth empowerment and mentorship.", image: "/images/gallery/siedah-garrett-dawnn.jpg", color: "from-yellow-500 to-amber-600", stat: "Award-Winning" },
-  { year: "2025", title: "Expansion Year", description: "Expanded operations with Band Camps, Drone Experiences, TopGolf events, and mentorship programs reaching more communities than ever.", image: "/images/gallery/fnf-group-lineup.jpg", color: "from-secondary-400 to-secondary-600", stat: "2,000+ Youth" },
-  { year: "2026", title: "New Horizons", description: "Entering a bold new chapter — scaling proven programs to new cities, deepening partnerships, and building the next generation of leaders.", image: "/images/hero/community-group.jpg", color: "from-primary-400 to-primary-700", stat: "New Cities" },
+  { year: "2017", title: "Founded", description: "Dawnn Lewis founds A New Day Foundation to empower underserved youth ages 13–19, building on decades of service and advocacy.", image: "/images/team/dawnn-lewis.jpg", color: "from-primary-500 to-primary-600", stat: "Day 1" },
+  { year: "2023", title: "Focused N F.I.T.", description: "The signature conference brings high school and college students and their parents together for financial and technology literacy, mentorship, and scholarships.", image: "/images/gallery/fnf-group-lineup.jpg", color: "from-violet-500 to-purple-600", stat: "Signature event" },
+  { year: "2024", title: "HBCU Heroes & TopGolf", description: "A year-long HBCU Heroes webinar series on financial literacy and career prep launches, and TopGolf mentorship outings bring young men together.", image: "/images/experiences/topgolf-2024.jpg", color: "from-emerald-500 to-green-600", stat: "New programs" },
+  { year: "2025", title: "Doors Wide Open", description: "Band Camp, iFLY, The Color Purple, the Lakers, the Sheriff's Crime Lab and Harbor Patrol, and a trip to the Smithsonian's NMAAHC in Washington, D.C.", image: "/images/experiences/nmaahc-2025.jpg", color: "from-amber-500 to-orange-600", stat: "10+ experiences" },
+  { year: "2026", title: "Coast to Coast", description: "A Celebrity Golf Classic with Topgolf, The First Tee, and Callaway; Drone Experiences in Indianapolis and Los Angeles; TopGolf in Atlanta and Chicago.", image: "/images/experiences/topgolf-celebrity-classic-2026.jpg", color: "from-primary-400 to-primary-700", stat: "5 cities" },
 ];
 
-const boardMembers = [
-  { name: "Dawnn Lewis", title: "Founder & Board Chair", image: "/images/team/dawnn-lewis.jpg" },
-  { name: "Arnold Hackett", title: "Board Member", image: "/images/team/arnold-hackett.jpg" },
-  { name: "Cheri Haft", title: "Board Member", image: "/images/team/cheri-haft.jpg" },
-  { name: "Adriane Lamar Snider", title: "Board Member", image: "/images/team/adriane-lamar-snider.jpg" },
-  { name: "George Gibbs", title: "Board Member", image: "/images/team/george-gibbs.jpg" },
-  { name: "Scott McGregor", title: "Board Member", image: "/images/team/scott-mcgregor.jpg" },
-  { name: "Claire Padmore Clarke", title: "Board Member", image: "/images/team/claire-padmore-clarke.jpg" },
+type TeamMember = { name: string; title: string; image: string; bio?: string[] };
+
+const boardMembers: TeamMember[] = [
+  {
+    name: "Dawnn Lewis",
+    title: "Founder & President",
+    image: "/images/team/dawnn-lewis.jpg",
+    bio: [
+      "Dawnn Lewis is a multi-talented and multifaceted individual: a Grammy Award-winning singer, a multiple ASCAP and BMI Award-winning songwriter, a film, TV, and stage actor, composer, and series TV creator and producer. She is also President of Morning Jewel Inc.",
+      "Her commitment to the community includes service on several boards and as a spokesperson for a variety of organizations: the National Advisory Board of the National Center for Civil and Human Rights; the SAG and SAG-AFTRA National Board of Directors, where she participated in the successful merger while serving as National and Los Angeles Chair of the SAG (now SAG-AFTRA) Singers Committee; SAG Pension Trustee; the K.I.S. Foundation for Sickle Cell Disease; UNCF; the American Heart Association; the American Cancer Society; and the EMPOWHER Institute.",
+      "Dawnn co-produced, with the Los Angeles Urban League, A NEW DAY: Concert for a Cause — \u201cThe Entertainment Family Gives Back\u201d — a concert event featuring 40 celebrity musicians, artists, and performers who donated their performances to raise awareness and financial support for community-based nonprofit organizations.",
+    ],
+  },
+  {
+    name: "Cheri Haft",
+    title: "Treasurer",
+    image: "/images/team/cheri-haft.jpg",
+    bio: [
+      "Cheri has provided accounting and business management services for more than 30 years. Her clients include nonprofit organizations, entertainment companies, and a range of other businesses, among them Kidpower.org, New Leash on Life: Animal Rescue Foundation, Rodeo Realty, The Haft Group, Platform International Animation Festival Entertainment, KMV Productions, Morning Jewel Inc., Method Animation, Steven Pines CPA, and Portmanteau Productions.",
+      "Cheri is passionate about giving back to the community and providing exceptional service to all of her clients.",
+    ],
+  },
+  {
+    name: "Claire Padmore-Clarke",
+    title: "Board Member",
+    image: "/images/team/claire-padmore-clarke.jpg",
+    bio: [
+      "Claire Padmore-Clarke is an experienced professional at a leading beverage company, with deep expertise in leadership, compliance, and organizational change management. Known for resolving challenges and driving process improvements, she is committed to advancing inclusion through 21 years of Employee Resource Group leadership, championing \u201cA Space to Be YOU\u201d for all.",
+      "Outside of work, Claire is involved in initiatives that support job preparedness and address food insecurity, and she serves on the boards of the YMCA of Anaheim and The K.I.S. Foundation. She believes in the power of education and small, meaningful actions to create lasting, positive impact.",
+    ],
+  },
+  {
+    name: "Scott McGregor",
+    title: "Board Member",
+    image: "/images/team/scott-mcgregor.jpg",
+    bio: [
+      "Scott McGregor is a 16-year Cisco veteran who, as Director of Cisco\u2019s Social Justice Action Office, leads the company\u2019s $150 million, five-year commitment to Historically Black Colleges and Universities and related rural broadband initiatives. He moved into the People, Policy & Purpose organization in 2020 and now drives sustainable, tech-powered solutions for digital and educational equity in underserved communities.",
+      "Scott is passionate about lifting the burden of network and security maintenance from resource-strapped institutions so they can focus on their core missions. He actively seeks nonprofit and industry partners to deliver the infrastructure support and training that will put these communities on a path to long-term success.",
+    ],
+  },
+  {
+    name: "Deane Leavenworth",
+    title: "Board Member",
+    image: "/images/team/deane-leavenworth.jpg",
+    bio: [
+      "Deane Leavenworth is a Government Relations Consultant and Advisor. He has spent four decades connecting the public sector, private sector, and the educational and non-profit communities, resulting in public/private partnerships that benefit the communities these organizations serve.",
+      "Deane began his career as a classroom teacher and established one of the first computer-assisted and computer-managed instructional labs on the West Coast, delivering daily, individualized instruction to students.",
+      "In the public sector, he has served the City of Los Angeles as a senior official in the Office of the Mayor and City Council, and as a Los Angeles County Commissioner. In the private sector, Deane held executive positions at a major entertainment and technology company for two decades.",
+      "Deane continues to provide leadership and guidance in his areas of passion: education and workforce development, the arts, civil rights, and corporate social responsibility and inclusivity.",
+    ],
+  },
+  {
+    name: "George Gibbs",
+    title: "Advisory Board Member",
+    image: "/images/team/george-gibbs.jpg",
+    bio: [
+      "George Gibbs is the retired Community Affairs Manager for UPS\u2019s West Region, an organization of 120,000 employees, where he oversaw community affairs and philanthropic strategy and was responsible for maintaining UPS\u2019s reputation as a good corporate citizen and employer of choice. He also oversaw the region\u2019s $19 million annual United Way employee giving campaign.",
+      "His previous positions include UPS Northeast Texas District Employee Relations Manager, UPS Southwest Region Workforce Planning Manager, Learning & Development Manager, Comprehensive Health & Safety Program Manager, and UPS Pacific Region Employee Relations Manager.",
+      "George has donated his time and expertise to the community by serving on several community and ecumenical boards, including The Greater Dallas Urban League, the National Urban League\u2019s Black Executive Exchange Program, and Bible Way Bible Church\u2019s Board of Elders. He currently serves as Chairman of the Los Angeles UNCF Leadership Council.",
+    ],
+  },
+  {
+    name: "Arnold Hackett",
+    title: "Advisory Board Member",
+    image: "/images/team/arnold-hackett.jpg",
+    bio: [
+      "Arnold Hackett is Senior Advisor to the Chief Executive Officer of the Los Angeles County Metropolitan Transportation Authority (LA Metro). He supports the digital transformation of LA Metro\u2019s major initiatives, bringing deep experience in financial strategy (including cost-benefit analysis), operations, and innovation, and helps ensure those initiatives are aligned with agency priorities, operationally sound, and efficiently executed.",
+      "He provides leadership to strengthen internal coordination, streamline processes, and enhance oversight of complex projects and programs.",
+      "Arnold is the former Vice President of Alliance and Partnership Management for Xerox, where he built an exemplary 28-year career. A seasoned and versatile executive, he has a successful track record of spearheading business services and technology advancements, formulating key efficiency strategies, leading teams to deliver significant results, and serving as an effective change agent who influences at every level of an organization.",
+    ],
+  },
+  {
+    name: "Adriane Lamar-Snider",
+    title: "Advisory Board Member",
+    image: "/images/team/adriane-lamar-snider.jpg",
+    bio: [
+      "Adriane Lamar-Snider is a passionate and dedicated advocate for women and girls who has worked to ensure that the concerns of Black women and girls are at the forefront of our political, social, and economic discourse.",
+      "Adriane is currently the Executive Director of the Riverside Area Rape Crisis Center. She previously served 13 years as Chief Operations Officer at Jenesse Center and one year as Executive Director of the Violence Prevention Coalition.",
+      "Having earned a Master of Science degree, she advances social justice and economic empowerment by working with organizations to ensure sound fiscal, programmatic, and administrative oversight. Her mission is to provide exceptional stewardship of program resources and see that those programs and organizations thrive.",
+    ],
+  },
 ];
 
-const staffMembers = [
-  { name: "Rami", title: "Operations", image: "/images/team/rami.jpg" },
+const staffMembers: TeamMember[] = [
   { name: "Christy Zhou", title: "Programs", image: "/images/team/christy-zhou.jpg" },
-  { name: "Chuck Webb", title: "Community", image: "/images/team/chuck-webb.jpg" },
   { name: "Sheila Gilmore", title: "Outreach", image: "/images/team/sheila-gilmore.jpg" },
 ];
 
 const impactStats = [
   { value: "2,000+", label: "Youth Served", icon: Users },
-  { value: "7", label: "Active Programs", icon: Target },
+  { value: "6", label: "Active Programs", icon: Target },
   { value: "100+", label: "Mentors & Volunteers", icon: Heart },
   { value: "50+", label: "Corporate Partners", icon: Star },
 ];
@@ -74,12 +146,18 @@ const photoHighlights = [
 
 /* ─── Sub-Components ───────────────────────────────────────────────── */
 
-function TeamMemberCard({ name, title, image, featured }: { name: string; title: string; image: string; featured?: boolean }) {
+function TeamMemberCard({ name, title, image, bio, featured, onOpen }: TeamMember & { featured?: boolean; onOpen?: () => void }) {
+  const hasBio = Boolean(bio?.length && onOpen);
   return (
     <motion.div
-      className="group text-center"
+      className={`group text-center ${hasBio ? "cursor-pointer" : ""}`}
       whileHover={{ y: -6 }}
       transition={{ duration: 0.3 }}
+      onClick={hasBio ? onOpen : undefined}
+      onKeyDown={hasBio ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onOpen?.(); } } : undefined}
+      role={hasBio ? "button" : undefined}
+      tabIndex={hasBio ? 0 : undefined}
+      aria-label={hasBio ? `Read ${name}'s bio` : undefined}
     >
       <div className={`relative mx-auto rounded-2xl overflow-hidden border-2 transition-all duration-500 mb-4 shadow-sm group-hover:shadow-xl ${
         featured
@@ -102,7 +180,71 @@ function TeamMemberCard({ name, title, image, featured }: { name: string; title:
       </div>
       <h3 className={`font-semibold group-hover:text-primary-500 transition-colors ${featured ? "text-lg text-foreground" : "text-foreground"}`}>{name}</h3>
       <p className="text-sm text-foreground-muted">{title}</p>
+      {hasBio && (
+        <span className="mt-2 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-primary-500 group-hover:gap-2 transition-all">
+          Read bio <ArrowRight className="h-3 w-3" />
+        </span>
+      )}
     </motion.div>
+  );
+}
+
+function BioModal({ member, onClose }: { member: TeamMember | null; onClose: () => void }) {
+  useEffect(() => {
+    if (!member) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
+  }, [member, onClose]);
+
+  return (
+    <AnimatePresence>
+      {member && (
+        <motion.div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <div className="absolute inset-0 bg-neutral-950/70 backdrop-blur-sm" onClick={onClose} />
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="bio-title"
+            className="relative w-full max-w-2xl max-h-[88vh] overflow-y-auto rounded-3xl bg-white shadow-2xl"
+            initial={{ opacity: 0, y: 30, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.98 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+          >
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 z-10 h-9 w-9 inline-flex items-center justify-center rounded-full bg-neutral-100 text-neutral-600 hover:bg-neutral-200 transition-colors"
+              aria-label="Close bio"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <div className="bg-gradient-to-br from-primary-600 to-primary-800 px-6 sm:px-10 pt-10 pb-8 flex flex-col sm:flex-row items-center sm:items-end gap-6">
+              <div className="relative h-28 w-28 sm:h-32 sm:w-32 shrink-0 rounded-2xl overflow-hidden border-4 border-white/90 shadow-xl">
+                <Image src={member.image} alt={member.name} fill className="object-cover" sizes="128px" />
+              </div>
+              <div className="text-center sm:text-left">
+                <span className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary-300">A New Day Foundation</span>
+                <h3 id="bio-title" className="mt-1 text-2xl sm:text-3xl font-bold text-white">{member.name}</h3>
+                <p className="text-primary-100">{member.title}</p>
+              </div>
+            </div>
+            <div className="px-6 sm:px-10 py-8 space-y-4">
+              {member.bio?.map((para, i) => (
+                <p key={i} className="text-foreground-muted leading-relaxed">{para}</p>
+              ))}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
@@ -224,8 +366,12 @@ function Timeline() {
 /* ─── Page ──────────────────────────────────────────────────────────── */
 
 export default function AboutPage() {
+  const [activeBio, setActiveBio] = useState<TeamMember | null>(null);
+  const closeBio = useCallback(() => setActiveBio(null), []);
+
   return (
     <div className="pb-0">
+      <BioModal member={activeBio} onClose={closeBio} />
 
       {/* ───── 1. HERO — Cinematic full-bleed ───── */}
       <section className="relative overflow-hidden">
@@ -246,7 +392,7 @@ export default function AboutPage() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            Est. 2018 &bull; Los Angeles, CA
+            Est. 2017 &bull; Los Angeles, CA
           </motion.span>
           <motion.h1
             className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight"
@@ -264,8 +410,8 @@ export default function AboutPage() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            A New Day Foundation creates transformative experiences for young people through
-            music, technology, mentorship, and community — shaping the future, one life at a time.
+            Founded in 2017 by Dawnn Lewis, A New Day Foundation gives underserved teens, ages 13 to 19,
+            the tools, guidance, and support they need to succeed.
           </motion.p>
           <motion.div
             className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2"
@@ -330,8 +476,8 @@ export default function AboutPage() {
               <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-500">Our Mission</span>
               <h3 className="text-2xl font-bold text-foreground">Empowering Tomorrow&apos;s Leaders</h3>
               <p className="text-foreground-muted leading-relaxed">
-                To create transformative experiences that empower young people with the skills,
-                confidence, and connections they need to become leaders in their communities and beyond.
+                To empower underserved youth, ages 13 to 19, with the tools, guidance, and support they need
+                to succeed, through real-world experiences, caring mentors, and financial and technology literacy.
               </p>
             </motion.div>
             <motion.div
@@ -377,79 +523,113 @@ export default function AboutPage() {
         </div>
       </SectionWrapper>
 
-      {/* ───── 4. FOUNDER SPOTLIGHT — Dawnn Lewis ───── */}
-      <section className="py-24 px-6 bg-gradient-to-br from-primary-50/50 via-white to-secondary-50/30 overflow-hidden">
+      {/* ───── 4. FOUNDER — Dawnn Lewis ───── */}
+      <section id="founder" className="scroll-mt-24 relative overflow-hidden bg-primary-900 text-white">
+        <div
+          aria-hidden
+          className="absolute left-[20%] -translate-x-1/2 bottom-[-36rem] h-[60rem] w-[60rem] rounded-full bg-[radial-gradient(circle,rgba(255,153,51,0.5)_0%,rgba(240,125,26,0.25)_28%,rgba(26,115,212,0.1)_52%,transparent_68%)]"
+        />
+        <div className="relative mx-auto max-w-6xl px-6 py-24 lg:py-28 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+          <figure className="lg:col-span-5 mx-auto w-full max-w-sm lg:sticky lg:top-28">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-t-[12rem] rounded-b-md ring-1 ring-white/15 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.6)]">
+              <Image src="/images/team/dawnn-lewis.jpg" alt="Dawnn Lewis" fill className="object-cover object-[50%_20%]" sizes="384px" />
+            </div>
+            <figcaption className="mt-4 flex items-baseline justify-between text-sm">
+              <span className="font-display font-semibold text-lg">Dawnn Lewis</span>
+              <span className="text-white/60">Founder &amp; President</span>
+            </figcaption>
+          </figure>
+
+          <div className="lg:col-span-7">
+            <h2 className="font-display font-bold text-4xl sm:text-5xl leading-[1.08] tracking-[-0.01em]">
+              An entertainer who never stopped showing up for her community.
+            </h2>
+            <div className="mt-8 space-y-5 text-lg text-white/80 leading-relaxed max-w-[40rem]">
+              <p>
+                Dawnn Lewis is a Grammy Award-winning singer, a multiple ASCAP and BMI Award-winning songwriter,
+                a film, television, and stage actor, a composer, and a series TV creator and producer. Born in
+                Brooklyn to a family with roots in Guyana, she graduated cum laude from the University of Miami
+                with a degree in musical theatre.
+              </p>
+              <p>
+                She has served on the SAG and SAG-AFTRA National Board of Directors, helping lead the merger as
+                National and Los Angeles Chair of the Singers Committee, and on the National Advisory Board of the
+                National Center for Civil and Human Rights. She has been a spokesperson for UNCF, the American
+                Heart Association, the American Cancer Society, the K.I.S. Foundation for Sickle Cell Disease, and
+                the EMPOWHER Institute.
+              </p>
+              <p>
+                With the Los Angeles Urban League she co-produced <em>A New Day: Concert for a Cause</em>, which
+                brought together more than 40 artists and performers who donated their talent to community
+                nonprofits. In 2017 she founded A New Day Foundation to put that same energy directly behind
+                underserved teens, ages 13 to 19.
+              </p>
+            </div>
+
+            <dl className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-x-10 border-t border-white/15">
+              {DAWNN_CREDITS.map((c) => (
+                <div key={c.role} className="py-4 border-b border-white/15">
+                  <dt className="font-medium text-white">{c.role}</dt>
+                  <dd className="text-sm text-white/55 mt-0.5">{c.detail}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      {/* ───── 4b. ON SCREEN & STAGE ───── */}
+      <section className="py-20 lg:py-24 px-6 bg-white">
         <div className="mx-auto max-w-6xl">
-          <SectionHeading
-            label="Founder & Visionary"
-            title="Meet Dawnn Lewis"
-          />
-          <motion.div
-            className="mt-14 grid grid-cols-1 lg:grid-cols-5 gap-12 items-center"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.7 }}
-          >
-            {/* Portrait with decorative elements */}
-            <div className="lg:col-span-2 flex justify-center">
-              <div className="relative">
-                {/* Decorative ring */}
-                <div className="absolute -inset-3 rounded-3xl bg-gradient-to-br from-primary-200 via-secondary-200 to-primary-200 opacity-60 blur-sm" />
-                <div className="relative w-64 h-80 sm:w-72 sm:h-[420px] rounded-2xl overflow-hidden border-4 border-white shadow-2xl">
-                  <Image
-                    src="/images/team/dawnn-lewis.jpg"
-                    alt="Dawnn Lewis"
-                    fill
-                    className="object-cover"
-                    sizes="288px"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-                </div>
-                {/* Floating badge */}
-                <div className="absolute -bottom-4 -right-4 bg-secondary-500 text-white rounded-xl px-4 py-2 shadow-lg">
-                  <span className="text-xs font-bold uppercase tracking-wider">Since 2018</span>
-                </div>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-end">
+            <div className="md:col-span-7 lg:col-span-8">
+              <h2 className="font-display font-bold text-3xl sm:text-4xl text-foreground">On screen and on stage</h2>
+              <p className="mt-3 text-foreground-muted leading-relaxed max-w-2xl">
+                Four decades of work audiences know by heart, from Hillman College on <em>A Different World</em> to the
+                bridge of the U.S.S. Cerritos on <em>Star Trek: Lower Decks</em>, where she voices Captain Carol Freeman.
+                She still joins fans on panels at conventions like Dragon Con.
+              </p>
             </div>
-
-            {/* Bio */}
-            <div className="lg:col-span-3 space-y-6">
-              <div>
-                <h3 className="text-3xl sm:text-4xl font-bold text-foreground">Dawnn Lewis</h3>
-                <p className="text-primary-500 font-semibold text-lg mt-1">Founder &amp; Board Chair</p>
+            <figure className="md:col-span-5 lg:col-span-4">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-md bg-neutral-200">
+                <Image src={PRESS_PHOTOS.dragonCon.src} alt={PRESS_PHOTOS.dragonCon.alt} fill className="object-cover object-top" sizes="(max-width: 768px) 100vw, 380px" />
               </div>
-              <div className="space-y-4 text-foreground-muted leading-relaxed">
-                <p>
-                  Dawnn Lewis is an acclaimed actress, singer, songwriter, and voice artist best known for her
-                  role as Jaleesa Vinson on the groundbreaking NBC sitcom <em className="text-foreground">A Different World</em> and as the
-                  voice of Furiosa in <em className="text-foreground">Mad Max: Fury Road</em>. With a career spanning decades in
-                  Hollywood, Dawnn has used her platform to champion education, mentorship, and the
-                  arts for young people.
-                </p>
-                <p>
-                  Driven by a deep belief that every child deserves access to transformative experiences,
-                  Dawnn founded A New Day Foundation to bridge the gap between opportunity and potential.
-                  Her vision: use music, technology, mentorship, and community to ignite the spark in
-                  young people — giving them the confidence and skills to lead.
-                </p>
-                <p>
-                  Under Dawnn&apos;s leadership, the Foundation has grown from a grassroots initiative into a
-                  nationally recognized organization impacting thousands of youth through programs like
-                  Band Camp, Drone Experience, TopGolf mentorship outings, and the HBCU Heroes initiative.
-                </p>
-              </div>
-
-              {/* Quote */}
-              <div className="relative bg-primary-50 rounded-xl p-5 border border-primary-100">
-                <Quote className="absolute top-3 left-3 h-8 w-8 text-primary-200" />
-                <p className="text-foreground font-medium italic pl-8 text-lg">
-                  &ldquo;Every child has a gift. Our job is to help them find it.&rdquo;
-                </p>
-                <p className="text-sm text-primary-500 font-semibold mt-2 pl-8">— Dawnn Lewis</p>
-              </div>
+              <figcaption className="mt-2 text-xs text-foreground-muted">
+                {PRESS_PHOTOS.dragonCon.caption}.{" "}
+                <a href={PRESS_PHOTOS.dragonCon.credit.href} target="_blank" rel="noopener noreferrer" className="text-neutral-400 underline underline-offset-2">
+                  {PRESS_PHOTOS.dragonCon.credit.text}
+                </a>
+              </figcaption>
+            </figure>
+          </div>
+          <div className="mt-10">
+            <CareerRail />
+          </div>
+          <div className="mt-14 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="lg:col-span-7">
+              <YouTubeCard {...TINA_VIDEO} large />
             </div>
-          </motion.div>
+            <p className="lg:col-span-5 text-lg text-foreground-muted leading-relaxed">
+              From 2019 to 2022, Dawnn played Zelma, Tina Turner&apos;s mother, in <em>Tina: The Tina Turner Musical</em> on
+              Broadway, a role that carried her back to the stage where she started.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ───── 4c. IN THE COMMUNITY ───── */}
+      <section className="py-20 lg:py-24 px-6 bg-neutral-50">
+        <div className="mx-auto max-w-6xl">
+          <div className="max-w-2xl">
+            <h2 className="font-display font-bold text-3xl sm:text-4xl text-foreground">Using the spotlight for good</h2>
+            <p className="mt-3 text-foreground-muted leading-relaxed">
+              Long before ANDF, Dawnn was lending her voice and her network to causes she believes in: civil rights,
+              health, education, and housing.
+            </p>
+          </div>
+          <div className="mt-10">
+            <CommunityWall />
+          </div>
         </div>
       </section>
 
@@ -504,11 +684,12 @@ export default function AboutPage() {
 
           {/* Board */}
           <div className="mt-16">
-            <h3 className="text-center text-sm font-semibold uppercase tracking-[0.2em] text-primary-500 mb-10">Board of Directors</h3>
+            <h3 className="text-center text-sm font-semibold uppercase tracking-[0.2em] text-primary-500 mb-3">Board of Directors</h3>
+            <p className="text-center text-sm text-foreground-muted mb-10">Select a board member to read their story.</p>
             <StaggerChildren className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8 lg:gap-10">
               {boardMembers.map((member, i) => (
                 <StaggerItem key={member.name}>
-                  <TeamMemberCard {...member} featured={i === 0} />
+                  <TeamMemberCard {...member} featured={i === 0} onOpen={() => setActiveBio(member)} />
                 </StaggerItem>
               ))}
             </StaggerChildren>
@@ -524,7 +705,7 @@ export default function AboutPage() {
           {/* Staff */}
           <div>
             <h3 className="text-center text-sm font-semibold uppercase tracking-[0.2em] text-primary-500 mb-10">Our Team</h3>
-            <StaggerChildren className="grid grid-cols-2 sm:grid-cols-4 gap-8 lg:gap-10 max-w-3xl mx-auto">
+            <StaggerChildren className="grid grid-cols-2 gap-8 lg:gap-10 max-w-md mx-auto">
               {staffMembers.map((member) => (
                 <StaggerItem key={member.name}>
                   <TeamMemberCard {...member} />
@@ -572,10 +753,10 @@ export default function AboutPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
-              { title: "Real-World Experiences", desc: "From drone piloting to studio recording, our programs go beyond the classroom to deliver hands-on, career-shaping experiences." },
-              { title: "Celebrity-Led Mentorship", desc: "Founded by Dawnn Lewis, our programs connect youth with professionals from entertainment, tech, sports, and business." },
+              { title: "Real-World Experiences", desc: "From forensic labs to recording studios, our programs go beyond the classroom to deliver hands-on, career-shaping experiences." },
+              { title: "A Founder People Show Up For", desc: "Dawnn Lewis brings artists, civic leaders, and executives into the room, so teens meet the people they want to become." },
               { title: "Holistic Approach", desc: "We develop the whole person — building confidence, creativity, technical skills, and community bonds simultaneously." },
-              { title: "Proven Track Record", desc: "2,000+ youth served, 7 active programs, and partnerships with Google, PepsiCo, the LA Lakers, and more." },
+              { title: "Proven Track Record", desc: "2,000+ youth served since 2017 across Los Angeles, Atlanta, Chicago, Washington, D.C., and Indianapolis, with partners like Google, PepsiCo, and the LA Lakers." },
             ].map((item, i) => (
               <motion.div
                 key={item.title}

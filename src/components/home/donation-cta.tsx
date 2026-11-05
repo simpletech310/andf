@@ -20,7 +20,7 @@ interface DonationCTAContent {
 const DEFAULTS: DonationCTAContent = {
   label: "Make an Impact",
   title: "Every Donation Creates\nA New Day",
-  description: "Your generosity directly funds programs that change young lives. From instruments for Band Camp to drones for STEM workshops — every dollar makes a difference.",
+  description: "Your generosity directly funds programs that change young lives. From instruments for Band Camp to scholarships for college-bound students, every dollar makes a difference.",
   amounts: [
     { value: 25, label: "Supplies" },
     { value: 50, label: "Mentoring" },

@@ -3,30 +3,32 @@
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { HeroSection } from "@/components/home/hero-section";
-import { ANDFNowSection } from "@/components/home/andf-now-section";
+import { WatchSection } from "@/components/home/watch-section";
 import { EventsCarousel } from "@/components/home/events-carousel";
 import { ImpactStats } from "@/components/home/impact-stats";
 import { ProgramsPreview } from "@/components/home/programs-preview";
 import { PartnersSection } from "@/components/home/partners-section";
-import { TestimonialsSlider } from "@/components/home/testimonials-slider";
+import { FounderSpotlight } from "@/components/home/founder-spotlight";
+import { ExperiencesWall } from "@/components/home/experiences-wall";
+import { PartnerValue } from "@/components/home/partner-value";
 import { DonationCTA } from "@/components/home/donation-cta";
-import { usePageContent, getSectionContent } from "@/lib/hooks/use-page-content";
 
 export default function HomePage() {
-  const { contentMap } = usePageContent("home");
-
   return (
     <>
       <Navbar />
       <main>
-        <HeroSection cms={contentMap.hero?.content} />
-        <ANDFNowSection />
-        <EventsCarousel />
-        <ImpactStats cms={contentMap.impact_stats?.content} />
+        {/* Story arc for donors and partners: who → what it's done → where teens go → how → when → why partner → who's in → give */}
+        <HeroSection />
+        <FounderSpotlight />
+        <ImpactStats />
+        <ExperiencesWall />
         <ProgramsPreview />
+        <EventsCarousel />
+        <PartnerValue />
         <PartnersSection />
-        <TestimonialsSlider />
-        <DonationCTA cms={contentMap.donation_cta?.content} />
+        <WatchSection />
+        <DonationCTA />
       </main>
       <Footer />
     </>

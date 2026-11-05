@@ -1,9 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronDown, Heart, ArrowRight } from "lucide-react";
+import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface HeroContent {
@@ -19,116 +19,84 @@ interface HeroContent {
   cta2_link?: string;
 }
 
-const DEFAULTS: HeroContent = {
-  label: "Empowering Youth Since Day One",
-  title_line1: "Building",
-  title_line2: "Tomorrow's",
-  title_line3: "Leaders",
-  subtitle: "A New Day Foundation creates transformative experiences for young people through music, technology, mentorship, and community — shaping the future, one life at a time.",
-  background_image: "/images/hero/community-group.jpg",
-  cta1_text: "Explore Programs",
-  cta1_link: "/programs",
-  cta2_text: "Make a Donation",
+const DEFAULTS = {
+  title_line1: "Every young person",
+  title_line2: "deserves a new day.",
+  subtitle:
+    "Founded in 2017 by Grammy Award-winning artist Dawnn Lewis, A New Day Foundation gives teens ages 13–19 the mentors, experiences, and skills to build the future they want.",
+  background_image: "/images/experiences/fnf-2025.jpg",
+  cta1_text: "Partner with us",
+  cta1_link: "/sponsor",
+  cta2_text: "Donate",
   cta2_link: "/donate",
 };
 
 export function HeroSection({ cms }: { cms?: HeroContent }) {
   const c = { ...DEFAULTS, ...cms };
+  const reduce = useReducedMotion();
+  const rise = (delay: number) =>
+    reduce
+      ? {}
+      : {
+          initial: { opacity: 0, y: 24 },
+          animate: { opacity: 1, y: 0 },
+          transition: { delay, duration: 0.8, ease: [0.22, 1, 0.36, 1] as const },
+        };
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background photo */}
-      <div className="absolute inset-0 z-0">
+    <section className="relative min-h-[100svh] flex items-end overflow-hidden bg-primary-900">
+      <div className="absolute inset-0">
         <Image
-          src={c.background_image!}
-          alt="A New Day Foundation community"
+          src={c.background_image}
+          alt="Students, parents, and mentors gathered at Focused N F.I.T. For A Different World, 2025"
           fill
-          className="object-cover"
           priority
           sizes="100vw"
+          className="object-cover object-[50%_35%]"
         />
-        <div className="absolute inset-0 bg-white/70" />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-white" />
+        {/* Night-to-sunrise wash: dark where the type sits, warm at the horizon */}
+        <div className="absolute inset-0 bg-gradient-to-t from-primary-900 via-primary-900/70 to-primary-900/10" />
+        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-[radial-gradient(ellipse_at_15%_100%,rgba(240,125,26,0.35),transparent_60%)]" />
       </div>
 
-      {/* Content — pushed down to clear navbar */}
-      <div className="relative z-20 mx-auto max-w-5xl px-6 text-center pt-16">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="space-y-8"
-        >
-          {/* Label */}
-          <motion.span
-            className="inline-block text-xs font-semibold uppercase tracking-[0.3em] text-primary-600 bg-primary-50 border border-primary-200 rounded-full px-6 py-2"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-          >
-            {c.label}
-          </motion.span>
-
-          {/* Main heading */}
+      <div className="relative z-10 w-full mx-auto max-w-7xl px-6 pt-40 pb-16 sm:pb-20 lg:pb-24">
+        <div className="max-w-3xl">
           <motion.h1
-            className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[0.9] tracking-tight"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.7 }}
+            className="font-display font-bold text-white text-4xl leading-[1.08] sm:text-6xl lg:text-7xl tracking-tight"
+            {...rise(0.1)}
           >
-            <span className="text-neutral-900">{c.title_line1}</span>
+            {c.title_line1}
             <br />
-            <span className="text-brand-gradient">{c.title_line2}</span>
-            <br />
-            <span className="text-neutral-900">{c.title_line3}</span>
+            {c.title_line2}
+            {c.title_line3 ? (
+              <>
+                <br />
+                {c.title_line3}
+              </>
+            ) : null}
           </motion.h1>
 
-          {/* Subtitle */}
-          <motion.p
-            className="mx-auto max-w-2xl text-lg sm:text-xl text-neutral-600 leading-relaxed"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
-          >
+          <motion.p className="mt-6 max-w-[38rem] text-lg sm:text-xl text-white/85 leading-relaxed" {...rise(0.3)}>
             {c.subtitle}
           </motion.p>
 
-          {/* CTAs */}
-          <motion.div
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.5 }}
-          >
-            <Link href={c.cta1_link!}>
-              <Button size="lg" variant="outline" className="group border-primary-500/80 text-primary-700 hover:bg-primary-500 hover:text-white">
+          <motion.div className="mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4" {...rise(0.45)}>
+            <Link href={c.cta1_link}>
+              <Button size="lg" className="w-full sm:w-auto bg-white text-primary-800 hover:bg-primary-50">
                 {c.cta1_text}
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
-            <Link href={c.cta2_link!}>
-              <Button size="lg" variant="donate" className="group">
+            <Link href={c.cta2_link}>
+              <Button size="lg" variant="donate" className="w-full sm:w-auto">
                 <Heart className="h-4 w-4" />
                 {c.cta2_text}
               </Button>
             </Link>
           </motion.div>
-        </motion.div>
-      </div>
+        </div>
 
-      {/* Scroll indicator — arrow only */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2 }}
-      >
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <ChevronDown className="h-6 w-6 text-primary-400" />
-        </motion.div>
-      </motion.div>
+        <p className="mt-14 text-xs text-white/55 sm:text-right">Focused N F.I.T. For A Different World, 2025</p>
+      </div>
     </section>
   );
 }

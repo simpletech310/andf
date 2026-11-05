@@ -13,7 +13,7 @@ import { SectionHeading } from "@/components/shared/section-heading";
 import { StaggerChildren, StaggerItem } from "@/components/shared/section-wrapper";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { createClient } from "@/lib/supabase/client";
+import { getBuiltInEvents } from "@/lib/featured-events";
 
 /* ─── Icon & Color Mappings (by program slug) ────────────────────── */
 
@@ -66,6 +66,7 @@ interface DBEvent {
   cover_image_url: string | null;
   is_featured: boolean;
   programs: Program | null;
+  time_tba?: boolean;
 }
 
 interface MappedEvent {
@@ -134,7 +135,7 @@ function mapDBEvent(e: DBEvent): MappedEvent {
     id: e.id,
     title: e.title,
     date: formatEventDate(e.start_date, e.end_date),
-    time: formatEventTime(e.start_date, e.end_date),
+    time: e.time_tba ? "Time TBA" : formatEventTime(e.start_date, e.end_date),
     location: e.location_name || (e.event_type === "virtual" ? "Virtual Event" : "TBD"),
     type: formatEventType(e.event_type),
     program: e.programs?.title || "General",
@@ -204,9 +205,11 @@ function FeaturedEventCard({ event }: { event: MappedEvent }) {
                   {event.type}
                 </span>
               </div>
-              <div className="bg-white/90 backdrop-blur-sm rounded-lg px-3 py-1.5 text-right">
-                <span className="text-xs text-secondary-600 font-bold">{event.spots} spots left</span>
-              </div>
+              {event.spots > 0 && (
+                <div className="bg-white/90 backdrop-blur-sm rounded-lg px-3 py-1.5 text-right">
+                  <span className="text-xs text-secondary-600 font-bold">{event.spots} spots left</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -396,16 +399,7 @@ export default function EventsPage() {
 
   useEffect(() => {
     async function fetchEvents() {
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from("events")
-        .select("*, programs(title, slug, icon, color)")
-        .in("status", ["published", "completed"])
-        .order("start_date", { ascending: true });
-
-      if (!error && data) {
-        setEvents(data.map((e: DBEvent) => mapDBEvent(e)));
-      }
+      setEvents(getBuiltInEvents().map((e) => mapDBEvent(e as unknown as DBEvent)));
       setLoading(false);
     }
     fetchEvents();

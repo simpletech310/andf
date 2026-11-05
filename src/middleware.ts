@@ -5,8 +5,7 @@ export async function middleware(request: NextRequest) {
   return await updateSession(request);
 }
 
+// The public site has no backend. Only the legacy admin area still uses Supabase auth.
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|images|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
-  ],
+  matcher: ["/admin/:path*", "/login"],
 };

@@ -7,11 +7,11 @@ interface StatsContent {
   stats?: { target: number; prefix?: string; suffix?: string; label: string; description?: string }[];
 }
 
-const DEFAULT_STATS = [
-  { target: 2500, suffix: "+", label: "Youth Served", description: "Young lives impacted" },
-  { target: 12, suffix: "", label: "Programs", description: "Active initiatives" },
-  { target: 85, suffix: "+", label: "Events Hosted", description: "Transformative experiences" },
-  { target: 150, prefix: "$", suffix: "K+", label: "Funds Raised", description: "Community support" },
+const DEFAULT_STATS: NonNullable<StatsContent["stats"]> = [
+  { target: 2000, suffix: "+", label: "Youth served", description: "Teens ages 13–19 since 2017" },
+  { target: 6, suffix: "", label: "Signature programs", description: "Music, college prep, sports, and mentorship" },
+  { target: 5, suffix: "", label: "Cities reached", description: "LA, Atlanta, Chicago, D.C., Indianapolis" },
+  { target: 50, suffix: "+", label: "Corporate partners", description: "From Google to the LA Lakers" },
 ];
 
 export function ImpactStats({ cms }: { cms?: StatsContent }) {

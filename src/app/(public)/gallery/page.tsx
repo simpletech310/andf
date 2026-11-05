@@ -10,18 +10,36 @@ import {
 } from "lucide-react";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { Button } from "@/components/ui/button";
+import { YouTubeCard } from "@/components/shared/youtube-card";
+import { VIDEOS, YOUTUBE_CHANNEL } from "@/lib/videos";
 
 /* ─── Data ─────────────────────────────────────────────────────────── */
 
 const galleryItems = [
+  { id: 101, src: "/images/experiences/fnf-2025.jpg", category: "Focused N F.I.T.", title: "Focused N F.I.T. 2025", caption: "The Focused N F.I.T. For A Different World family, 2025" },
+  { id: 102, src: "/images/experiences/ifly-2025.jpg", category: "Experiences", title: "iFLY Skydiving", caption: "Taking flight at our iFLY indoor skydiving experience" },
+  { id: 103, src: "/images/experiences/color-purple-2025.jpg", category: "Experiences", title: "The Color Purple", caption: "A night at the theatre for The Color Purple" },
+  { id: 104, src: "/images/experiences/band-camp-2025.jpg", category: "Band Camp", title: "Band Camp 2025", caption: "Learning from working musicians in the studio" },
+  { id: 105, src: "/images/experiences/frost-stem-2025.jpg", category: "Experiences", title: "Frost STEM", caption: "Coding and creating at our Frost STEM experience" },
+  { id: 106, src: "/images/experiences/lakers-experience.jpg", category: "HBCU Heroes", title: "Lakers Experience", caption: "Behind the scenes with the Los Angeles Lakers" },
+  { id: 107, src: "/images/experiences/nmaahc-2025.jpg", category: "Experiences", title: "NMAAHC, Washington D.C.", caption: "Visiting the Smithsonian National Museum of African American History and Culture" },
+  { id: 108, src: "/images/experiences/harbor-patrol-2025.jpg", category: "Experiences", title: "Harbor Patrol", caption: "Aboard with the Sheriff's Harbor Patrol" },
+  { id: 109, src: "/images/experiences/sheriff-crime-lab-2025.jpg", category: "Experiences", title: "Sheriff's Crime Lab", caption: "Exploring forensic science careers at the Hertzberg-Davis Forensic Science Center" },
+  { id: 110, src: "/images/experiences/inspiration-52-2025.jpg", category: "Experiences", title: "Inspiration 52", caption: "Inspiration 52 at Jordan High School" },
+  { id: 111, src: "/images/experiences/hancock-park-2025.jpg", category: "Experiences", title: "Hancock Park", caption: "Hands up for learning at our Hancock Park visit" },
+  { id: 112, src: "/images/experiences/swat-experience-2025.jpg", category: "Experiences", title: "SWAT Experience", caption: "A day with the Sheriff's Special Enforcement Bureau" },
+  { id: 113, src: "/images/experiences/topgolf-celebrity-classic-2026.jpg", category: "TopGolf", title: "Celebrity Golf Classic", caption: "With Topgolf, The First Tee, and Callaway Golf" },
+  { id: 114, src: "/images/experiences/topgolf-2024.jpg", category: "TopGolf", title: "TopGolf 2024", caption: "Golf, mentorship, and networking" },
+  { id: 115, src: "/images/experiences/fnf-2024.jpg", category: "Focused N F.I.T.", title: "Focused N F.I.T. 2024", caption: "Our 2024 conference family at the Bing Theatre" },
+  { id: 116, src: "/images/experiences/origin-screening-2024.jpg", category: "Experiences", title: "Origin Screening", caption: "A special screening of Origin" },
   { id: 1, src: "/images/gallery/leadership-group.jpg", category: "Events", title: "Leadership Panel Discussion", caption: "Community leaders sharing insights at our annual event" },
   { id: 2, src: "/images/programs/engaged-students.jpg", category: "Band Camp", title: "Students In the Zone", caption: "Band Camp participants fully engaged in their workshop" },
   { id: 3, src: "/images/gallery/fnf-group-lineup.jpg", category: "Events", title: "Focused N FIT Lineup", caption: "The energy was incredible at our FNF community event" },
   { id: 4, src: "/images/gallery/omega-psi-phi.jpg", category: "HBCU Heroes", title: "Omega Psi Phi Brothers", caption: "HBCU excellence on full display" },
-  { id: 5, src: "/images/programs/drone-teach.jpg", category: "Drone Experience", title: "Drone Training Day", caption: "Future pilots learning to fly at our drone workshop" },
+  { id: 5, src: "/images/programs/drone-teach.jpg", category: "STEM", title: "Drone Training Day", caption: "Future pilots learning to fly at our drone workshop" },
   { id: 6, src: "/images/gallery/dawnn-zeta-sorors.jpg", category: "Community", title: "Dawnn with Zeta Sorors", caption: "Sisterhood and community at its finest" },
   { id: 7, src: "/images/gallery/siedah-garrett-dawnn.jpg", category: "Events", title: "Siedah Garrett & Dawnn", caption: "Grammy winner Siedah Garrett with our founder" },
-  { id: 8, src: "/images/gallery/nasa-team-teaches.jpg", category: "Drone Experience", title: "NASA Team Workshop", caption: "Real NASA professionals teaching our students" },
+  { id: 8, src: "/images/gallery/nasa-team-teaches.jpg", category: "STEM", title: "NASA Team Workshop", caption: "Real NASA professionals teaching our students" },
   { id: 9, src: "/images/gallery/scholarship-recipient.jpg", category: "Community", title: "Scholarship Celebration", caption: "Dreams coming true — scholarship award moment" },
   { id: 10, src: "/images/gallery/opening-panel.jpg", category: "Events", title: "Opening Panel", caption: "Kicking off another powerful day of programming" },
   { id: 11, src: "/images/gallery/dawnn-steve-wesson.jpg", category: "MenTORS", title: "Dawnn & Steve Wesson", caption: "Mentorship connections that change lives" },
@@ -29,18 +47,20 @@ const galleryItems = [
   { id: 13, src: "/images/gallery/volunteer-leader.jpg", category: "Community", title: "Volunteer Leader", caption: "Our incredible volunteers making it all happen" },
   { id: 14, src: "/images/gallery/fnf-scholarship-2024.jpg", category: "Events", title: "FNF Scholarship 2024", caption: "Investing in the next generation of leaders" },
   { id: 15, src: "/images/gallery/knowledj-teaches.jpg", category: "Band Camp", title: "KnowleDJ Teaches", caption: "Music industry professionals sharing their craft" },
-  { id: 16, src: "/images/gallery/nasa-workshop-2.jpg", category: "Drone Experience", title: "Hands-On NASA Workshop", caption: "Students getting hands-on with real technology" },
+  { id: 16, src: "/images/gallery/nasa-workshop-2.jpg", category: "STEM", title: "Hands-On NASA Workshop", caption: "Students getting hands-on with real technology" },
   { id: 17, src: "/images/gallery/noel-massie-teaches.jpg", category: "Band Camp", title: "Noel Massie Teaches", caption: "Professional musicians mentoring the next wave" },
   { id: 18, src: "/images/gallery/swat-experience.jpg", category: "Events", title: "SWAT Experience", caption: "An unforgettable day with law enforcement heroes" },
   { id: 19, src: "/images/gallery/raffle-winner.jpg", category: "Events", title: "Raffle Winner!", caption: "The excitement is real — congrats to our winner!" },
   { id: 20, src: "/images/gallery/dawnn-on-the-move.jpg", category: "Community", title: "Dawnn On the Move", caption: "Our founder always on the go for the community" },
   { id: 21, src: "/images/hero/community-group.jpg", category: "Community", title: "The ANDF Family", caption: "Our incredible community at Bing Theatre" },
   { id: 22, src: "/images/gallery/zeta-phi-beta.jpg", category: "Community", title: "Zeta Phi Beta", caption: "Greek organizations supporting our mission" },
-  { id: 23, src: "/images/programs/nasa-workshop.jpg", category: "Drone Experience", title: "NASA Workshop", caption: "Where science meets inspiration" },
+  { id: 23, src: "/images/programs/nasa-workshop.jpg", category: "STEM", title: "NASA Workshop", caption: "Where science meets inspiration" },
   { id: 24, src: "/images/gallery/event-photo.jpg", category: "Events", title: "Event Day", caption: "Another incredible day of programming and fun" },
 ];
 
-const categories = ["All", "Events", "Band Camp", "Drone Experience", "Mentorship", "MenTORS", "HBCU Heroes", "Community"];
+const categories = ["All", "Experiences", "Focused N F.I.T.", "TopGolf", "Events", "Band Camp", "STEM", "Mentorship", "MenTORS", "HBCU Heroes", "Community"];
+
+const videoHighlights = VIDEOS;
 
 // Masonry-style size classes for visual variety
 const sizeClasses = [
@@ -119,7 +139,7 @@ export default function GalleryPage() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            Music, drones, mentorship, community — every event is packed with energy,
+            Music, STEM, mentorship, community — every event is packed with energy,
             laughter, and moments that change lives. See for yourself.
           </motion.p>
           <motion.div
@@ -300,7 +320,7 @@ export default function GalleryPage() {
                 image: "/images/gallery/nasa-team-teaches.jpg",
                 title: "NASA Comes to ANDF",
                 desc: "Real NASA engineers spent the day with our students, proving that rocket science isn't just for textbooks.",
-                tag: "Drone Experience",
+                tag: "STEM",
               },
               {
                 image: "/images/gallery/siedah-garrett-dawnn.jpg",
@@ -339,6 +359,36 @@ export default function GalleryPage() {
                 </div>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ───── 4b. VIDEO HIGHLIGHTS ───── */}
+      <section className="py-24 px-6 bg-gradient-to-b from-white via-primary-50/40 to-white">
+        <div className="mx-auto max-w-6xl">
+          <SectionHeading
+            label="Video Highlights"
+            title="Watch the Moments"
+            description="Recaps and highlight reels from Focused N F.I.T., Topgolf, Band Camp, iFLY, and more."
+          />
+          <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {videoHighlights.map((v, i) => (
+              <motion.div
+                key={v.id}
+                className={i === 0 ? "sm:col-span-2 lg:col-span-2 lg:row-span-2" : ""}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: (i % 3) * 0.08, duration: 0.5 }}
+              >
+                <YouTubeCard {...v} large={i === 0} />
+              </motion.div>
+            ))}
+          </div>
+          <div className="mt-10 text-center">
+            <a href={YOUTUBE_CHANNEL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-primary-600 hover:gap-3 transition-all">
+              More on YouTube <ArrowRight className="h-4 w-4" />
+            </a>
           </div>
         </div>
       </section>

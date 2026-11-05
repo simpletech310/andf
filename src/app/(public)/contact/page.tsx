@@ -20,6 +20,8 @@ import {
   Globe,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { EmailForm } from "@/components/shared/email-form";
+import { ORG } from "@/lib/contact";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -47,17 +49,17 @@ const contactMethods = [
   {
     icon: Phone,
     label: "Call Us",
-    value: "Contact for inquiries",
-    href: undefined,
+    value: "(424) 241-3623",
+    href: "tel:+14242413623",
     desc: "Mon-Fri, 9AM - 5PM PST",
     color: "bg-secondary-500/10 text-secondary-500",
   },
   {
     icon: MapPin,
-    label: "Visit Us",
-    value: "Los Angeles, California",
+    label: "Write to Us",
+    value: "20058 Ventura Blvd., Suite 326",
     href: undefined,
-    desc: "By appointment only",
+    desc: "Woodland Hills, CA 91364 (mailing address)",
     color: "bg-accent-500/10 text-accent-500",
   },
 ];
@@ -110,18 +112,6 @@ function FadeIn({
 /* ───────── page ───────── */
 
 export default function ContactPage() {
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [subject, setSubject] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 1500));
-    setLoading(false);
-    setSubmitted(true);
-  };
-
   return (
     <main>
       {/* ── Hero ── */}
@@ -372,131 +362,23 @@ export default function ContactPage() {
             {/* Right column — Form */}
             <FadeIn className="lg:col-span-3" delay={0.1}>
               <div className="rounded-3xl bg-white border border-neutral-200 shadow-sm p-8 sm:p-10">
-                {submitted ? (
-                  <motion.div
-                    className="text-center py-16 space-y-5"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                  >
-                    <motion.div
-                      className="mx-auto h-20 w-20 rounded-full bg-green-100 flex items-center justify-center"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 200,
-                        delay: 0.2,
-                      }}
-                    >
-                      <Check className="h-10 w-10 text-green-600" />
-                    </motion.div>
-                    <h3 className="text-3xl font-display font-bold text-foreground">
-                      Message Sent!
-                    </h3>
-                    <p className="text-foreground-muted max-w-md mx-auto">
-                      Thank you for reaching out. Our team will review your
-                      message and get back to you within 24 hours.
-                    </p>
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
-                      <Button
-                        variant="primary"
-                        onClick={() => setSubmitted(false)}
-                      >
-                        <Send className="h-4 w-4" />
-                        Send Another Message
-                      </Button>
-                      <Link href="/">
-                        <Button variant="secondary">Back to Home</Button>
-                      </Link>
-                    </div>
-                  </motion.div>
-                ) : (
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="space-y-2">
-                      <h2 className="font-display text-2xl font-bold text-foreground">
-                        Send Us a Message
-                      </h2>
-                      <p className="text-sm text-foreground-muted">
-                        Fill out the form below and we&apos;ll get back to you
-                        as soon as possible.
-                      </p>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <Input
-                        id="contactName"
-                        label="Full Name"
-                        placeholder="Your name"
-                        required
-                      />
-                      <Input
-                        id="contactEmail"
-                        label="Email Address"
-                        type="email"
-                        placeholder="you@example.com"
-                        required
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <Input
-                        id="contactPhone"
-                        label="Phone (Optional)"
-                        type="tel"
-                        placeholder="(555) 555-5555"
-                      />
-                      <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-foreground-muted">
-                          Subject
-                        </label>
-                        <select
-                          value={subject}
-                          onChange={(e) => setSubject(e.target.value)}
-                          className="flex h-11 w-full rounded-lg bg-background-elevated border border-border px-4 text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary-500"
-                          required
-                        >
-                          <option value="">Select a subject</option>
-                          {subjects.map((s) => (
-                            <option key={s} value={s}>
-                              {s}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-
-                    <Textarea
-                      id="contactMessage"
-                      label="Message"
-                      placeholder="Tell us how we can help..."
-                      required
-                    />
-
-                    <Button
-                      type="submit"
-                      variant="primary"
-                      size="lg"
-                      className="w-full"
-                      disabled={loading}
-                    >
-                      {loading ? (
-                        <>
-                          <Loader2 className="h-4 w-4 animate-spin" />{" "}
-                          Sending...
-                        </>
-                      ) : (
-                        <>
-                          <Send className="h-4 w-4" /> Send Message
-                        </>
-                      )}
-                    </Button>
-
-                    <p className="text-xs text-center text-foreground-subtle">
-                      By submitting this form, you agree to our privacy policy.
-                      We&apos;ll never share your information.
-                    </p>
-                  </form>
-                )}
+                <div className="space-y-2 mb-6">
+                  <h2 className="font-display text-2xl font-bold text-foreground">Send us a message</h2>
+                  <p className="text-sm text-foreground-muted">
+                    Fill this out and press send. Your email app opens with the message ready to go to {ORG.email}.
+                  </p>
+                </div>
+                <EmailForm
+                  fields={[
+                    { name: "name", label: "Full name", required: true, half: true, placeholder: "Your name" },
+                    { name: "email", label: "Your email", type: "email", required: true, half: true, placeholder: "you@example.com" },
+                    { name: "phone", label: "Phone (optional)", type: "tel", half: true },
+                    { name: "topic", label: "Topic", type: "select", options: subjects, required: true, half: true },
+                    { name: "message", label: "Message", type: "textarea", required: true, placeholder: "Tell us how we can help" },
+                  ]}
+                  subject={(v) => `${v.topic || "Website inquiry"} from ${v.name}`}
+                  submitLabel="Send message"
+                />
               </div>
             </FadeIn>
           </div>

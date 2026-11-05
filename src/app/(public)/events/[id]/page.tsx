@@ -30,7 +30,9 @@ import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { BrandDivider } from "@/components/shared/brand-divider";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { createClient } from "@/lib/supabase/client";
+import { getBuiltInEvent, getBuiltInEvents, isBuiltInEventId } from "@/lib/featured-events";
+
+const isUpcomingEvent = (e: { status: string }) => e.status !== "completed";
 
 /* ─── Icon & Color Mappings ──────────────────────────────────────── */
 
@@ -95,6 +97,9 @@ interface DBEvent {
   schedule: ScheduleItem[] | null;
   what_to_expect: string | null;
   programs: Program | null;
+  time_tba?: boolean;
+  built_in?: boolean;
+  rsvp_url?: string;
 }
 
 /* ─── Helpers ────────────────────────────────────────────────────── */
@@ -268,37 +273,23 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
 
   useEffect(() => {
     async function fetchEvent() {
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from("events")
-        .select("*, programs(title, slug, icon, color)")
-        .eq("id", id)
-        .single();
-
-      if (error || !data) {
-        setNotFound(true);
+      if (isBuiltInEventId(id)) {
+        const builtIn = getBuiltInEvent(id);
+        if (!builtIn) {
+          setNotFound(true);
+        } else {
+          setEvent(builtIn as unknown as DBEvent);
+          setRelatedEvents(
+            getBuiltInEvents().filter(
+              (e) => e.id !== builtIn.id && e.programs?.slug === builtIn.programs?.slug
+            ) as unknown as DBEvent[]
+          );
+        }
         setLoading(false);
         return;
       }
 
-      setEvent(data as DBEvent);
-
-      // Fetch related events from same program
-      if (data.program_id) {
-        const { data: related } = await supabase
-          .from("events")
-          .select("*, programs(title, slug, icon, color)")
-          .eq("program_id", data.program_id)
-          .in("status", ["published", "completed"])
-          .neq("id", id)
-          .order("start_date", { ascending: true })
-          .limit(3);
-
-        if (related) {
-          setRelatedEvents(related as DBEvent[]);
-        }
-      }
-
+      setNotFound(true);
       setLoading(false);
     }
     fetchEvent();
@@ -321,7 +312,9 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
   const ProgramIcon = programIconMap[programSlug] || Calendar;
   const programName = event.programs?.title || "General";
   const displayDate = formatEventDate(event.start_date, event.end_date);
-  const displayTime = formatEventTime(event.start_date, event.end_date);
+  const displayTime = event.time_tba ? "Time TBA" : formatEventTime(event.start_date, event.end_date);
+  const registerHref = `/events/${id}/register`;
+  const registerLabel = isUpcomingEvent(event) ? "RSVP by email" : "Register Now";
   const displayLocation = event.location_name || (event.event_type === "virtual" ? "Virtual Event" : "TBD");
   const displayType = formatEventType(event.event_type);
   const displayPrice = event.ticket_price && event.ticket_price > 0 ? `$${event.ticket_price}` : "Free";
@@ -660,10 +653,10 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
                 )}
 
                 {isUpcoming && (
-                  <Link href={`/events/${id}/register`} className="block">
+                  <Link href={registerHref} className="block">
                     <Button variant="primary" className="w-full" size="lg">
                       <Ticket className="h-4 w-4" />
-                      Register Now
+                      {registerLabel}
                     </Button>
                   </Link>
                 )}
@@ -787,9 +780,9 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
             {isUpcoming && (
-              <Link href={`/events/${id}/register`}>
+              <Link href={registerHref}>
                 <Button variant="primary" size="lg" className="bg-white text-secondary-600 hover:bg-white/90">
-                  <Ticket className="h-4 w-4" /> Register Now
+                  <Ticket className="h-4 w-4" /> {registerLabel}
                 </Button>
               </Link>
             )}

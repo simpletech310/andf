@@ -1,571 +1,191 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Tv, Check, Star, Zap, TrendingUp, Users, BarChart3,
-  Building2, Mail, Phone, Globe, User, ArrowRight,
-  Play, Eye, Shield, Clock, Sparkles, Heart,
-  ChevronRight, Award, Target, Megaphone,
-} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { EmailForm } from "@/components/shared/email-form";
+import { PartnersSection } from "@/components/home/partners-section";
+import { ORG, mailtoHref } from "@/lib/contact";
+import { COLLABORATORS } from "@/lib/impact";
 
-/* ───── helpers ───── */
+const WAYS = [
+  {
+    title: "Sponsor a program or event",
+    body: "Underwrite a Topgolf Experience, Band Camp, or Focused N F.I.T., our annual signature conference for students and parents.",
+    image: "/images/experiences/topgolf-celebrity-classic-2026.jpg",
+  },
+  {
+    title: "Fund scholarships",
+    body: "Give to the Lucille F. Clarke Hudson Scholarship Fund, which helps low- to moderate-income students take the next step toward college.",
+    image: "/images/experiences/fnf-2025.jpg",
+  },
+  {
+    title: "Send your team to mentor",
+    body: "Your people can speak, lead a workshop, or spend a day with teens at an outing. Small groups of 8 to 20 mean real conversations.",
+    image: "/images/experiences/sheriff-crime-lab-2025.jpg",
+  },
+  {
+    title: "Open your doors",
+    body: "Host an experience at your workplace, venue, or studio. Teens have explored a forensic lab, a harbor patrol boat, a recording studio, and more.",
+    image: "/images/experiences/harbor-patrol-2025.jpg",
+  },
+  {
+    title: "Give in kind",
+    body: "Tickets, equipment, instruments, transportation, meals, or media time all stretch every dollar further.",
+    image: "/images/experiences/band-camp-2025.jpg",
+  },
+];
 
-function FadeIn({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+const INTERESTS = [
+  "Sponsor a program or event",
+  "Fund scholarships",
+  "Employee mentoring or volunteering",
+  "Host an experience",
+  "In-kind gift",
+  "Something else",
+];
+
+export default function PartnerPage() {
   return (
-    <motion.div ref={ref} className={className} initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6, delay, ease: "easeOut" }}>
-      {children}
-    </motion.div>
-  );
-}
-
-/* ───── data ───── */
-
-const packages = [
-  {
-    name: "Starter",
-    price: 250,
-    duration: "2 months",
-    popular: false,
-    features: [
-      "Up to 15-second ad",
-      "2 months of airtime",
-      "Basic analytics dashboard",
-      "Community recognition",
-    ],
-  },
-  {
-    name: "Growth",
-    price: 500,
-    duration: "4 months",
-    popular: true,
-    features: [
-      "Up to 30-second ad",
-      "4 months of airtime",
-      "Priority placement",
-      "Detailed analytics",
-      "Social media mention",
-      "Website logo placement",
-    ],
-  },
-  {
-    name: "Premium",
-    price: 1000,
-    duration: "8 months",
-    popular: false,
-    features: [
-      "Up to 60-second ad",
-      "8 months of airtime",
-      "Highest priority placement",
-      "Real-time analytics",
-      "Featured sponsor spotlight",
-      "Event partnership opportunities",
-      "Custom campaign support",
-    ],
-  },
-  {
-    name: "Annual Partner",
-    price: 1750,
-    duration: "12 months",
-    popular: false,
-    features: [
-      "Up to 60-second ad",
-      "12 months of airtime",
-      "Top-tier priority",
-      "Comprehensive analytics",
-      "Co-branded content opportunities",
-      "VIP event access",
-      "Quarterly strategy sessions",
-      "Dedicated account manager",
-    ],
-  },
-];
-
-const stats = [
-  { num: "15K+", label: "Monthly Views", icon: Eye },
-  { num: "50+", label: "Hours of Content", icon: Play },
-  { num: "2K+", label: "Community Members", icon: Users },
-  { num: "95%", label: "Completion Rate", icon: TrendingUp },
-];
-
-const steps = [
-  { step: 1, title: "Register", desc: "Fill out the sponsor registration form with your business details.", icon: Building2 },
-  { step: 2, title: "Choose a Package", desc: "Select the sponsorship tier that fits your goals and budget.", icon: Target },
-  { step: 3, title: "Submit Your Ad", desc: "Upload your video ad for ANDF review and approval.", icon: Play },
-  { step: 4, title: "Go Live", desc: "Once approved and paid, your ad runs across ANDF Now! streams.", icon: Megaphone },
-];
-
-/* ───── page ───── */
-
-export default function SponsorPage() {
-  const [formState, setFormState] = useState({
-    businessName: "",
-    contactName: "",
-    contactEmail: "",
-    contactPhone: "",
-    websiteUrl: "",
-  });
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setError("");
-
-    try {
-      const res = await fetch("/api/sponsors/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formState),
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Registration failed");
-      }
-
-      setSubmitted(true);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  return (
-    <div className="pb-0">
-      {/* ── Hero ── */}
-      <section className="relative overflow-hidden">
+    <div>
+      {/* Hero */}
+      <section className="relative overflow-hidden bg-primary-900 text-white">
         <div className="absolute inset-0">
           <Image
-            src="/images/gallery/fnf-group-lineup.jpg"
-            alt="ANDF Community"
+            src="/images/experiences/fnf-2024.jpg"
+            alt="Students and mentors at Focused N F.I.T. 2024"
             fill
-            className="object-cover"
             priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30" />
-        </div>
-
-        <div className="relative mx-auto max-w-5xl px-6 py-32 lg:py-44 text-center space-y-6">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20"
-          >
-            <Megaphone className="h-4 w-4 text-secondary-400" />
-            <span className="text-xs font-semibold text-white tracking-[0.2em] uppercase">
-              Advertise with ANDF
-            </span>
-          </motion.div>
-
-          <motion.h1
-            className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-          >
-            Put Your Brand{" "}
-            <span className="text-secondary-400">in the Spotlight</span>
-          </motion.h1>
-
-          <motion.p
-            className="text-lg sm:text-xl text-neutral-200 max-w-2xl mx-auto"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-          >
-            Advertise on A New Day Now! — our streaming platform reaching thousands
-            of engaged community members. Support youth empowerment while growing your brand.
-          </motion.p>
-
-          <motion.div
-            className="flex flex-wrap justify-center gap-4 pt-2"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <Link
-              href="#packages"
-              className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-secondary-500 text-white font-semibold hover:bg-secondary-600 transition-colors"
-            >
-              <Star className="h-4 w-4" />
-              View Packages
-            </Link>
-            <Link
-              href="#register"
-              className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 text-white font-semibold hover:bg-white/20 transition-colors"
-            >
-              Get Started <ArrowRight className="h-4 w-4" />
-            </Link>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── Stats ── */}
-      <section className="bg-primary-600 py-6">
-        <div className="mx-auto max-w-5xl px-6 flex flex-wrap justify-center gap-8 sm:gap-16">
-          {stats.map((s) => (
-            <div key={s.label} className="flex items-center gap-3 text-white">
-              <s.icon className="h-5 w-5 text-secondary-300" />
-              <div>
-                <span className="text-xl font-bold">{s.num}</span>
-                <span className="text-xs text-white/70 ml-1.5 uppercase tracking-wider">{s.label}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Why Advertise ── */}
-      <section className="py-20 px-6">
-        <div className="mx-auto max-w-5xl">
-          <FadeIn>
-            <div className="text-center space-y-4 mb-14">
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-500">Why ANDF Now!</span>
-              <h2 className="font-display text-4xl sm:text-5xl font-bold text-foreground">
-                Reach an <span className="text-secondary-500">Engaged Audience</span>
-              </h2>
-              <p className="text-foreground-muted max-w-xl mx-auto">
-                Your ads play seamlessly within premium ANDF content — not intrusive pop-ups,
-                but integrated, respected placements that viewers actually watch.
-              </p>
-            </div>
-          </FadeIn>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              { icon: Eye, title: "High Viewership", desc: "15,000+ monthly viewers across live streams and on-demand content.", color: "text-primary-500 bg-primary-500/10" },
-              { icon: Shield, title: "Brand-Safe Content", desc: "Family-friendly, mission-driven content that reflects well on sponsors.", color: "text-green-600 bg-green-500/10" },
-              { icon: Heart, title: "Social Impact", desc: "Your sponsorship directly funds youth programs — tell your customers you care.", color: "text-rose-500 bg-rose-500/10" },
-              { icon: BarChart3, title: "Real Analytics", desc: "Track impressions, completion rates, and clicks with our analytics dashboard.", color: "text-violet-500 bg-violet-500/10" },
-              { icon: Zap, title: "No Ad Blockers", desc: "Ads play through the same video player — no ad blockers can interfere.", color: "text-amber-500 bg-amber-500/10" },
-              { icon: Clock, title: "Flexible Terms", desc: "Choose from 2 to 12 months. Extend or upgrade anytime.", color: "text-teal-500 bg-teal-500/10" },
-            ].map((item, i) => (
-              <FadeIn key={item.title} delay={i * 0.05}>
-                <div className="p-6 rounded-2xl bg-white border border-neutral-200 hover:border-primary-300 hover:shadow-md transition-all h-full">
-                  <div className={`h-12 w-12 rounded-xl ${item.color} flex items-center justify-center mb-4`}>
-                    <item.icon className="h-6 w-6" />
-                  </div>
-                  <h3 className="font-display text-lg font-bold text-foreground mb-2">{item.title}</h3>
-                  <p className="text-sm text-foreground-muted leading-relaxed">{item.desc}</p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── How It Works ── */}
-      <section className="py-20 px-6 bg-neutral-50">
-        <div className="mx-auto max-w-4xl">
-          <FadeIn>
-            <div className="text-center space-y-4 mb-14">
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-500">How It Works</span>
-              <h2 className="font-display text-4xl sm:text-5xl font-bold text-foreground">
-                Four Simple <span className="text-secondary-500">Steps</span>
-              </h2>
-            </div>
-          </FadeIn>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {steps.map((step, i) => (
-              <FadeIn key={step.step} delay={i * 0.1}>
-                <div className="relative text-center p-6 rounded-2xl bg-white border border-neutral-200 hover:shadow-md transition-all">
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 h-7 w-7 rounded-full bg-primary-500 text-white text-xs font-bold flex items-center justify-center">
-                    {step.step}
-                  </div>
-                  <div className="h-14 w-14 rounded-2xl bg-primary-500/10 text-primary-500 flex items-center justify-center mx-auto mb-4 mt-2">
-                    <step.icon className="h-7 w-7" />
-                  </div>
-                  <h3 className="font-display text-lg font-bold text-foreground mb-2">{step.title}</h3>
-                  <p className="text-sm text-foreground-muted">{step.desc}</p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Packages ── */}
-      <section id="packages" className="py-20 px-6">
-        <div className="mx-auto max-w-6xl">
-          <FadeIn>
-            <div className="text-center space-y-4 mb-14">
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-500">Sponsorship Packages</span>
-              <h2 className="font-display text-4xl sm:text-5xl font-bold text-foreground">
-                Choose Your <span className="text-secondary-500">Package</span>
-              </h2>
-              <p className="text-foreground-muted max-w-xl mx-auto">
-                Every package includes ad placement across all ANDF Now! content — live streams, replays, and on-demand videos.
-              </p>
-            </div>
-          </FadeIn>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {packages.map((pkg, i) => (
-              <FadeIn key={pkg.name} delay={i * 0.08}>
-                <div className={`relative rounded-2xl border p-6 flex flex-col h-full transition-all hover:shadow-lg ${
-                  pkg.popular
-                    ? "border-primary-500 bg-primary-500/5 shadow-[0_0_30px_rgba(47,49,146,0.1)]"
-                    : "border-neutral-200 bg-white hover:border-primary-300"
-                }`}>
-                  {pkg.popular && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-primary-500 text-white text-xs font-bold uppercase tracking-wider">
-                      Most Popular
-                    </div>
-                  )}
-
-                  <div className="mb-6">
-                    <h3 className="font-display text-xl font-bold text-foreground">{pkg.name}</h3>
-                    <p className="text-sm text-foreground-muted mt-1">{pkg.duration}</p>
-                  </div>
-
-                  <div className="mb-6">
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-4xl font-bold text-foreground">${pkg.price.toLocaleString()}</span>
-                    </div>
-                    <p className="text-xs text-foreground-muted mt-1">One-time payment</p>
-                  </div>
-
-                  <ul className="space-y-3 mb-8 flex-1">
-                    {pkg.features.map((f) => (
-                      <li key={f} className="flex items-start gap-2 text-sm text-foreground-muted">
-                        <Check className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-                        <span>{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Link
-                    href="#register"
-                    className={`w-full py-3 rounded-xl text-center font-semibold text-sm transition-colors block ${
-                      pkg.popular
-                        ? "bg-primary-500 text-white hover:bg-primary-600"
-                        : "bg-neutral-100 text-foreground hover:bg-primary-500 hover:text-white"
-                    }`}
-                  >
-                    Get Started
-                  </Link>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Registration Form ── */}
-      <section id="register" className="py-20 px-6 bg-neutral-50">
-        <div className="mx-auto max-w-3xl">
-          <FadeIn>
-            <div className="text-center space-y-4 mb-12">
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-500">Get Started</span>
-              <h2 className="font-display text-4xl sm:text-5xl font-bold text-foreground">
-                Register as a <span className="text-secondary-500">Sponsor</span>
-              </h2>
-              <p className="text-foreground-muted max-w-xl mx-auto">
-                Fill out the form below and our team will reach out to get your ad campaign started.
-              </p>
-            </div>
-          </FadeIn>
-
-          <FadeIn delay={0.1}>
-            {submitted ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-center p-10 rounded-3xl bg-white border border-green-200 shadow-sm"
-              >
-                <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                  <Check className="h-8 w-8 text-green-600" />
-                </div>
-                <h3 className="font-display text-2xl font-bold text-foreground mb-2">Registration Received!</h3>
-                <p className="text-foreground-muted mb-6">
-                  Thank you for your interest in sponsoring ANDF Now! Our team will contact you within
-                  24-48 hours to discuss next steps and help you select the right package.
-                </p>
-                <div className="flex flex-wrap justify-center gap-3">
-                  <Link
-                    href="/live"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary-500 text-white font-semibold hover:bg-primary-600 transition-colors"
-                  >
-                    <Tv className="h-4 w-4" />
-                    Explore ANDF Now!
-                  </Link>
-                  <Link
-                    href="/about"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-neutral-100 text-foreground font-semibold hover:bg-neutral-200 transition-colors"
-                  >
-                    Learn About ANDF <ChevronRight className="h-4 w-4" />
-                  </Link>
-                </div>
-              </motion.div>
-            ) : (
-              <form onSubmit={handleSubmit} className="rounded-3xl bg-white border border-neutral-200 p-8 sm:p-10 shadow-sm space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div className="sm:col-span-2">
-                    <label className="text-sm font-medium text-foreground mb-1.5 block">
-                      Business Name *
-                    </label>
-                    <div className="relative">
-                      <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground-subtle" />
-                      <Input
-                        value={formState.businessName}
-                        onChange={(e) => setFormState({ ...formState, businessName: e.target.value })}
-                        placeholder="Your Company Name"
-                        className="pl-10"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-1.5 block">
-                      Contact Name *
-                    </label>
-                    <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground-subtle" />
-                      <Input
-                        value={formState.contactName}
-                        onChange={(e) => setFormState({ ...formState, contactName: e.target.value })}
-                        placeholder="Full Name"
-                        className="pl-10"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-1.5 block">
-                      Email Address *
-                    </label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground-subtle" />
-                      <Input
-                        type="email"
-                        value={formState.contactEmail}
-                        onChange={(e) => setFormState({ ...formState, contactEmail: e.target.value })}
-                        placeholder="you@company.com"
-                        className="pl-10"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-1.5 block">
-                      Phone Number
-                    </label>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground-subtle" />
-                      <Input
-                        type="tel"
-                        value={formState.contactPhone}
-                        onChange={(e) => setFormState({ ...formState, contactPhone: e.target.value })}
-                        placeholder="(555) 555-5555"
-                        className="pl-10"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-1.5 block">
-                      Website
-                    </label>
-                    <div className="relative">
-                      <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground-subtle" />
-                      <Input
-                        type="url"
-                        value={formState.websiteUrl}
-                        onChange={(e) => setFormState({ ...formState, websiteUrl: e.target.value })}
-                        placeholder="https://yourcompany.com"
-                        className="pl-10"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {error && (
-                  <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">
-                    {error}
-                  </div>
-                )}
-
-                <Button
-                  type="submit"
-                  variant="primary"
-                  className="w-full py-6 text-base"
-                  disabled={submitting}
-                >
-                  {submitting ? (
-                    <span className="flex items-center gap-2">
-                      <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Registering...
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-2">
-                      <Award className="h-5 w-5" />
-                      Register as Sponsor
-                    </span>
-                  )}
-                </Button>
-
-                <p className="text-xs text-foreground-subtle text-center">
-                  By registering, you agree to our sponsorship terms. Our team will
-                  review your application and follow up within 24-48 hours.
-                </p>
-              </form>
-            )}
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* ── CTA ── */}
-      <section className="relative py-24 px-6 overflow-hidden">
-        <div className="absolute inset-0">
-          <Image
-            src="/images/gallery/leadership-group.jpg"
-            alt="ANDF Community"
-            fill
+            sizes="100vw"
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-600/90 to-primary-700/90" />
+          <div className="absolute inset-0 bg-gradient-to-t from-primary-900 via-primary-900/80 to-primary-900/30" />
         </div>
+        <div className="relative mx-auto max-w-7xl px-6 pt-40 pb-20 lg:pb-24">
+          <h1 className="font-display font-bold text-4xl sm:text-6xl tracking-tight max-w-3xl">
+            Partner with A New Day Foundation
+          </h1>
+          <p className="mt-6 max-w-2xl text-lg sm:text-xl text-white/85 leading-relaxed">
+            Founded by Dawnn Lewis in 2017, ANDF puts teens ages 13–19 in rooms they might never enter on their own.
+            Partners make every one of those days possible.
+          </p>
+          <div className="mt-10 flex flex-col sm:flex-row gap-3">
+            <a href="#inquire">
+              <Button size="lg" className="w-full sm:w-auto bg-white text-primary-800 hover:bg-primary-50">
+                Start a conversation
+              </Button>
+            </a>
+            <a href={ORG.phoneHref}>
+              <Button size="lg" variant="outline" className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10">
+                Call {ORG.phone}
+              </Button>
+            </a>
+          </div>
+        </div>
+      </section>
 
-        <div className="relative mx-auto max-w-3xl text-center space-y-6">
-          <FadeIn>
-            <Sparkles className="h-10 w-10 text-white/80 mx-auto mb-2" />
-            <h2 className="font-display text-4xl sm:text-5xl font-bold text-white">
-              Ready to <span className="text-secondary-300">Make an Impact?</span>
-            </h2>
-            <p className="text-lg text-white/80 max-w-xl mx-auto">
-              Join our growing community of sponsors who believe in empowering the next
-              generation while reaching an engaged, mission-aligned audience.
+      {/* Ways to partner */}
+      <section className="py-24 px-6 bg-white">
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-2xl">
+            <h2 className="font-display font-bold text-3xl sm:text-5xl text-foreground">Ways to partner</h2>
+            <p className="mt-4 text-lg text-foreground-muted leading-relaxed">
+              Every partnership is shaped around what your organization wants to accomplish. Pick a starting point
+              and we&apos;ll build the rest together.
             </p>
-            <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Link
-                href="#register"
-                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-secondary-500 text-white font-semibold hover:bg-secondary-600 transition-colors"
-              >
-                <Megaphone className="h-5 w-5" />
-                Become a Sponsor
-              </Link>
-              <Link
-                href="/contact"
-                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-white/10 backdrop-blur-sm border border-white/30 text-white font-semibold hover:bg-white/20 transition-colors"
-              >
-                Contact Us <ArrowRight className="h-4 w-4" />
-              </Link>
+          </div>
+          <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
+            {WAYS.map((w) => (
+              <article key={w.title}>
+                <div className="relative aspect-[3/2] overflow-hidden rounded-md bg-neutral-200">
+                  <Image src={w.image} alt="" fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
+                </div>
+                <h3 className="mt-5 text-xl font-bold text-foreground">{w.title}</h3>
+                <p className="mt-2 text-foreground-muted leading-relaxed">{w.body}</p>
+                <a
+                  href={mailtoHref(`Partnership: ${w.title}`)}
+                  className="mt-3 inline-block text-sm font-semibold text-primary-600 underline underline-offset-4 decoration-primary-200 hover:decoration-primary-500"
+                >
+                  Email us about this
+                </a>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* What partners receive */}
+      <section className="py-24 px-6 bg-primary-900 text-white">
+        <div className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <h2 className="lg:col-span-4 font-display font-bold text-3xl sm:text-4xl">What you get back</h2>
+          <dl className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-8">
+            {[
+              ["Time with the teens you support", "Meet the students at the programs you fund, not just in a report."],
+              ["Recognition, your way", "Credit on our website, at events, and in our videos, shaped with your team."],
+              ["Stories you can share", "Photos and video from A New Day Now that show your support at work."],
+              ["A tax-deductible gift", `ANDF is a 501(c)(3) nonprofit, Federal ID ${ORG.ein}.`],
+            ].map(([t, d]) => (
+              <div key={t} className="border-t border-white/20 pt-4">
+                <dt className="font-semibold text-lg">{t}</dt>
+                <dd className="mt-1 text-white/70 leading-relaxed">{d}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      <PartnersSection />
+
+      {/* Collaborators */}
+      <section className="py-16 px-6 bg-white">
+        <div className="mx-auto max-w-7xl">
+          <h2 className="text-lg font-semibold text-foreground">Organizations we collaborate with</h2>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {COLLABORATORS.map((name) => (
+              <li key={name} className="rounded-full border border-neutral-300 px-3.5 py-1.5 text-sm text-neutral-700">
+                {name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* Inquiry */}
+      <section id="inquire" className="scroll-mt-24 py-24 px-6 bg-neutral-50">
+        <div className="mx-auto max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <div className="lg:col-span-5">
+            <h2 className="font-display font-bold text-3xl sm:text-4xl text-foreground">Start a conversation</h2>
+            <p className="mt-4 text-foreground-muted leading-relaxed">
+              Tell us a little about your organization and what interests you. We&apos;ll follow up to talk it through.
+            </p>
+            <div className="mt-8 space-y-2 text-sm">
+              <p>
+                <a href={`mailto:${ORG.email}`} className="font-semibold text-primary-700 hover:underline">{ORG.email}</a>
+              </p>
+              <p>
+                <a href={ORG.phoneHref} className="font-semibold text-primary-700 hover:underline">{ORG.phone}</a>
+              </p>
+              <p className="text-foreground-muted">
+                Prefer to give directly? <Link href="/donate" className="text-primary-700 underline underline-offset-2">Donate here</Link>.
+              </p>
             </div>
-          </FadeIn>
+          </div>
+          <div className="lg:col-span-7 rounded-2xl bg-white border border-neutral-200 p-6 sm:p-8">
+            <EmailForm
+              fields={[
+                { name: "organization", label: "Organization", required: true, half: true },
+                { name: "name", label: "Your name", required: true, half: true },
+                { name: "title", label: "Your title", half: true },
+                { name: "email", label: "Your email", type: "email", required: true, half: true },
+                { name: "phone", label: "Phone", type: "tel", half: true },
+                { name: "interest", label: "I'm interested in", type: "select", options: INTERESTS, required: true, half: true },
+                { name: "message", label: "Anything else we should know?", type: "textarea" },
+              ]}
+              subject={(v) => `Partnership inquiry: ${v.organization}`}
+              intro="Hello ANDF team, we're interested in partnering with A New Day Foundation."
+              submitLabel="Send inquiry"
+            />
+          </div>
         </div>
       </section>
     </div>

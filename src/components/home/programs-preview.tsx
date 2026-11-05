@@ -11,6 +11,7 @@ import { SectionHeading } from "@/components/shared/section-heading";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { PROGRAMS } from "@/lib/programs";
 
 /* ─── Icon map for DB icon strings ──────────────────────────────── */
 
@@ -36,23 +37,8 @@ const DEFAULT_ICON_STYLE = { bg: "bg-primary-100", text: "text-primary-600" };
 export function ProgramsPreview() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
-  const [programs, setPrograms] = useState<any[]>([]);
+  const programs: any[] = PROGRAMS;
 
-  useEffect(() => {
-    async function fetchPrograms() {
-      try {
-        const res = await fetch("/api/programs");
-        if (!res.ok) return;
-        const data = await res.json();
-        if (data.programs?.length > 0) {
-          setPrograms(data.programs);
-        }
-      } catch {
-        // Keep empty — section won't render if no programs
-      }
-    }
-    fetchPrograms();
-  }, []);
 
   if (programs.length === 0) return null;
 
@@ -81,8 +67,8 @@ export function ProgramsPreview() {
                   <div className="relative h-full p-6 rounded-2xl bg-white border border-neutral-200 hover:border-primary-300 transition-all duration-500 hover:shadow-lg">
                     <div className="space-y-4">
                       {program.logo_url ? (
-                        <div className="relative h-14 w-14 rounded-xl overflow-hidden bg-neutral-100">
-                          <Image src={program.logo_url} alt={`${program.title} logo`} fill className="object-contain p-1" sizes="56px" />
+                        <div className="relative h-24 w-24 rounded-xl overflow-hidden bg-white border border-neutral-200">
+                          <Image src={program.logo_url} alt={`${program.title} logo`} fill className="object-contain" sizes="96px" />
                         </div>
                       ) : (
                         <div className={`h-12 w-12 rounded-xl ${iconStyle.bg} flex items-center justify-center`}>
@@ -102,7 +88,7 @@ export function ProgramsPreview() {
                       </p>
 
                       <div className="flex items-center text-sm font-medium text-primary-500 group-hover:text-primary-600">
-                        Learn More
+                        Learn more<span className="sr-only"> about {program.title}</span>
                         <ArrowRight className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" />
                       </div>
                     </div>

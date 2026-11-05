@@ -1,0 +1,12 @@
+# Keep CLI uploads lean (this file replaces .gitignore for Vercel uploads)
+node_modules
+.next
+.next-verify
+out
+build
+coverage
+website Assetes
+.env*.local
+*.pem
+.DS_Store
+*.tsbuildinfo
