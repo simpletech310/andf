@@ -12,8 +12,6 @@ import { SectionHeading } from "@/components/shared/section-heading";
 import { SectionWrapper, StaggerChildren, StaggerItem } from "@/components/shared/section-wrapper";
 import { Button } from "@/components/ui/button";
 import { CareerRail, CommunityWall } from "@/components/shared/dawnn-career";
-import { YouTubeCard } from "@/components/shared/youtube-card";
-import { TINA_VIDEO } from "@/lib/videos";
 import { PRESS_PHOTOS } from "@/lib/dawnn";
 import { DAWNN_CREDITS } from "@/lib/impact";
 
@@ -604,15 +602,6 @@ export default function AboutPage() {
           </div>
           <div className="mt-10">
             <CareerRail />
-          </div>
-          <div className="mt-14 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-7">
-              <YouTubeCard {...TINA_VIDEO} large />
-            </div>
-            <p className="lg:col-span-5 text-lg text-foreground-muted leading-relaxed">
-              From 2019 to 2022, Dawnn played Zelma, Tina Turner&apos;s mother, in <em>Tina: The Tina Turner Musical</em> on
-              Broadway, a role that carried her back to the stage where she started.
-            </p>
           </div>
         </div>
       </section>

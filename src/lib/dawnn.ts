@@ -2,10 +2,10 @@
  * Dawnn Lewis career + community content.
  *
  * Roles verified against public filmography (Wikipedia, Nov 2026).
- * IMAGES: studio stills (NBC, ABC, Paramount, etc.) are copyrighted. Only add an
- * `image` once ANDF has a licensed or press-kit photo. Drop the file in
- * /public/images/dawnn/roles/ and set `image: "/images/dawnn/roles/<file>.jpg"`.
- * Cards without an image render as a title card, so nothing breaks meanwhile.
+ * POSTERS: official posters/key art belong to the studios (NBC, ABC, Paramount, TNT, MGM).
+ * Once ANDF has permission (e.g. from Dawnn's press kit), drop the file in
+ * /public/images/dawnn/roles/ and set `image: "/images/dawnn/roles/<file>.jpg"` (2:3 works best).
+ * The poster then shows on the card front and the trailer still plays on click.
  */
 
 export interface Role {
@@ -15,13 +15,21 @@ export interface Role {
   years: string;
   note?: string;
   image?: string;
-  /** Title-card color when there is no image. */
+  /** CSS object-position for the poster when it isn't 2:3 (e.g. "30% 50%"). */
+  imagePosition?: string;
+  /**
+   * Official video embedded from the rights holder's own YouTube channel. Its thumbnail
+   * becomes the card art and it plays on click. Only use official/verified channels.
+   */
+  video?: { id: string; label: string; source: string };
+  /** Title-card color when there is no image or video. */
   tone: "midnight" | "sunrise" | "blue" | "plum" | "ink";
 }
 
 export const ROLES: Role[] = [
   {
     title: "A Different World",
+    image: "/images/dawnn/roles/a-different-world.jpg",
     role: "Jaleesa Vinson-Taylor",
     where: "NBC",
     years: "1987–1992",
@@ -30,6 +38,7 @@ export const ROLES: Role[] = [
   },
   {
     title: "Hangin’ with Mr. Cooper",
+    image: "/images/dawnn/roles/hangin-with-mr-cooper.jpg",
     role: "Robin Dumars",
     where: "ABC",
     years: "1992–1993",
@@ -38,25 +47,32 @@ export const ROLES: Role[] = [
   },
   {
     title: "Star Trek: Lower Decks",
+    image: "/images/dawnn/roles/star-trek-lower-decks.jpg",
     role: "Captain Carol Freeman (voice)",
     where: "Paramount+",
     years: "2020–2024",
     note: "Commanding officer of the U.S.S. Cerritos.",
+    video: { id: "V3RkBKedKWw", label: "Season 1 official trailer", source: "Paramount+" },
     tone: "midnight",
   },
   {
     title: "Tina: The Tina Turner Musical",
+    image: "/images/dawnn/roles/tina-the-tina-turner-musical.jpg",
+    imagePosition: "40% 50%",
     role: "Zelma Bullock",
     where: "Broadway",
     years: "2019–2022",
     note: "Tina Turner’s mother.",
+    video: { id: "gg2KX1scLDQ", label: "Tina on Broadway", source: "A New Day Foundation" },
     tone: "plum",
   },
   {
     title: "Major Crimes",
+    image: "/images/dawnn/roles/major-crimes.jpg",
     role: "Patrice",
     where: "TNT",
     years: "2014–2018",
+    video: { id: "ZtZ9PhCw5CE", label: "Official promo", source: "TNT" },
     tone: "ink",
   },
   {
@@ -64,6 +80,8 @@ export const ROLES: Role[] = [
     role: "Cheryl Spade",
     where: "Feature film",
     years: "1988",
+    image: "/images/dawnn/roles/im-gonna-git-you-sucka.jpg",
+    video: { id: "BddDCZwWkw0", label: "Official trailer", source: "Rotten Tomatoes Classic Trailers" },
     tone: "sunrise",
   },
 ];
