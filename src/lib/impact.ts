@@ -7,13 +7,13 @@ export const FOUNDED_YEAR = 2017;
 export const AGES = "13–19";
 
 export const impact = {
-  youthServed: { target: 2000, suffix: "+", label: "Youth served" }, // CONFIRM
-  programs: { target: 6, suffix: "", label: "Signature programs" },
-  cities: { target: 5, suffix: "", label: "Cities reached" }, // LA, Atlanta, Chicago, Washington D.C., Indianapolis
+  youthServed: { target: 9000, suffix: "+", label: "Youth served" },
+  programs: { target: 7, suffix: "+", label: "Signature programs" },
+  cities: { target: 6, suffix: "", label: "Cities reached" },
   since: { target: FOUNDED_YEAR, suffix: "", label: "Serving youth since" },
 };
 
-export const CITIES = ["Los Angeles", "Atlanta", "Chicago", "Washington, D.C.", "Indianapolis"];
+export const CITIES = ["Los Angeles", "New York", "Atlanta", "Chicago", "Washington, D.C.", "Indianapolis"];
 
 /** Organizations ANDF collaborates with, per the official History page. */
 export const COLLABORATORS = [
@@ -37,10 +37,10 @@ export const COLLABORATORS = [
 export const DAWNN_CREDITS = [
   { role: "Grammy Award-winning singer", detail: "Recording artist and vocalist" },
   { role: "ASCAP & BMI Award-winning songwriter", detail: "Multiple-award recipient" },
-  { role: "Jaleesa Vinson", detail: "A Different World, NBC" },
-  { role: "Captain Carol Freeman", detail: "Star Trek: Lower Decks, Paramount+ (voice)" },
+  { role: "Women Songwriters Hall of Fame inductee", detail: "Inducted with its first class, 2021" },
+  { role: "Trumpet Award honoree", detail: "Celebrating Black achievement" },
   { role: "SAG-AFTRA National Board of Directors", detail: "Former National & LA Chair, Singers Committee" },
   { role: "National Advisory Board", detail: "National Center for Civil and Human Rights" },
   { role: "Honorary Doctor of Humane Letters", detail: "Next Dimension University, 2019" },
-  { role: "B.M. in Musical Theatre, cum laude", detail: "University of Miami" },
+  { role: "B.M. in Musical Theatre, magna cum laude", detail: "University of Miami" },
 ];

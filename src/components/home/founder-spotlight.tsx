@@ -50,15 +50,17 @@ export function FounderSpotlight() {
 
         {/* Story */}
         <div className="lg:col-span-7">
-          <h2 className="font-display font-bold text-4xl sm:text-5xl lg:text-[3.5rem] leading-[1.08] tracking-[-0.01em] max-w-[16ch]">
-            From A Different World to a new day for young people.
+          <h2 className="font-display font-bold text-4xl sm:text-5xl lg:text-[3.5rem] leading-[1.08] tracking-[-0.01em] max-w-[21ch]">
+            Five decades in the spotlight. Now she shines it on young people.
           </h2>
 
           <div className="mt-8 space-y-5 text-lg text-white/80 leading-relaxed max-w-[40rem]">
             <p>
-              Millions know Dawnn Lewis as Jaleesa Vinson on <em>A Different World</em>. She is also a Grammy
-              Award-winning singer, an ASCAP and BMI Award-winning songwriter, and a composer and series
-              creator. In 2017 she turned decades of service and advocacy into A New Day Foundation.
+              Dawnn Lewis&apos;s career began in Broadway musicals and has spanned five decades of stage,
+              television, film, and voice work, from beloved sitcoms to <em>Star Trek</em>, <em>The Simpsons</em>,
+              and Netflix&apos;s <em>Nemesis</em>. She is a Grammy Award-winning singer, a multiple ASCAP and BMI
+              Award-winning songwriter, a Women Songwriters Hall of Fame inductee, and a Trumpet Award honoree. In
+              2017 she turned a lifetime of service and advocacy into A New Day Foundation.
             </p>
             <p>
               When Dawnn calls, people show up. Her <em>A New Day: Concert for a Cause</em> has brought together

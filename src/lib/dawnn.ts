@@ -2,7 +2,7 @@
  * Dawnn Lewis career + community content.
  *
  * Roles verified against public filmography (Wikipedia, Nov 2026).
- * POSTERS: official posters/key art belong to the studios (NBC, ABC, Paramount, TNT, MGM).
+ * POSTERS: official posters/key art belong to the studios (NBC, ABC, Netflix, Paramount, TNT, FOX, MGM).
  * Once ANDF has permission (e.g. from Dawnn's press kit), drop the file in
  * /public/images/dawnn/roles/ and set `image: "/images/dawnn/roles/<file>.jpg"` (2:3 works best).
  * The poster then shows on the card front and the trailer still plays on click.
@@ -17,6 +17,10 @@ export interface Role {
   image?: string;
   /** CSS object-position for the poster when it isn't 2:3 (e.g. "30% 50%"). */
   imagePosition?: string;
+  /** "contain" shows the whole image on a blurred copy of itself (for square key art). */
+  imageFit?: "cover" | "contain";
+  /** Show the title over the image, for stills that don't carry the show's name. */
+  titleOverlay?: boolean;
   /**
    * Official video embedded from the rights holder's own YouTube channel. Its thumbnail
    * becomes the card art and it plays on click. Only use official/verified channels.
@@ -26,24 +30,37 @@ export interface Role {
   tone: "midnight" | "sunrise" | "blue" | "plum" | "ink";
 }
 
+/** Newest work first, then the stage, voice, and screen roles audiences know her for. */
 export const ROLES: Role[] = [
   {
-    title: "A Different World",
-    image: "/images/dawnn/roles/a-different-world.jpg",
-    role: "Jaleesa Vinson-Taylor",
-    where: "NBC",
-    years: "1987–1992",
-    note: "She also co-wrote the show’s theme song.",
-    tone: "sunrise",
+    title: "Nemesis",
+    image: "/images/dawnn/roles/nemesis.jpg",
+    role: "Gail Overton",
+    where: "Netflix",
+    years: "2026",
+    note: "Crime thriller from Power creator Courtney A. Kemp.",
+    tone: "ink",
   },
   {
-    title: "Hangin’ with Mr. Cooper",
-    image: "/images/dawnn/roles/hangin-with-mr-cooper.jpg",
-    role: "Robin Dumars",
+    title: "R.J. Decker",
+    image: "/images/dawnn/roles/rj-decker.jpg",
+    imageFit: "contain",
+    role: "Officer Penmar",
     where: "ABC",
-    years: "1992–1993",
-    note: "And sang the first-season theme with Holly Robinson and En Vogue.",
+    years: "2026",
+    note: "R.J.\u2019s sharp, savvy parole officer.",
     tone: "blue",
+  },
+  {
+    title: "Tina: The Tina Turner Musical",
+    image: "/images/dawnn/roles/tina-the-tina-turner-musical.jpg",
+    imagePosition: "40% 50%",
+    role: "Zelma Bullock",
+    where: "Broadway",
+    years: "2019–2022",
+    note: "Tina Turner\u2019s mother, in the original Broadway cast.",
+    video: { id: "gg2KX1scLDQ", label: "Tina on Broadway", source: "A New Day Foundation" },
+    tone: "plum",
   },
   {
     title: "Star Trek: Lower Decks",
@@ -56,15 +73,22 @@ export const ROLES: Role[] = [
     tone: "midnight",
   },
   {
-    title: "Tina: The Tina Turner Musical",
-    image: "/images/dawnn/roles/tina-the-tina-turner-musical.jpg",
-    imagePosition: "40% 50%",
-    role: "Zelma Bullock",
-    where: "Broadway",
-    years: "2019–2022",
-    note: "Tina Turner’s mother.",
-    video: { id: "gg2KX1scLDQ", label: "Tina on Broadway", source: "A New Day Foundation" },
-    tone: "plum",
+    title: "The Simpsons",
+    role: "Bernice Hibbert (voice)",
+    where: "FOX",
+    years: "2021–present",
+    tone: "sunrise",
+  },
+  {
+    title: "Futurama",
+    image: "/images/dawnn/roles/futurama.jpg",
+    imagePosition: "88% 50%",
+    titleOverlay: true,
+    role: "LaBarbara Conrad (voice)",
+    where: "FOX, Comedy Central, Hulu",
+    years: "",
+    note: "Hermes Conrad\u2019s wife.",
+    tone: "midnight",
   },
   {
     title: "Major Crimes",
@@ -76,7 +100,25 @@ export const ROLES: Role[] = [
     tone: "ink",
   },
   {
-    title: "I’m Gonna Git You Sucka",
+    title: "A Different World",
+    image: "/images/dawnn/roles/a-different-world.jpg",
+    role: "Jaleesa Vinson-Taylor",
+    where: "NBC",
+    years: "1987–1992",
+    note: "She also co-wrote the show\u2019s theme song.",
+    tone: "sunrise",
+  },
+  {
+    title: "Hangin\u2019 with Mr. Cooper",
+    image: "/images/dawnn/roles/hangin-with-mr-cooper.jpg",
+    role: "Robin Dumars",
+    where: "ABC",
+    years: "1992–1993",
+    note: "And sang the first-season theme with Holly Robinson and En Vogue.",
+    tone: "blue",
+  },
+  {
+    title: "I\u2019m Gonna Git You Sucka",
     role: "Cheryl Spade",
     where: "Feature film",
     years: "1988",
@@ -87,9 +129,7 @@ export const ROLES: Role[] = [
 ];
 
 export const ALSO_HEARD_IN = [
-  "Futurama (LaBarbara Conrad)",
   "Doc McStuffins (Grandma McStuffins)",
-  "The Simpsons (Bernice Hibbert)",
   "Carmen Sandiego (The Chief)",
 ];
 
@@ -98,13 +138,12 @@ export interface Credit {
   href: string;
 }
 
-/** Openly licensed press photos from Wikimedia Commons. CC BY-SA requires the credit to stay visible. */
-export const PRESS_PHOTOS = {
-  dragonCon: {
-    src: "/images/dawnn/press/dragon-con-2026.jpg",
-    alt: "Dawnn Lewis smiling on a panel at Dragon Con, September 2026",
-    caption: "At Dragon Con, Atlanta, September 2026",
-    credit: { text: "Photo: John Manard, CC BY-SA 4.0", href: "https://commons.wikimedia.org/wiki/File:Dawnn_Lewis_Dragon_Con_September_4_2026_2541.JPG" },
+/** Press photos. Wikimedia Commons photos are CC BY-SA, so their credit must stay visible. */
+export const PRESS_PHOTOS: Record<string, { src: string; alt: string; caption: string; credit?: Credit }> = {
+  awards: {
+    src: "/images/dawnn/press/awards.jpg",
+    alt: "Dawnn Lewis at her piano, surrounded by her music and songwriting awards",
+    caption: "With her music and songwriting honors, including her BMI awards",
   },
   doctorate: {
     src: "/images/dawnn/press/honorary-doctorate-2019.jpg",

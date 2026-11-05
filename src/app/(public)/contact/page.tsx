@@ -43,7 +43,6 @@ const contactMethods = [
     label: "Email Us",
     value: "info@anewdayfoundation.net",
     href: "mailto:info@anewdayfoundation.net",
-    desc: "We typically reply within 24 hours",
     color: "bg-primary-500/10 text-primary-500",
   },
   {
@@ -57,7 +56,7 @@ const contactMethods = [
   {
     icon: MapPin,
     label: "Write to Us",
-    value: "20058 Ventura Blvd., Suite 326",
+    value: "20058 Ventura Blvd. #326",
     href: undefined,
     desc: "Woodland Hills, CA 91364 (mailing address)",
     color: "bg-accent-500/10 text-accent-500",
@@ -174,7 +173,7 @@ export default function ContactPage() {
                       <p className="text-sm font-semibold text-white">
                         {method.label}
                       </p>
-                      <p className="text-xs text-white/60">{method.desc}</p>
+                      {method.desc ? <p className="text-xs text-white/60">{method.desc}</p> : null}
                     </div>
                   </div>
                 ))}
@@ -190,28 +189,13 @@ export default function ContactPage() {
             >
               <div className="relative h-[400px] rounded-3xl overflow-hidden">
                 <Image
-                  src="/images/gallery/siedah-garrett-dawnn.jpg"
-                  alt="ANDF team at work"
+                  src="/images/experiences/andf-jerseys.jpg"
+                  alt="Dawnn Lewis with the ANDF family in A New Day jerseys at Focused N F.I.T."
                   fill
-                  className="object-cover"
+                  priority
+                  sizes="(max-width: 1024px) 0px, 560px"
+                  className="object-cover object-[50%_30%]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary-600/60 to-transparent" />
-              </div>
-              {/* Floating card */}
-              <div className="absolute -bottom-6 -left-6 p-4 rounded-2xl bg-white shadow-xl">
-                <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 rounded-xl bg-primary-100 flex items-center justify-center">
-                    <Clock className="h-6 w-6 text-primary-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-neutral-800">
-                      Quick Response
-                    </p>
-                    <p className="text-xs text-neutral-500">
-                      Within 24 hours
-                    </p>
-                  </div>
-                </div>
               </div>
             </motion.div>
           </div>
@@ -281,9 +265,11 @@ export default function ContactPage() {
                             {item.value}
                           </p>
                         )}
-                        <p className="text-xs text-foreground-subtle mt-0.5">
-                          {item.desc}
-                        </p>
+                        {item.desc ? (
+                          <p className="text-xs text-foreground-subtle mt-0.5">
+                            {item.desc}
+                          </p>
+                        ) : null}
                       </div>
                     </div>
                   </FadeIn>

@@ -46,7 +46,7 @@ export function isBuiltInEventId(id: string) {
   return id.startsWith(STATIC_ID_PREFIX);
 }
 
-const TOPGOLF = { title: "TopGolf Experience", slug: "topgolf", icon: null, color: null };
+const TOPGOLF = { title: "Topgolf Family Experiences", slug: "topgolf", icon: null, color: null };
 // Drone Experience is no longer a standing program; its events stay on the calendar without a program page.
 const DRONE = { title: "Drone Experience", slug: "", icon: null, color: null };
 const FNF = { title: "Focused N F.I.T.", slug: "focused-n-fit", icon: null, color: null };
@@ -58,9 +58,9 @@ const RAW: Omit<BuiltInEvent, "status" | "is_featured">[] = [
     slug: "topgolf-family-engagement-2026",
     title: "Top Golf Family Engagement",
     short_description:
-      "A day of golf, games, and connection for ANDF youth and their families at Topgolf Los Angeles.",
+      "Parents and teens learn golf together and practice the conversations that matter, at Topgolf Los Angeles.",
     description:
-      "Families and young people come together at Topgolf Los Angeles for an afternoon of friendly competition, mentorship, and community. Our Family Engagement experience brings parents, guardians, and youth into the ANDF circle — building the support systems that help young people thrive.",
+      "Mothers (or mother figures) with their daughters, and fathers (or father figures) with their teen sons, spend the afternoon at Topgolf Los Angeles learning the game together. Guided conversations help parents and teens listen, be heard, and build the kind of communication that carries over to home.",
     event_type: "in_person",
     program_id: null,
     start_date: "2026-03-02T12:00:00-08:00",
@@ -137,11 +137,11 @@ const RAW: Omit<BuiltInEvent, "status" | "is_featured">[] = [
   {
     id: `${STATIC_ID_PREFIX}topgolf-experience-atlanta-2026`,
     slug: "topgolf-experience-atlanta-2026",
-    title: "TopGolf Experience — Atlanta",
+    title: "Topgolf Family Experience — Atlanta",
     short_description:
-      "The ANDF TopGolf Experience came to Atlanta, pairing golf with mentorship and professional networking.",
+      "The Topgolf Family Experience came to Atlanta: parents and teens learning golf and communication together.",
     description:
-      "Young people in Atlanta connected with professionals over golf instruction, leadership conversations, and team-building at our TopGolf Experience.",
+      "Parents and teens in Atlanta spent the day learning the game of golf side by side, with guided conversations to help them talk, listen, and connect.",
     event_type: "in_person",
     program_id: null,
     start_date: "2026-06-27T12:00:00-04:00",
@@ -154,7 +154,7 @@ const RAW: Omit<BuiltInEvent, "status" | "is_featured">[] = [
     cover_image_url: "/images/experiences/topgolf-2024.jpg",
     gallery_urls: ["/images/experiences/topgolf-2024.jpg", "/images/experiences/topgolf-celebrity-classic-2026.jpg"],
     video_url: null,
-    highlights: ["Golf instruction", "Professional networking", "Leadership conversations"],
+    highlights: ["Golf instruction for parents and teens", "Guided family conversations", "Communication skills"],
     schedule: null,
     what_to_expect: null,
     programs: TOPGOLF,
@@ -164,11 +164,11 @@ const RAW: Omit<BuiltInEvent, "status" | "is_featured">[] = [
   {
     id: `${STATIC_ID_PREFIX}topgolf-experience-chicago-2026`,
     slug: "topgolf-experience-chicago-2026",
-    title: "TopGolf Experience — Chicago/Schaumburg",
+    title: "Topgolf Family Experience — Chicago/Schaumburg",
     short_description:
-      "The ANDF TopGolf Experience visited the Chicago area, pairing golf with mentorship and professional networking.",
+      "The Topgolf Family Experience visited the Chicago area: parents and teens learning golf and communication together.",
     description:
-      "Young people in the Chicago area connected with professionals over golf instruction, leadership conversations, and team-building at our TopGolf Experience in Schaumburg.",
+      "Parents and teens in the Chicago area spent the day at Topgolf Schaumburg learning the game side by side, with guided conversations to help them talk, listen, and connect.",
     event_type: "in_person",
     program_id: null,
     start_date: "2026-07-25T12:00:00-05:00",
@@ -181,7 +181,7 @@ const RAW: Omit<BuiltInEvent, "status" | "is_featured">[] = [
     cover_image_url: "/images/experiences/topgolf-celebrity-classic-2026.jpg",
     gallery_urls: ["/images/experiences/topgolf-celebrity-classic-2026.jpg", "/images/experiences/topgolf-2024.jpg"],
     video_url: null,
-    highlights: ["Golf instruction", "Professional networking", "Leadership conversations"],
+    highlights: ["Golf instruction for parents and teens", "Guided family conversations", "Communication skills"],
     schedule: null,
     what_to_expect: null,
     programs: TOPGOLF,

@@ -2,7 +2,7 @@ import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
   title: "Events",
-  description: "Upcoming A New Day Foundation events in Los Angeles and beyond, including Topgolf experiences, Drone Experience at LATTC, and Focused N F.I.T. RSVP by email.",
+  description: "Upcoming A New Day Foundation events in Los Angeles and beyond, including Topgolf Family Experiences, Drone Experience at LATTC, and Focused N F.I.T. RSVP by email.",
   path: "/events",
   image: { url: "/images/experiences/topgolf-2024.jpg", alt: "Events" },
   type: "website",

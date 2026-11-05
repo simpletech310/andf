@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     "Focused N F.I.T.",
     "financial literacy for teens",
     "Band Camp",
-    "Topgolf mentorship",
+    "Topgolf family experiences",
     "HBCU Heroes",
     "501(c)(3)",
   ],

@@ -68,7 +68,7 @@ export function organizationJsonLd() {
       postalCode: ORG.address.postalCode,
       addressCountry: "US",
     },
-    areaServed: ["Los Angeles", "Atlanta", "Chicago", "Washington, D.C.", "Indianapolis"],
+    areaServed: ["Los Angeles", "New York", "Atlanta", "Chicago", "Washington, D.C.", "Indianapolis"],
     sameAs: [ORG.youtube, ORG.facebook, ORG.instagram, ORG.officialSite],
   };
 }

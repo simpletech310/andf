@@ -11,12 +11,12 @@ import { COLLABORATORS } from "@/lib/impact";
 const WAYS = [
   {
     title: "Sponsor a program or event",
-    body: "Underwrite a Topgolf Experience, Band Camp, or Focused N F.I.T., our annual signature conference for students and parents.",
+    body: "Underwrite a Topgolf Family Experience, Band Camp, or Focused N F.I.T., our annual signature conference for students and parents.",
     image: "/images/experiences/topgolf-celebrity-classic-2026.jpg",
   },
   {
     title: "Fund scholarships",
-    body: "Give to the Lucille F. Clarke Hudson Scholarship Fund, which helps low- to moderate-income students take the next step toward college.",
+    body: "Support our scholarship efforts. Each year Focused N F.I.T. awards 6 to 12 scholarships that help high school students take the next step toward college.",
     image: "/images/experiences/fnf-2025.jpg",
   },
   {
@@ -121,7 +121,7 @@ export default function PartnerPage() {
           <dl className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-8">
             {[
               ["Time with the teens you support", "Meet the students at the programs you fund, not just in a report."],
-              ["Recognition, your way", "Credit on our website, at events, and in our videos, shaped with your team."],
+              ["Recognition, your way", "Branded on our website, at events, and in our videos, shaped with your team."],
               ["Stories you can share", "Photos and video from A New Day Now that show your support at work."],
               ["A tax-deductible gift", `ANDF is a 501(c)(3) nonprofit, Federal ID ${ORG.ein}.`],
             ].map(([t, d]) => (

@@ -21,15 +21,15 @@ import { DAWNN_CREDITS } from "@/lib/impact";
 const timeline = [
   { year: "2017", title: "Founded", description: "Dawnn Lewis founds A New Day Foundation to empower underserved youth ages 13–19, building on decades of service and advocacy.", image: "/images/team/dawnn-lewis.jpg", color: "from-primary-500 to-primary-600", stat: "Day 1" },
   { year: "2023", title: "Focused N F.I.T.", description: "The signature conference brings high school and college students and their parents together for financial and technology literacy, mentorship, and scholarships.", image: "/images/gallery/fnf-group-lineup.jpg", color: "from-violet-500 to-purple-600", stat: "Signature event" },
-  { year: "2024", title: "HBCU Heroes & TopGolf", description: "A year-long HBCU Heroes webinar series on financial literacy and career prep launches, and TopGolf mentorship outings bring young men together.", image: "/images/experiences/topgolf-2024.jpg", color: "from-emerald-500 to-green-600", stat: "New programs" },
+  { year: "2024", title: "HBCU Heroes & Topgolf", description: "The HBCU Heroes webinar series on money, technology, and careers launches, and Topgolf Family Experiences bring parents and teens together to learn the game and each other.", image: "/images/experiences/topgolf-2024.jpg", color: "from-emerald-500 to-green-600", stat: "New programs" },
   { year: "2025", title: "Doors Wide Open", description: "Band Camp, iFLY, The Color Purple, the Lakers, the Sheriff's Crime Lab and Harbor Patrol, and a trip to the Smithsonian's NMAAHC in Washington, D.C.", image: "/images/experiences/nmaahc-2025.jpg", color: "from-amber-500 to-orange-600", stat: "10+ experiences" },
-  { year: "2026", title: "Coast to Coast", description: "A Celebrity Golf Classic with Topgolf, The First Tee, and Callaway; Drone Experiences in Indianapolis and Los Angeles; TopGolf in Atlanta and Chicago.", image: "/images/experiences/topgolf-celebrity-classic-2026.jpg", color: "from-primary-400 to-primary-700", stat: "5 cities" },
+  { year: "2026", title: "Coast to Coast", description: "A Celebrity Golf Classic with Topgolf, The First Tee, and Callaway; Drone Experiences in Indianapolis and Los Angeles; Topgolf Family Experiences in Atlanta and Chicago.", image: "/images/experiences/topgolf-celebrity-classic-2026.jpg", color: "from-primary-400 to-primary-700", stat: "5 cities" },
 ];
 
 
 const impactStats = [
-  { value: "2,000+", label: "Youth Served", icon: Users },
-  { value: "6", label: "Active Programs", icon: Target },
+  { value: "9,000+", label: "Youth Served", icon: Users },
+  { value: "7+", label: "Active Programs", icon: Target },
   { value: "100+", label: "Mentors & Volunteers", icon: Heart },
   { value: "50+", label: "Corporate Partners", icon: Star },
 ];
@@ -190,7 +190,7 @@ export default function AboutPage() {
             sizes="100vw"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-primary-900/95 via-primary-900/75 to-primary-900/50" />
         </div>
         <div className="relative mx-auto max-w-5xl px-6 py-32 lg:py-44 text-center space-y-6">
           <motion.span
@@ -201,14 +201,14 @@ export default function AboutPage() {
             Est. 2017 &bull; Los Angeles, CA
           </motion.span>
           <motion.h1
-            className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight"
+            className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight [text-shadow:0_2px_24px_rgba(0,0,0,0.45)]"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
             Empowering Youth.
             <br />
-            <span className="text-brand-gradient">Transforming Lives.</span>
+            <span className="text-secondary-400">Transforming Lives.</span>
           </motion.h1>
           <motion.p
             className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed"
@@ -353,9 +353,15 @@ export default function AboutPage() {
             <div className="mt-8 space-y-5 text-lg text-white/80 leading-relaxed max-w-[40rem]">
               <p>
                 Dawnn Lewis is a Grammy Award-winning singer, a multiple ASCAP and BMI Award-winning songwriter,
-                a film, television, and stage actor, a composer, and a series TV creator and producer. Born in
-                Brooklyn to a family with roots in Guyana, she graduated cum laude from the University of Miami
-                with a degree in musical theatre.
+                a film, television, and stage actor, a composer, and a series TV creator and producer. She was
+                inducted into the Women Songwriters Hall of Fame with its first class in 2021, and she is a
+                Trumpet Award honoree.
+              </p>
+              <p>
+                Born in Brooklyn to a family with roots in Guyana, she started the musical theatre program at the
+                University of Miami at 16 and graduated magna cum laude. Her career began in Broadway musicals and
+                has now spanned five decades, across the stage, television, film, recording studios, and the
+                voice booth.
               </p>
               <p>
                 She has served on the SAG and SAG-AFTRA National Board of Directors, helping lead the merger as
@@ -391,21 +397,18 @@ export default function AboutPage() {
             <div className="md:col-span-7 lg:col-span-8">
               <h2 className="font-display font-bold text-3xl sm:text-4xl text-foreground">On screen and on stage</h2>
               <p className="mt-3 text-foreground-muted leading-relaxed max-w-2xl">
-                Four decades of work audiences know by heart, from Hillman College on <em>A Different World</em> to the
-                bridge of the U.S.S. Cerritos on <em>Star Trek: Lower Decks</em>, where she voices Captain Carol Freeman.
-                She still joins fans on panels at conventions like Dragon Con.
+                Five decades, and still going. Dawnn&apos;s career began in Broadway musicals and grew into a body of
+                work few performers can match: landmark network sitcoms, feature films, prime-time drama, and some of
+                animation&apos;s best-loved voices, from <em>The Simpsons</em> and <em>Futurama</em> to{" "}
+                <em>Star Trek</em>. Her newest roles include Netflix&apos;s <em>Nemesis</em> and ABC&apos;s{" "}
+                <em>R.J. Decker</em>, and she still meets fans at conventions like Comic-Con.
               </p>
             </div>
             <figure className="md:col-span-5 lg:col-span-4">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-md bg-neutral-200">
-                <Image src={PRESS_PHOTOS.dragonCon.src} alt={PRESS_PHOTOS.dragonCon.alt} fill className="object-cover object-top" sizes="(max-width: 768px) 100vw, 380px" />
+              <div className="relative aspect-[3/2] overflow-hidden rounded-md bg-neutral-200">
+                <Image src={PRESS_PHOTOS.awards.src} alt={PRESS_PHOTOS.awards.alt} fill className="object-cover" sizes="(max-width: 768px) 100vw, 380px" />
               </div>
-              <figcaption className="mt-2 text-xs text-foreground-muted">
-                {PRESS_PHOTOS.dragonCon.caption}.{" "}
-                <a href={PRESS_PHOTOS.dragonCon.credit.href} target="_blank" rel="noopener noreferrer" className="text-neutral-400 underline underline-offset-2">
-                  {PRESS_PHOTOS.dragonCon.credit.text}
-                </a>
-              </figcaption>
+              <figcaption className="mt-2 text-xs text-foreground-muted">{PRESS_PHOTOS.awards.caption}</figcaption>
             </figure>
           </div>
           <div className="mt-10">
@@ -535,7 +538,7 @@ export default function AboutPage() {
               { title: "Real-World Experiences", desc: "From forensic labs to recording studios, our programs go beyond the classroom to deliver hands-on, career-shaping experiences." },
               { title: "A Founder People Show Up For", desc: "Dawnn Lewis brings artists, civic leaders, and executives into the room, so teens meet the people they want to become." },
               { title: "Holistic Approach", desc: "We develop the whole person — building confidence, creativity, technical skills, and community bonds simultaneously." },
-              { title: "Proven Track Record", desc: "2,000+ youth served since 2017 across Los Angeles, Atlanta, Chicago, Washington, D.C., and Indianapolis, with partners like Google, PepsiCo, and the LA Lakers." },
+              { title: "Proven Track Record", desc: "9,000+ youth served since 2017 across Los Angeles, New York, Atlanta, Chicago, Washington, D.C., and Indianapolis, with partners like Google, PepsiCo, and the LA Lakers." },
             ].map((item, i) => (
               <motion.div
                 key={item.title}

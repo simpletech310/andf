@@ -170,7 +170,7 @@ export default function GalleryPage() {
           {[
             { icon: PartyPopper, value: "50+", label: "Events Held" },
             { icon: Camera, value: "1,000+", label: "Photos Taken" },
-            { icon: Star, value: "2,000+", label: "Smiles Captured" },
+            { icon: Star, value: "9,000+", label: "Youth Served" },
             { icon: Zap, value: "100%", label: "Good Vibes" },
           ].map((stat, i) => (
             <motion.div

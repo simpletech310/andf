@@ -23,7 +23,7 @@ function RoleCard({ r, onPlay }: { r: Role; onPlay: (r: Role) => void }) {
   const art = r.image ?? (r.video ? `https://i.ytimg.com/vi/${r.video.id}/maxresdefault.jpg` : null);
   const Wrapper = r.video ? "button" : "div";
   return (
-    <article className="snap-start shrink-0 w-[15rem] sm:w-auto">
+    <article className="snap-start shrink-0 w-[13.5rem] lg:w-auto">
       <Wrapper
         {...(r.video
           ? { type: "button" as const, onClick: () => onPlay(r), "aria-label": `Play ${r.video.label}: ${r.title}` }
@@ -32,15 +32,34 @@ function RoleCard({ r, onPlay }: { r: Role; onPlay: (r: Role) => void }) {
       >
         {art ? (
           <>
-            <Image
-              src={art}
-              alt={r.image ? `${r.title} poster` : ""}
-              fill
-              style={r.image && r.imagePosition ? { objectPosition: r.imagePosition } : undefined}
-              className={`object-cover transition-transform duration-700 group-hover:scale-105 ${r.image ? "" : "object-[50%_40%] scale-[1.35] group-hover:scale-[1.42]"}`}
-              sizes="(max-width: 640px) 240px, 220px"
-            />
+            {r.image && r.imageFit === "contain" ? (
+              <>
+                <Image src={art} alt="" aria-hidden fill className="object-cover scale-125 blur-2xl opacity-70" sizes="120px" />
+                <Image
+                  src={art}
+                  alt={`${r.title} key art`}
+                  fill
+                  className="object-contain transition-transform duration-700 group-hover:scale-105"
+                  sizes="(max-width: 640px) 240px, 220px"
+                />
+              </>
+            ) : (
+              <Image
+                src={art}
+                alt={r.image ? `${r.title} ${r.titleOverlay ? "still" : "poster"}` : ""}
+                fill
+                style={r.image && r.imagePosition ? { objectPosition: r.imagePosition } : undefined}
+                className={`object-cover transition-transform duration-700 group-hover:scale-105 ${r.image ? "" : "object-[50%_40%] scale-[1.35] group-hover:scale-[1.42]"}`}
+                sizes="(max-width: 640px) 240px, 220px"
+              />
+            )}
             {!r.image ? <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/35 to-black/95" /> : null}
+            {r.image && r.titleOverlay ? (
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 pt-16">
+                <h4 className="font-display font-bold text-[1.45rem] leading-[1.05] text-white">{r.title}</h4>
+                <p className="mt-1 text-[0.68rem] text-white/70">{r.where}</p>
+              </div>
+            ) : null}
           </>
         ) : (
           // Typographic poster for titles without licensed art or an official video.
@@ -55,7 +74,7 @@ function RoleCard({ r, onPlay }: { r: Role; onPlay: (r: Role) => void }) {
               <p className="mt-2 text-xs text-white/80">as {r.role.replace(" (voice)", "")}</p>
               <div className="mt-3 pt-2 border-t border-white/25 flex items-center justify-between text-[0.68rem] text-white/70">
                 <span>{r.where}</span>
-                <span>{r.years}</span>
+                {r.years ? <span>{r.years}</span> : null}
               </div>
             </div>
           </div>
@@ -135,13 +154,17 @@ export function CareerRail() {
   const close = useCallback(() => setPlaying(null), []);
   return (
     <div>
-      <div className="-mx-6 px-6 flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 lg:grid-cols-6 sm:overflow-visible">
+      <div className="-mx-6 px-6 flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4 lg:mx-0 lg:px-0 lg:grid lg:grid-cols-5 lg:gap-x-6 lg:gap-y-10 lg:overflow-visible">
         {ROLES.map((r) => (
           <RoleCard key={r.title} r={r} onPlay={setPlaying} />
         ))}
       </div>
       <p className="mt-6 text-sm text-foreground-muted">
-        Also heard in {ALSO_HEARD_IN.slice(0, -1).join(", ")}, and {ALSO_HEARD_IN[ALSO_HEARD_IN.length - 1]}.
+        Also heard in{" "}
+        {ALSO_HEARD_IN.length > 2
+          ? `${ALSO_HEARD_IN.slice(0, -1).join(", ")}, and ${ALSO_HEARD_IN[ALSO_HEARD_IN.length - 1]}`
+          : ALSO_HEARD_IN.join(" and ")}
+        .
       </p>
       <VideoModal role={playing} onClose={close} />
     </div>

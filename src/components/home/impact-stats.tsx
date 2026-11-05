@@ -8,9 +8,9 @@ interface StatsContent {
 }
 
 const DEFAULT_STATS: NonNullable<StatsContent["stats"]> = [
-  { target: 2000, suffix: "+", label: "Youth served", description: "Teens ages 13–19 since 2017" },
-  { target: 6, suffix: "", label: "Signature programs", description: "Music, college prep, sports, and mentorship" },
-  { target: 5, suffix: "", label: "Cities reached", description: "LA, Atlanta, Chicago, D.C., Indianapolis" },
+  { target: 9000, suffix: "+", label: "Youth served", description: "Teens and young adults since 2017" },
+  { target: 7, suffix: "+", label: "Signature programs", description: "Music, college prep, tech and financial literacy, and mentorship" },
+  { target: 6, suffix: "", label: "Cities reached", description: "LA, New York, Atlanta, Chicago, D.C., Indianapolis" },
   { target: 50, suffix: "+", label: "Corporate partners", description: "From Google to the LA Lakers" },
 ];
 

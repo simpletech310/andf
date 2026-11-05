@@ -55,8 +55,8 @@ const partners = [
 ];
 
 const impactStats = [
-  { value: "2,000+", label: "Youth Served", icon: Users },
-  { value: "6", label: "Active Programs", icon: Zap },
+  { value: "9,000+", label: "Youth Served", icon: Users },
+  { value: "7+", label: "Active Programs", icon: Zap },
   { value: "50+", label: "Corporate Partners", icon: Star },
   { value: "100%", label: "Free to Attend", icon: Heart },
 ];

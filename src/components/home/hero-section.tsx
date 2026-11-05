@@ -61,8 +61,18 @@ export function HeroSection({ cms }: { cms?: HeroContent }) {
 
       <div className="relative z-10 w-full mx-auto max-w-7xl px-6 pt-40 pb-16 sm:pb-20 lg:pb-24">
         <div className="max-w-3xl">
+          <motion.div {...rise(0)}>
+            <Image
+              src="/images/logo/andf-logo-hero.png"
+              alt="A New Day Foundation"
+              width={920}
+              height={344}
+              priority
+              className="h-auto w-56 sm:w-72 lg:w-[22rem] drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
+            />
+          </motion.div>
           <motion.h1
-            className="font-display font-bold text-white text-4xl leading-[1.08] sm:text-6xl lg:text-7xl tracking-tight"
+            className="mt-8 sm:mt-10 font-display font-bold text-white text-4xl leading-[1.08] sm:text-6xl lg:text-7xl tracking-tight"
             {...rise(0.1)}
           >
             {c.title_line1}

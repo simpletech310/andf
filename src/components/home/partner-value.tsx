@@ -6,15 +6,15 @@ import { Button } from "@/components/ui/button";
 const REASONS = [
   {
     title: "Put your people in the room",
-    body: "Your team can mentor teens face to face at conferences, Topgolf outings, workshops, and career visits. Partners have included Google, PepsiCo, Northrop Grumman, and the LA Lakers.",
+    body: "Your team can mentor teens face to face at conferences, Topgolf Family Experiences, workshops, and career visits. Partners have included Google, PepsiCo, Northrop Grumman, and the LA Lakers.",
   },
   {
     title: "Fund skills that compound",
-    body: "Focused N F.I.T. gives low- and moderate-income students and their parents financial and technology literacy, plus scholarships, before the big decisions about college.",
+    body: "Focused N F.I.T. gives college students and high schoolers and their parents classes in finance and technology, plus 6 to 12 scholarships a year, before the big decisions about college.",
   },
   {
     title: "Reach beyond Los Angeles",
-    body: "ANDF programs and events have reached Los Angeles, Atlanta, Chicago, Washington, D.C., and Indianapolis, with room to grow into your markets.",
+    body: "ANDF programs and events have reached Los Angeles, New York, Atlanta, Chicago, Washington, D.C., and Indianapolis, with room to grow into your markets.",
   },
   {
     title: "Stand beside a name people trust",

@@ -1,5 +1,5 @@
 /**
- * ANDF's six programs, described from the official Programs page (anewdayfoundation.net).
+ * ANDF's programs, described from the official Programs page (anewdayfoundation.net).
  * Used whenever the database is unavailable. No outcome numbers are listed here on purpose:
  * add them only once ANDF confirms them.
  */
@@ -26,14 +26,14 @@ export const PROGRAMS: ProgramSummary[] = [
     title: "Focused N F.I.T.",
     tagline: "Financially & Technology Informed, For A Different World",
     description:
-      "Our annual signature conference for high school juniors and seniors, college freshmen and sophomores, and their parents: a full day of financial and technology literacy, motivation, and scholarships.",
+      "Our annual signature conference: classes in finance and technology for college freshmen and sophomores, college-prep sessions for high school students and their parents, and 6 to 12 scholarships awarded each year.",
     long_description:
-      "Focused N Financially & Technology Informed (F.I.T.) For A Different World is A New Day Foundation's annual signature event, designed for high school juniors and seniors and college freshmen and sophomores, together with their parents.\n\nThis day-long conference offers tangible tools in financial and technology literacy, along with motivational speakers and scholarships for low- to moderate-income college and college-bound students and their families.",
+      "Focused N Financially & Technology Informed (F.I.T.) For A Different World is A New Day Foundation's annual signature conference, built around two groups with one goal: making sure young people are ready for what comes next.\n\nCollege freshmen and sophomores take classes on money and technology, from budgeting, credit, and financial planning to the digital skills that today's careers ask for, along with other practical sessions that help them make the most of their college years.\n\nHigh school students come with a parent. Together they get guidance on getting into college, from applications and financial aid to choosing the right school, and parents have classes of their own so the whole family is ready for the journey.\n\nFocused N F.I.T. is also a scholarship opportunity. Each year ANDF awards 6 to 12 scholarships to high school students, giving low- to moderate-income families real support on the road to college.",
     icon: "GraduationCap",
     color: "from-primary-500 to-primary-700",
     hero_image_url: "/images/experiences/fnf-2025.jpg",
     logo_url: "/images/programs/fnf-logo.jpg",
-    features: ["Financial literacy", "Technology literacy", "Scholarships", "Sessions for parents", "Motivational speakers", "College and career prep"],
+    features: ["Finance and technology classes for college freshmen and sophomores", "College admissions prep for high school students", "Classes for parents", "6 to 12 scholarships awarded each year", "Motivational speakers", "Career readiness"],
     outcomes: [],
     gallery_urls: ["/images/experiences/fnf-2025.jpg", "/images/experiences/fnf-2024.jpg", "/images/gallery/fnf-group-lineup.jpg", "/images/gallery/fnf-scholarship-2024.jpg", "/images/gallery/scholarship-recipient.jpg", "/images/gallery/opening-panel.jpg"],
     video_title: "Focused N F.I.T. 2026 Recap",
@@ -59,17 +59,17 @@ export const PROGRAMS: ProgramSummary[] = [
   },
   {
     slug: "topgolf",
-    title: "TopGolf Experience",
-    tagline: "Brotherhood across four cities",
+    title: "Topgolf Family Experiences",
+    tagline: "Parents and teens, learning the game and each other",
     description:
-      "A coast-to-coast activation that brings young men together for real conversations, mentorship, and brotherhood in Los Angeles, Chicago, Atlanta, and Washington, D.C.",
+      "Mothers (or mother figures) with their daughters, and fathers (or father figures) with their teen sons, spend time together learning the game of golf and how to really talk to each other.",
     long_description:
-      "This Topgolf experience brings young men together in a dynamic, uplifting environment, creating space for real conversations, mentorship, and brotherhood across four major cities: Los Angeles, Chicago, Atlanta, and Washington, D.C.\n\nMore than a fun outing, this coast-to-coast activation fosters empowerment, unity, and personal growth, giving young men the support and community they need to thrive.",
+      "Topgolf Family Experiences are built around one of the most important relationships in a young person's life: the one with their parent. Daughters come with their mothers or mother figures, and teen boys come with their fathers or father figures.\n\nTogether they learn the game of golf, and alongside it, how to communicate. Guided conversations give parents and teens space to listen, be heard, and talk about the things that are hard to bring up at home, in a setting that feels like a day out, not a lecture.\n\nFamilies leave with new skills on the range and stronger connection off it, a foundation that supports young people long after the day ends. Experiences have taken place in Los Angeles, Atlanta, Chicago, and Washington, D.C.",
     icon: "Target",
     color: "from-emerald-500 to-green-600",
     hero_image_url: "/images/experiences/topgolf-2024.jpg",
     logo_url: "/images/programs/topgolf-logo.jpg",
-    features: ["Mentorship", "Real conversations", "Brotherhood", "Los Angeles, Chicago, Atlanta, D.C."],
+    features: ["Mothers and daughters", "Fathers and teen sons", "Golf instruction together", "Parent and teen communication", "Guided conversations", "Los Angeles, Atlanta, Chicago, D.C."],
     outcomes: [],
     gallery_urls: ["/images/experiences/topgolf-2024.jpg", "/images/experiences/topgolf-celebrity-classic-2026.jpg", "/images/gallery/leadership-group.jpg", "/images/gallery/raffle-winner.jpg"],
     video_title: "ANDF Topgolf 2026",
@@ -110,16 +110,16 @@ export const PROGRAMS: ProgramSummary[] = [
   {
     slug: "hbcu-heroes",
     title: "HBCU Heroes",
-    tagline: "Financial literacy and career prep for HBCU students",
+    tagline: "Money, tech, and career prep for HBCU students",
     description:
-      "In collaboration with HBCU Heroes, an ongoing webinar series on financial literacy and career preparation for students at historically Black colleges and universities.",
+      "In collaboration with HBCU Heroes, an ongoing webinar series for students at historically Black colleges and universities on financial literacy, AI and technology, careers, and community.",
     long_description:
-      "HBCU Heroes, in collaboration with A New Day Foundation, provides an ongoing webinar series focused on financial literacy and career preparation, engaging college students from historically Black colleges and universities. The first series ran from September 2024 to August 2025.",
+      "HBCU Heroes, in collaboration with A New Day Foundation, provides an ongoing webinar series focused on financial literacy and career preparation, engaging college students from historically Black colleges and universities. The first series ran from September 2024 to August 2026.\n\nThe conversations went well beyond the basics. Students explored artificial intelligence and the technology reshaping the workplace, how to manage money, build credit, and plan for the future, and how to prepare for and grow in their careers.\n\nSessions also made room for community: what it means to lead, give back, and lift others up, and the real experiences young people are navigating today, from campus life to their first jobs.",
     icon: "GraduationCap",
     color: "from-amber-500 to-orange-600",
     hero_image_url: "/images/experiences/lakers-experience.jpg",
     logo_url: "/images/programs/hbcu-heroes-logo.jpg",
-    features: ["Webinar series", "Financial literacy", "Career preparation", "HBCU students"],
+    features: ["Webinar series, Sept 2024 to Aug 2026", "Financial literacy", "AI and technology", "Career preparation", "Community and leadership", "HBCU students"],
     outcomes: [],
     gallery_urls: ["/images/experiences/lakers-experience.jpg", "/images/gallery/omega-psi-phi.jpg", "/images/gallery/zeta-phi-beta.jpg"],
   },

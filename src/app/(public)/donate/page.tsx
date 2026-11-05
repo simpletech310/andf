@@ -29,7 +29,7 @@ const WAYS = [
 const GIFT_TYPES = [
   "Corporate or foundation gift",
   "Matching gift from my employer",
-  "Lucille F. Clarke Hudson Scholarship Fund",
+  "Scholarships for students",
   "Sponsor a specific program or event",
   "Stock or planned gift",
   "In-kind donation",
@@ -85,9 +85,9 @@ export default function DonatePage() {
           </div>
         </div>
         <p className="mx-auto max-w-6xl mt-8 text-sm text-foreground-muted">
-          Giving to the <strong className="text-foreground">Lucille F. Clarke Hudson Scholarship Fund</strong>? Donate by card
-          or mail, then email <a href={`mailto:${ORG.email}?subject=${encodeURIComponent("Scholarship Fund gift")}`} className="text-primary-700 underline underline-offset-2">{ORG.email}</a> so
-          we can direct your gift to the fund.
+          Want your gift to <strong className="text-foreground">support our scholarship efforts</strong>? Donate by card
+          or mail, then email <a href={`mailto:${ORG.email}?subject=${encodeURIComponent("Scholarship gift")}`} className="text-primary-700 underline underline-offset-2">{ORG.email}</a> so
+          we can direct your gift to scholarships.
         </p>
       </section>
 
@@ -97,8 +97,8 @@ export default function DonatePage() {
           <div className="lg:col-span-5">
             <h2 className="font-display font-bold text-3xl sm:text-4xl">Where your gift goes</h2>
             <p className="mt-4 text-white/75 leading-relaxed">
-              Donations fund our six programs, from the Focused N F.I.T. conference and its scholarships to Band
-              Camp, Topgolf mentoring, and small-group outings for boys and girls.
+              Donations fund our programs, from the Focused N F.I.T. conference and its scholarships to Band
+              Camp, Topgolf Family Experiences, and small-group outings for boys and girls.
             </p>
             <Link href="/programs" className="mt-6 inline-block font-semibold text-secondary-300 underline underline-offset-4 hover:text-white">
               See our programs

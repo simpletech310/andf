@@ -493,7 +493,7 @@ export default function EventsPage() {
           {[
             { value: loading ? "..." : `${upcomingCount}+`, label: "Upcoming Events" },
             { value: loading ? "..." : `${freePercent}%`, label: "Free Programs" },
-            { value: "2,000+", label: "Past Attendees" },
+            { value: "9,000+", label: "Youth Served" },
           ].map((stat, i) => (
             <motion.div
               key={stat.label}

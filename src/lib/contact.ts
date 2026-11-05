@@ -7,7 +7,7 @@ export const ORG = {
   phoneHref: "tel:+14242413623",
   ein: "82-1965126",
   address: {
-    street: "20058 Ventura Blvd., Suite 326",
+    street: "20058 Ventura Blvd. #326",
     city: "Woodland Hills",
     region: "CA",
     postalCode: "91364",

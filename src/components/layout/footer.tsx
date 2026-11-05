@@ -16,7 +16,7 @@ const quickLinks = [
 const programLinks = [
   { href: "/programs/focused-n-fit", label: "Focused N F.I.T." },
   { href: "/programs/band-camp", label: "Band Camp" },
-  { href: "/programs/topgolf", label: "TopGolf Experience" },
+  { href: "/programs/topgolf", label: "Topgolf Family Experiences" },
   { href: "/programs/mentors", label: "MenTORS" },
   { href: "/programs/sisters-hangout", label: "Sisters Hangout" },
   { href: "/programs/hbcu-heroes", label: "HBCU Heroes" },
@@ -114,7 +114,7 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-3 text-sm text-neutral-300">
                 <MapPin className="h-4 w-4 text-secondary-400 mt-0.5 shrink-0" />
-                <span>20058 Ventura Blvd., Suite 326<br />Woodland Hills, CA 91364</span>
+                <span>20058 Ventura Blvd. #326<br />Woodland Hills, CA 91364</span>
               </li>
             </ul>
           </div>
